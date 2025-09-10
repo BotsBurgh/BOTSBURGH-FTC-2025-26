@@ -1,0 +1,52 @@
+[versions]
+# Do not modify this unless you want to have a really bad time.
+androidGradlePlugin = "8.7.3"
+
+# Kotlin language version.
+kotlin = "2.0.0"
+
+# See https://github.com/jeremymailen/kotlinter-gradle for versions.
+kotlinter = "4.1.1"
+
+# FTC libraries.
+ftc = "11.0.0"
+
+# FTC associated libraries.
+androidxAppCompat = "1.7.1"
+
+# FTC Dashboard.
+ftcDashboard = "0.5.0"
+
+# Road Runner.
+roadRunner = "1.0.0"
+roadRunnerFtc = "0.1.14"
+
+[libraries]
+# FTC libraries.
+ftc-inspection = { group = "org.firstinspires.ftc", name = "Inspection", version.ref = "ftc" }
+ftc-blocks = { group = "org.firstinspires.ftc", name = "Blocks", version.ref = "ftc" }
+ftc-robotcore = { group = "org.firstinspires.ftc", name = "RobotCore", version.ref = "ftc" }
+ftc-robotserver = { group = "org.firstinspires.ftc", name = "RobotServer", version.ref = "ftc" }
+ftc-onbotjava = { group = "org.firstinspires.ftc", name = "OnBotJava", version.ref = "ftc" }
+ftc-hardware = { group = "org.firstinspires.ftc", name = "Hardware", version.ref = "ftc" }
+ftc-common = { group = "org.firstinspires.ftc", name = "FtcCommon", version.ref = "ftc" }
+ftc-vision = { group = "org.firstinspires.ftc", name = "Vision", version.ref = "ftc" }
+
+# FTC associated libraries.
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
+
+# Test framework.
+kotlinTest = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+
+# FTC Dashboard.
+ftcDashboard = { group = "com.acmerobotics.dashboard", name = "dashboard", version.ref = "ftcDashboard" }
+
+# Road Runner.
+roadRunner-core = { group = "com.acmerobotics.roadrunner", name = "core", version.ref = "roadRunner" }
+roadRunner-actions = { group = "com.acmerobotics.roadrunner", name = "actions", version.ref = "roadRunner" }
+roadRunner-ftc = { group = "com.acmerobotics.roadrunner", name = "ftc", version.ref = "roadRunnerFtc" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }

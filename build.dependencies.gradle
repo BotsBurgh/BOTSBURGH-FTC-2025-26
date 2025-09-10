@@ -1,17 +1,33 @@
 repositories {
     mavenCentral()
     google() // Needed for androidx
+    maven { url = 'https://maven.brott.dev/' }
 }
 
 dependencies {
-    implementation 'org.firstinspires.ftc:Inspection:11.0.0'
-    implementation 'org.firstinspires.ftc:Blocks:11.0.0'
-    implementation 'org.firstinspires.ftc:RobotCore:11.0.0'
-    implementation 'org.firstinspires.ftc:RobotServer:11.0.0'
-    implementation 'org.firstinspires.ftc:OnBotJava:11.0.0'
-    implementation 'org.firstinspires.ftc:Hardware:11.0.0'
-    implementation 'org.firstinspires.ftc:FtcCommon:11.0.0'
-    implementation 'org.firstinspires.ftc:Vision:11.0.0'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    // FTC Libraries
+    implementation libs.ftc.inspection
+    implementation libs.ftc.blocks
+    implementation libs.ftc.robotcore
+    implementation libs.ftc.robotserver
+    implementation libs.ftc.onbotjava
+    implementation libs.ftc.hardware
+    implementation libs.ftc.common
+    implementation libs.ftc.vision
+
+    // FTC Associated Libraries
+    implementation libs.appcompat
+
+    // Test framework
+    testImplementation libs.kotlinTest
+
+    // FTC Dashboard
+    implementation libs.ftcDashboard
+
+    // Road Runner
+    implementation libs.roadRunner.core
+    implementation libs.roadRunner.actions
+    implementation libs.roadRunner.ftc
+
 }
 
