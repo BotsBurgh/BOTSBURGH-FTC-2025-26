@@ -17,6 +17,9 @@ androidxAppCompat = "1.7.1"
 # FTC Dashboard.
 ftcDashboard = "0.5.0"
 
+# Road Runner.
+roadRunner = "1.0.0"
+roadRunnerFtc = "0.1.14"
 
 [libraries]
 # FTC libraries.
@@ -38,6 +41,10 @@ kotlinTest = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref
 # FTC Dashboard.
 ftcDashboard = { group = "com.acmerobotics.dashboard", name = "dashboard", version.ref = "ftcDashboard" }
 
+# Road Runner.
+roadRunner-core = { group = "com.acmerobotics.roadrunner", name = "core", version.ref = "roadRunner" }
+roadRunner-actions = { group = "com.acmerobotics.roadrunner", name = "actions", version.ref = "roadRunner" }
+roadRunner-ftc = { group = "com.acmerobotics.roadrunner", name = "ftc", version.ref = "roadRunnerFtc" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

@@ -24,5 +24,10 @@ dependencies {
     // FTC Dashboard
     implementation libs.ftcDashboard
 
+    // Road Runner
+    implementation libs.roadRunner.core
+    implementation libs.roadRunner.actions
+    implementation libs.roadRunner.ftc
+
 }
 
