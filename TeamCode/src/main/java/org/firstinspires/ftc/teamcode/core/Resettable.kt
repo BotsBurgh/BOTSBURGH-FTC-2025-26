@@ -3,6 +3,13 @@ package org.firstinspires.ftc.teamcode.core
 import kotlin.reflect.KProperty
 
 /**
+ * A global set of functions that need to be called between opmodes being run.
+ *
+ * These functions should reset all state so that it does not persist.
+ */
+private val resetFunctions = mutableSetOf<() -> Unit>()
+
+/**
  * A property delegate that instruments resetting it between opmode runs.
  *
  * This is used in [delegate properties](https://kotlinlang.org/docs/delegated-properties.html). You
@@ -29,7 +36,7 @@ class Resettable<T>(private val default: () -> T) {
 
     init {
         // Adds the reset function to the global set.
-        org.firstinspires.ftc.teamcode.core.resetFunctions.add(this::reset)
+        resetFunctions.add(this::reset)
     }
 
     operator fun getValue(
@@ -52,7 +59,7 @@ class Resettable<T>(private val default: () -> T) {
     companion object {
         internal fun resetAll() {
             // Call each function in the global set.
-            org.firstinspires.ftc.teamcode.core.resetFunctions.forEach { it() }
+            resetFunctions.forEach { it() }
         }
     }
 }
