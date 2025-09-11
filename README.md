@@ -1,4 +1,4 @@
-BotsBurgh 2024-25 FTC Code
+BotsBurgh 2025-26 FTC Code
 
 Hello! This is BotsBurgh 11792's code for the 2024-25 season of First Tech Challenge.
 License
