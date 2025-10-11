@@ -146,17 +146,4 @@ object TriWheels : API() {
     /** Returns an array containing [red], [green], and [blue]. */
     fun wheels() = arrayOf(this.red, this.green, this.blue)
 
-    fun halfSpeed(possible: Boolean){
-            if(possible) {
-                RobotConfig.TeleOpMain.ROTATE_SPEED /= RobotConfig.TeleOpMain.SPEED_MODIFIER
-                RobotConfig.TeleOpMain.DRIVE_SPEED /= RobotConfig.TeleOpMain.SPEED_MODIFIER
-            }
-    }
-
-    fun fullSpeed(possible: Boolean){
-        if(!possible) {
-            RobotConfig.TeleOpMain.ROTATE_SPEED *= RobotConfig.TeleOpMain.SPEED_MODIFIER
-            RobotConfig.TeleOpMain.DRIVE_SPEED *= RobotConfig.TeleOpMain.SPEED_MODIFIER
-        }
-    }
 }
