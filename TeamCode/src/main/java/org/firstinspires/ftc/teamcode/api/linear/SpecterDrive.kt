@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode.api.linear
-//**UNFINISHED**//
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
@@ -12,9 +11,11 @@ import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.MAX_AUTO_TURN
 import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.SPEED_GAIN
 import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.STRAFE_GAIN
 import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.TURN_GAIN
+import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.OFFSET_RAD
 import org.firstinspires.ftc.teamcode.api.CsvLogging
 import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.core.API
+import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.sqrt
@@ -142,26 +143,38 @@ object SpecterDrive : API() {
      */
     private fun computePower() {
 
-        val rad: Double = atan2(yError, xError)
 
-        var magnitude: Double =
-            sqrt((xError * STRAFE_GAIN) * (xError * STRAFE_GAIN) +
-                    (yError * SPEED_GAIN) * (yError * SPEED_GAIN)
-            )
+        // Adjusted Vector Components (apply gains)
+        val adjX = xError * STRAFE_GAIN
+        val adjY = yError * SPEED_GAIN
 
-        var (redWheelPower, greenWheelPower, blueWheelPower) = TriWheels.compute(rad, magnitude)
+        // Direction and magnitude of vector in OTOS frame
+        val rad = atan2(adjY, adjX)
+        val magnitude = sqrt(adjX * adjX + adjY * adjY)
 
+        // Rotate into drive frame
+        val driveRad = rad - OFFSET_RAD
+
+        // Compute translation powers
+        var (r, g, b) = TriWheels.compute(driveRad, magnitude)
+
+        // Compute rotation
         turn = Range.clip(hError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN)
 
+        // Mix
+        r += turn
+        g += turn
+        b += turn
 
-        redWheelPower = clipWheelPower(redWheelPower + turn)
-        greenWheelPower = clipWheelPower(greenWheelPower + turn)
-        blueWheelPower = clipWheelPower(blueWheelPower + turn)
+        // Normalize so no wheel exceeds ±1
+        val max = maxOf(abs(r), abs(g), abs(b), 1.0)
+        r /= max; g /= max; b /= max
 
-        TriWheels.power(redWheelPower, greenWheelPower, blueWheelPower)
-
-
+        // Clip to desired range
+        TriWheels.power(clipWheelPower(r), clipWheelPower(g), clipWheelPower(b))
     }
+
+
 
 
 

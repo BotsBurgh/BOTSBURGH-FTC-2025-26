@@ -42,7 +42,7 @@ object RobotConfig {
 
         /** A multiplier that scales the robot's rotation speed. */
         @JvmField
-        var ROTATE_SPEED: Double = 0.5
+        var ROTATE_SPEED: Double = 1.0
 
         /**A multiplier for the speed of the robot**/
         @JvmField
@@ -106,11 +106,6 @@ object RobotConfig {
         @JvmField
         var SPEED_GAIN: Double = 0.04
 
-        /**
-         * Max speed that can be achieved on the y-axis.
-         */
-        @JvmField
-        var MAX_AUTO_SPEED: Double = 0.4
 
         /**
          * Controls the acceleration of x-axis movement.
@@ -118,11 +113,6 @@ object RobotConfig {
         @JvmField
         var STRAFE_GAIN: Double = 0.04
 
-        /**
-         * Max speed that can be achieved on the x-axis.
-         */
-        @JvmField
-        var MAX_AUTO_STRAFE: Double = 0.4
 
         /**
          * Controls the turning acceleration.
@@ -136,12 +126,6 @@ object RobotConfig {
         @JvmField
         var MAX_AUTO_TURN: Double = 0.4
 
-        /**
-         * Overall Drive speed of the robot. If robot moves in the wrong
-         * direction, negate the current magnitude.
-         */
-        @JvmField
-        var MAGNITUDE: Double = -0.5
 
         /**
          * The accepted value for the x-axis error.
@@ -162,12 +146,11 @@ object RobotConfig {
         var H_THRESHOLD: Double = 4.0
 
 
-        //@TODO Remove turn and dir
+        /**
+         * TUNABLE OFFSET (rotation between OTOS frame and robot drive frame)
+         */
         @JvmField
-        var turn: Double = 90.0
-
-        @JvmField
-        var dir: Double = -1.0
+        val OFFSET_RAD = Math.toRadians(-60.0)
 
 
     }
