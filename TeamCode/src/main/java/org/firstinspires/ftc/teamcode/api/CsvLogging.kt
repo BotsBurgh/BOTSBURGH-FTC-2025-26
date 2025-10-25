@@ -34,7 +34,7 @@ object CsvLogging : API() {
     }
 
     /**
-     * Writes Double data to the targeted file
+     * Stores Double data to the targeted file
      * @param file Name of the file that is being logged to
      * @param data Double data that is being logged
      */
@@ -52,7 +52,7 @@ object CsvLogging : API() {
     }
 
     /**
-     * Writes Array Double data to the targeted file
+     * Stores Array Double data to the targeted file
      * @param file Name of the file that is being logged to
      * @param data Array Double data that is being logged
      */
@@ -69,6 +69,11 @@ object CsvLogging : API() {
         }
     }
 
+    /**
+     * Writes data to specified file
+     * Call after writeFile
+     * @param file Name of the file that is being logged to
+     */
     fun flush(file: String) {
         this.fileHash[file]!!.flush()
     }

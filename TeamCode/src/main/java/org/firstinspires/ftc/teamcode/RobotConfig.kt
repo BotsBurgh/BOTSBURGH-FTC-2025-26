@@ -146,12 +146,6 @@ object RobotConfig {
         var H_THRESHOLD: Double = 4.0
 
 
-        /**
-         * TUNABLE OFFSET (rotation between OTOS frame and robot drive frame)
-         */
-        @JvmField
-        val OFFSET_RAD = Math.toRadians(-60.0)
-
 
     }
 }
