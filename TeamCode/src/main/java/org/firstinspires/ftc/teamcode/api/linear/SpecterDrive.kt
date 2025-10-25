@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.MAX_AUTO_TURN
 import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.SPEED_GAIN
 import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.STRAFE_GAIN
 import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.TURN_GAIN
-import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.OFFSET_RAD
 import org.firstinspires.ftc.teamcode.api.CsvLogging
 import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.core.API
