@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.MAX_AUTO_TURN
 import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.SPEED_GAIN
 import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.STRAFE_GAIN
 import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.TURN_GAIN
+import org.firstinspires.ftc.teamcode.RobotConfig.TeleOpMain.DRIVE_SPEED
+import org.firstinspires.ftc.teamcode.RobotConfig.TeleOpMain.ROTATE_SPEED
 import org.firstinspires.ftc.teamcode.api.CsvLogging
 import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.core.API
@@ -26,8 +28,6 @@ object SpecterDrive : API() {
     lateinit var otos: SparkFunOTOS
         private set
 
-    private var pos = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
-
     private val runtime = ElapsedTime()
 
     private var xError: Double = 0.0
@@ -35,7 +35,7 @@ object SpecterDrive : API() {
     private var hError: Double = 0.0
     private var turn: Double = 0.0
 
-    var  isLog: Boolean = true
+    var isLog: Boolean = false
 
     override fun init(opMode: OpMode) {
         super.init(opMode)
@@ -143,29 +143,69 @@ object SpecterDrive : API() {
 
         //Reset Position for new movement
         otos.position = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
+
+        //Close CSV
+        CsvLogging.close()
     }
 
     /**
-     * Calculates the powers to follow any given path. All powers are normalized
+     * Computes a linear path towards the targeted position, with no timeout or logging
+     *
+     * @param x The target global x coordinate on the field
+     * @param y The target global y coordinate on the field
+     * @param h The target global heading
+     */
+    fun linearPath(x: Double, y: Double, h: Double = 0.0) {
+        //Reset tracking for otos
+        otos.resetTracking()
+
+        //set initial x, y, and h error
+        xError = x - otos.position.x
+        yError = y - otos.position.y
+        hError = AngleUnit.normalizeDegrees(h - otos.position.h)
+
+        //Reset time
+        runtime.reset()
+
+        //While  xError < x_threshold and yError < y_threshold and hError < h_threshold
+        while (linearOpMode.opModeIsActive()  && ((abs(xError) > RobotConfig.OTOS.X_THRESHOLD) ||
+                    (abs(yError) > RobotConfig.OTOS.Y_THRESHOLD) || (abs(hError) > RobotConfig.OTOS.H_THRESHOLD))
+        ) {
+            computePower()
+
+            //update X, Y, and H-error
+            xError = x - otos.position.x
+            yError = y - otos.position.y
+            hError = AngleUnit.normalizeDegrees(h - otos.position.h)
+
+        }
+        //FullStop
+        TriWheels.power(0.0, 0.0, 0.0)
+
+        //Reset Position for new movement
+        otos.position = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
+
+        //Close CSV
+        CsvLogging.close()
+    }
+
+    /**
+     * Calculates the powers to follow any given path. All powers are normalized and adjusted with Drive and Rotate Speed
      */
     private fun computePower() {
         // Adjusted Vector Components (apply gains)
-        val adjX = xError * STRAFE_GAIN
-        val adjY = yError * SPEED_GAIN
+        val adjX = -(xError * STRAFE_GAIN)
+        val adjY = -(yError * SPEED_GAIN)
 
-        // Direction and magnitude of vector in OTOS frame
-        val rad = atan2(adjY, adjX)  - (PI / 3.0) - (2.0 * PI / 3.0)
+        // Direction and magnitude of vector
+        val rad = atan2(adjY, adjX) - (PI / 3.0) - (2.0 * PI / 3.0)
         val magnitude = sqrt(adjX * adjX + adjY * adjY)
 
-        //Calculate turn value
-        turn = Range.clip(hError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN)
-
-
         // Compute translation powers
-        var (r, g, b) = TriWheels.compute(rad, magnitude)
+        var (r, g, b) = TriWheels.compute(rad, magnitude * DRIVE_SPEED)
 
         // Compute rotation
-        turn = 0 * Range.clip(hError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN)
+        turn = Range.clip(hError * TURN_GAIN * ROTATE_SPEED, -MAX_AUTO_TURN, MAX_AUTO_TURN)
 
         // Add turn value
         r += turn
@@ -179,6 +219,34 @@ object SpecterDrive : API() {
         //Power
         TriWheels.power(r, g, b)
     }
+
+    /**
+     * Computes a quadratic path towards the targeted position, with the origin being the current position
+     */
+
+    /**
+     * Rotates until reaches a certain position
+     *
+     * @param d: the degree the robot rotates to, assuming that its current degree is 0
+     * @param p: the power which the robot rotates with towards said degree, cannot be 0.0, recommended low value
+     */
+
+    fun rotate(d :Double, p :Double = 0.1) {
+        //reset tracking
+        otos.resetTracking()
+
+        while (linearOpMode.opModeIsActive() && otos.position.h <= AngleUnit.normalizeDegrees(d)) {
+            TriWheels.rotate(p)
+        }
+
+        //Stop rotation
+        TriWheels.power(0.0, 0.0, 0.0)
+
+        //Reset Position
+        otos.position = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
+    }
+
+
 
 
 
