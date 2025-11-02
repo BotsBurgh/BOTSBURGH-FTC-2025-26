@@ -38,15 +38,12 @@ object RobotConfig {
     object TeleOpMain {
         /** A multiplier that scales that robot's driving / strafing speed. */
         @JvmField
-        var DRIVE_SPEED: Double = 1.0
+        var DRIVE_SPEED: Double = 0.5
 
         /** A multiplier that scales the robot's rotation speed. */
         @JvmField
-        var ROTATE_SPEED: Double = 1.0
+        var ROTATE_SPEED: Double = 0.5
 
-        /**A multiplier for the speed of the robot**/
-        @JvmField
-        var SPEED_MODIFIER: Double = 0.5
     }
 
 
@@ -145,12 +142,6 @@ object RobotConfig {
         @JvmField
         var H_THRESHOLD: Double = 4.0
 
-
-        /**
-         * TUNABLE OFFSET (rotation between OTOS frame and robot drive frame)
-         */
-        @JvmField
-        val OFFSET_RAD = Math.toRadians(-60.0)
 
 
     }

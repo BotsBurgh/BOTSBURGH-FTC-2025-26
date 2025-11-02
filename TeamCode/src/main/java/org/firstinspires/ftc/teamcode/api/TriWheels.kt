@@ -37,11 +37,6 @@ object TriWheels : API() {
         stopAndResetMotors()
     }
 
-    fun pos(): Array<Double>{
-        val powers = arrayOf(red.power, green.power, blue.power)
-        return powers
-    }
-
 
     /**
      * Sets the power of each wheel respectively.

@@ -20,7 +20,7 @@ class TeleOpMain : OpMode() {
 
     override fun loop() {
         // joystick(Movement) input
-        val joyX = this.gamepad1.left_stick_x.toDouble()
+        val joyX = -this.gamepad1.left_stick_x.toDouble()
         val joyY = -this.gamepad1.left_stick_y.toDouble()
 
 
