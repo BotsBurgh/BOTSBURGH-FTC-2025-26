@@ -123,7 +123,7 @@ object RobotTracker :API() {
     /**
      * This will begin tracking in TeleOp. Continuously logs position to x, y and h
      */
-    fun telePos(){
+    fun updatePos(){
         addPos(tracker.position.x, tracker.position.y, tracker.position.h)
     }
 

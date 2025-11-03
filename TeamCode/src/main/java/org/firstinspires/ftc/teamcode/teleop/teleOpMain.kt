@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teleop
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.RobotConfig
+import org.firstinspires.ftc.teamcode.api.RobotTracker
 import org.firstinspires.ftc.teamcode.api.TriWheels
 import kotlin.math.PI
 import kotlin.math.atan2
@@ -16,6 +17,9 @@ class TeleOpMain : OpMode() {
 
     override fun init() {
         TriWheels.init(this)
+
+        RobotTracker.init(this)
+        RobotTracker.readPositionFile()
     }
 
     override fun loop() {
@@ -38,6 +42,9 @@ class TeleOpMain : OpMode() {
             joyMagnitude * RobotConfig.TeleOpMain.DRIVE_SPEED,
             rotation = rotationPower * RobotConfig.TeleOpMain.ROTATE_SPEED,
         )
+
+        //update current position
+        RobotTracker.updatePos()
 
         telemetry.update()
 
