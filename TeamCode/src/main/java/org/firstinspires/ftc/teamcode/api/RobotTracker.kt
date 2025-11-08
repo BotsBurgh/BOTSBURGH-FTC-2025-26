@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.RobotConfig
 import org.firstinspires.ftc.teamcode.core.API
 
 /*
-An API to track the current coordinates of the robot, tracks both robot and field-centric
+An API to track the current coordinates of the robot.
  */
 object RobotTracker :API() {
 
@@ -64,22 +64,22 @@ object RobotTracker :API() {
     /**
      * Sets the current position.
      *
-     * @param deltaX: difference in x
-     * @param deltaY: difference in y
-     * @param deltaH: difference in h
+     * @param newX new X
+     * @param newY new Y
+     * @param newH new H
      */
-    fun setPos(deltaX : Double, deltaY: Double, deltaH : Double){
-        x = deltaX
-        y = deltaY
-        h = deltaH
+    fun setPos(newX : Double, newY: Double, newH : Double){
+        x = newX
+        y = newY
+        h = newH
     }
 
     /**
      * Adds a difference in X, Y, and H to the current position.
      *
-     * @param deltaX: difference in x
-     * @param deltaY: difference in y
-     * @param deltaH: difference in h
+     * @param deltaX difference in x
+     * @param deltaY difference in y
+     * @param deltaH difference in h
      */
     fun addPos(deltaX: Double, deltaY: Double, deltaH: Double){
         x += deltaX
@@ -92,10 +92,13 @@ object RobotTracker :API() {
      * We need this because at the end of autonomous, the program has to terminate and in teleOP, starts again.
      * This resets all variables in the program, meaning that we have to log the variables at the end of Autonomous
      * so we can read them in the begining of teleOp.
+     *
+     * @param startSide the side in which the robot starts. 0.0 = red, 1.0 = blue
+     * @param startPos the further away the robot is at start, the more the value is. 0.0 = close to obelisk, 1.0 far from obelisk
      */
-    fun logPos(){
+    fun logPos(startSide: Double, startPos: Double){
         //Write the file
-        CsvLogging.writeFile("Position", arrayOf(getPos()[0], getPos()[1], getPos()[2]))
+        CsvLogging.writeFile("Position", arrayOf(getPos()[0], getPos()[1], getPos()[2], startSide, startPos))
         //Flush
         CsvLogging.flush("Position")
         //Close writer
@@ -117,14 +120,14 @@ object RobotTracker :API() {
         val arrPos = line.split(regex)
 
         //Set the position
-        setPos(line[0] as Double, line[1] as Double, line[2] as Double)
+        setPos(arrPos[0].toDouble(), arrPos[1].toDouble(), arrPos[2].toDouble())
     }
 
     /**
-     * This will begin tracking in TeleOp. Continuously logs position to x, y and h
+     * This is for teleOp tracking. Continuously logs position to x, y and h.
      */
     fun updatePos(){
-        addPos(tracker.position.x, tracker.position.y, tracker.position.h)
+        addPos(getPos()[0] - tracker.position.x, getPos()[1] - tracker.position.y,getPos()[2] - tracker.position.h)
     }
 
 
