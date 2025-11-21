@@ -13,9 +13,9 @@ An API to track the current coordinates of the robot.
  */
 object RobotTracker :API() {
 
-    var x = 0.0
-    var y = 0.0
-    var h = 0.0
+    var legacyX = 0.0
+    var legacyY = 0.0
+    var legacyH = 0.0
 
     lateinit var tracker: SparkFunOTOS
         private set
@@ -58,7 +58,14 @@ object RobotTracker :API() {
      * Returns the current position as an Array of Doubles, 0 = x, 1 = y, 2 = h
      */
     fun getPos():DoubleArray{
-        return doubleArrayOf(x, y, h)
+        return doubleArrayOf(legacyX, legacyY, legacyH)
+    }
+
+    /**
+     * Returns the legacy position as an Array of Doubles, 0 = x, 1 = y, 2 = h
+     */
+    fun getLegacyPos():DoubleArray{
+        return doubleArrayOf(tracker.position.x, tracker.position.y, tracker.position.h)
     }
 
     /**
@@ -69,9 +76,22 @@ object RobotTracker :API() {
      * @param newH new H
      */
     fun setPos(newX : Double, newY: Double, newH : Double){
-        x = newX
-        y = newY
-        h = newH
+        tracker.position.x = newX
+        tracker.position.y = newY
+        tracker.position.h = newH
+    }
+
+    /**
+     * Sets the current position. Identical to setPos() except saves to legacy X.
+     *
+     * @param newX new X
+     * @param newY new Y
+     * @param newH new H
+     */
+    fun setAutoPos(newX : Double, newY: Double, newH : Double){
+        legacyX = newX
+        legacyY = newY
+        legacyH = newH
     }
 
     /**
@@ -82,9 +102,22 @@ object RobotTracker :API() {
      * @param deltaH difference in h
      */
     fun addPos(deltaX: Double, deltaY: Double, deltaH: Double){
-        x += deltaX
-        y += deltaY
-        h += deltaH
+        tracker.position.x += deltaX
+        tracker.position.y += deltaY
+        tracker.position.h += deltaH
+    }
+
+    /**
+     * Adds a difference in X, Y, and H to the legacy position.
+     *
+     * @param deltaX difference in x
+     * @param deltaY difference in y
+     * @param deltaH difference in h
+     */
+    fun addLegacyPos(deltaX: Double, deltaY: Double, deltaH: Double){
+        legacyX += deltaX
+        legacyY += deltaY
+        legacyH += deltaH
     }
 
     /**
@@ -112,7 +145,7 @@ object RobotTracker :API() {
      */
     fun readPositionFile(){
         //Turn the first line of the CSV into a string
-        val line = File("Position.txt").bufferedReader().use { it.readLine() }
+        val line = File("Control Hub v1.0\\Internal shared storage\\BotsBurgh\\Position.csv").bufferedReader().use { it.readLine() }
         //Make a regex(regular expression), this will split the line into useable double values
         val regex = "[,]"
 
@@ -123,12 +156,6 @@ object RobotTracker :API() {
         setPos(arrPos[0].toDouble(), arrPos[1].toDouble(), arrPos[2].toDouble())
     }
 
-    /**
-     * This is for teleOp tracking. Continuously logs position to x, y and h.
-     */
-    fun updatePos(){
-        addPos(getPos()[0] - tracker.position.x, getPos()[1] - tracker.position.y,getPos()[2] - tracker.position.h)
-    }
 
 
 

@@ -19,7 +19,7 @@ class TeleOpMain : OpMode() {
         TriWheels.init(this)
 
         RobotTracker.init(this)
-        RobotTracker.readPositionFile()
+        RobotTracker.setPos(0.0, 0.0, 0.0)
     }
 
     override fun loop() {
@@ -43,9 +43,10 @@ class TeleOpMain : OpMode() {
             rotation = rotationPower * RobotConfig.TeleOpMain.ROTATE_SPEED,
         )
 
-        //update current position
-        RobotTracker.updatePos()
 
+        telemetry.addData("X", RobotTracker.getPos()[0])
+        telemetry.addData("Y", RobotTracker.getPos()[1])
+        telemetry.addData("H", RobotTracker.getPos()[2])
         telemetry.update()
 
 
