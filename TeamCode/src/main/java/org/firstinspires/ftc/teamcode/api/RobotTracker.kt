@@ -13,10 +13,6 @@ An API to track the current coordinates of the robot.
  */
 object RobotTracker :API() {
 
-    var legacyX = 0.0
-    var legacyY = 0.0
-    var legacyH = 0.0
-
     lateinit var tracker: SparkFunOTOS
         private set
 
@@ -53,18 +49,10 @@ object RobotTracker :API() {
         CsvLogging.createFile("Position")
     }
 
-
-    /**
-     * Returns the current position as an Array of Doubles, 0 = x, 1 = y, 2 = h
-     */
-    fun getPos():DoubleArray{
-        return doubleArrayOf(legacyX, legacyY, legacyH)
-    }
-
     /**
      * Returns the legacy position as an Array of Doubles, 0 = x, 1 = y, 2 = h
      */
-    fun getLegacyPos():DoubleArray{
+    fun getPos():DoubleArray{
         return doubleArrayOf(tracker.position.x, tracker.position.y, tracker.position.h)
     }
 
@@ -82,19 +70,6 @@ object RobotTracker :API() {
     }
 
     /**
-     * Sets the current position. Identical to setPos() except saves to legacy X.
-     *
-     * @param newX new X
-     * @param newY new Y
-     * @param newH new H
-     */
-    fun setAutoPos(newX : Double, newY: Double, newH : Double){
-        legacyX = newX
-        legacyY = newY
-        legacyH = newH
-    }
-
-    /**
      * Adds a difference in X, Y, and H to the current position.
      *
      * @param deltaX difference in x
@@ -107,18 +82,6 @@ object RobotTracker :API() {
         tracker.position.h += deltaH
     }
 
-    /**
-     * Adds a difference in X, Y, and H to the legacy position.
-     *
-     * @param deltaX difference in x
-     * @param deltaY difference in y
-     * @param deltaH difference in h
-     */
-    fun addLegacyPos(deltaX: Double, deltaY: Double, deltaH: Double){
-        legacyX += deltaX
-        legacyY += deltaY
-        legacyH += deltaH
-    }
 
     /**
      * Logs the current X, Y, and H to the Position CSV file. Call at the very end of Auto.
