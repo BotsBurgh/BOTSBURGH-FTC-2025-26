@@ -14,17 +14,10 @@ class autoMain : LinearOpMode(){
     override fun runOpMode(){
         TriWheels.init(this)
         SpecterDrive.init(this)
-        RobotTracker.init(this)
+        RobotTracker.autoInit(this)
         CsvLogging.init(this)
 
         waitForStart()
-
-        //SpecterDrive.linearPath(x,y,h)
-        //RobotTracker.addPos(x,y,h)
-        //do something
-
-
-        ///...end of auto
-        RobotTracker.logPos(0.0, 0.0)
     }
+
 }

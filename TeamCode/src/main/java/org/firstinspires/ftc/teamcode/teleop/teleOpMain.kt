@@ -12,14 +12,14 @@ import kotlin.math.sqrt
 
 @TeleOp(name = "TeleOpMain")
 
-class TeleOpMain : OpMode() {
+class teleOpMain : OpMode() {
 
 
     override fun init() {
         TriWheels.init(this)
 
-        RobotTracker.init(this)
-        RobotTracker.setPos(0.0, 0.0, 0.0)
+        RobotTracker.teleInit(this)
+        RobotTracker.readPositionFile()
     }
 
     override fun loop() {
@@ -44,11 +44,12 @@ class TeleOpMain : OpMode() {
         )
 
 
-        telemetry.addData("X", RobotTracker.getPos()[0])
-        telemetry.addData("Y", RobotTracker.getPos()[1])
-        telemetry.addData("H", RobotTracker.getPos()[2])
+        telemetry.addData("X", RobotTracker.getPos(false)[0])
+        telemetry.addData("Y", RobotTracker.getPos(false)[1])
+        telemetry.addData("H", RobotTracker.getPos(false)[2])
         telemetry.update()
 
 
     }
+
 }
