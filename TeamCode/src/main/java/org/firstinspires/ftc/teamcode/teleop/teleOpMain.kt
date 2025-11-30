@@ -19,7 +19,6 @@ class teleOpMain : OpMode() {
         TriWheels.init(this)
 
         RobotTracker.teleInit(this)
-        RobotTracker.readPositionFile()
     }
 
     override fun loop() {
