@@ -40,10 +40,6 @@ object RobotTracker :API() {
     fun autoInit(opMode: OpMode) {
         super.init(opMode)
 
-        autoX = 0.0
-        autoY = 0.0
-        autoH = 0.0
-
         CsvLogging.createFile("Position")
     }
 
