@@ -17,9 +17,9 @@ object RobotTracker :API() {
         private set
 
     //The autonomous position of the robot. We can't use tracker directly because it is being used by SpecterDrive.
-    var autoX: Double = 0.0
-    var autoY: Double = 0.0
-    var autoH: Double = 0.0
+    var autoX : Double = 0.0
+    var autoY : Double = 0.0
+    var autoH : Double = 0.0
 
 
     /**
@@ -27,7 +27,6 @@ object RobotTracker :API() {
      */
     fun teleInit(opMode: OpMode) {
         super.init(opMode)
-        CsvLogging.init(opMode)
 
         tracker = this.opMode.hardwareMap.get(SparkFunOTOS::class.java, "OTOS")
 
@@ -40,7 +39,12 @@ object RobotTracker :API() {
      */
     fun autoInit(opMode: OpMode) {
         super.init(opMode)
-        CsvLogging.init(opMode)
+
+        autoX = 0.0
+        autoY = 0.0
+        autoH = 0.0
+
+        CsvLogging.createFile("Position")
     }
 
     /**
@@ -62,8 +66,6 @@ object RobotTracker :API() {
         tracker.resetTracking()
 
         tracker.position = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
-
-        CsvLogging.createFile("Position")
     }
 
     /**
@@ -110,9 +112,9 @@ object RobotTracker :API() {
      */
     fun addPos(deltaX: Double, deltaY: Double, deltaH: Double, isAuto: Boolean){
         if (isAuto) {
-            autoX = deltaX
-            autoY = deltaY
-            autoH = deltaH
+            autoX += deltaX
+            autoY += deltaY
+            autoH += deltaH
         }
         else {
             tracker.position.x += deltaX
