@@ -168,8 +168,8 @@ object SpecterDrive : API() {
         runtime.reset()
 
         //While  xError < x_threshold and yError < y_threshold and hError < h_threshold
-        while (linearOpMode.opModeIsActive()  && ((abs(xError) > RobotConfig.OTOS.X_THRESHOLD) ||
-                    (abs(yError) > RobotConfig.OTOS.Y_THRESHOLD) || (abs(hError) > RobotConfig.OTOS.H_THRESHOLD))
+        while (linearOpMode.opModeIsActive()  && ((abs(xError) > RobotConfig.OTOS.X_THRESHOLD) &&
+                    (abs(yError) > RobotConfig.OTOS.Y_THRESHOLD) && (abs(hError) > RobotConfig.OTOS.H_THRESHOLD))
         ) {
             computePower()
 
@@ -195,7 +195,7 @@ object SpecterDrive : API() {
     private fun computePower() {
         // Adjusted Vector Components (apply gains)
         val adjX = -(xError * STRAFE_GAIN)
-        val adjY = -(yError * SPEED_GAIN)
+        val adjY = (yError * SPEED_GAIN)
 
         // Direction and magnitude of vector
         val rad = atan2(adjY, adjX) - (PI / 3.0) - (2.0 * PI / 3.0)

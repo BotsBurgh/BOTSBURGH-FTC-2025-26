@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.RobotConfig
 import org.firstinspires.ftc.teamcode.api.RobotTracker
+import org.firstinspires.ftc.teamcode.api.TransferSystem
 import org.firstinspires.ftc.teamcode.api.TriWheels
 import kotlin.math.PI
 import kotlin.math.atan2
@@ -42,11 +43,32 @@ class teleOpMain : OpMode() {
             rotation = rotationPower * RobotConfig.TeleOpMain.ROTATE_SPEED,
         )
 
+        TransferSystem.setIntakePwr(0.5)
 
-        telemetry.addData("X", RobotTracker.getPos(false)[0])
-        telemetry.addData("Y", RobotTracker.getPos(false)[1])
-        telemetry.addData("H", RobotTracker.getPos(false)[2])
-        telemetry.update()
+        //buttons
+
+        if (gamepad1.left_bumper){
+            TransferSystem.power(1.0, 1.0, 1.0)
+        }
+
+        if (gamepad1.b){
+            //disable turret
+        }
+
+        if (gamepad1.a){
+            TransferSystem.pusherUp()
+            TransferSystem.pusherDown()
+        }
+
+        if(gamepad1.right_bumper){
+            TransferSystem.power(-1.0, -1.0)
+        }
+
+        if(gamepad1.left_bumper){
+            TransferSystem.setIntakePwr(-1.0)
+        }
+
+        TransferSystem.power(0.0, 0.0, 0.0)
 
 
     }
