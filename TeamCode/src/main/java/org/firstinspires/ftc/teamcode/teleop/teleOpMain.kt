@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.RobotConfig
 import org.firstinspires.ftc.teamcode.api.RobotTracker
 import org.firstinspires.ftc.teamcode.api.TransferSystem
 import org.firstinspires.ftc.teamcode.api.TriWheels
+import org.firstinspires.ftc.teamcode.api.Turret
 import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.sqrt
@@ -15,11 +16,15 @@ import kotlin.math.sqrt
 
 class teleOpMain : OpMode() {
 
+    var initPos = DoubleArray(3)
 
     override fun init() {
         TriWheels.init(this)
-
         RobotTracker.teleInit(this)
+        Turret.init(this)
+        TransferSystem.init(this)
+
+        initPos = RobotTracker.getPos(false)
     }
 
     override fun loop() {
@@ -45,6 +50,12 @@ class teleOpMain : OpMode() {
 
         TransferSystem.setIntakePwr(0.5)
 
+        TransferSystem.power(0.0, 0.0)
+
+        Turret.trackPos(initPos, RobotTracker.getPos(false))
+
+        Turret.stop()
+
         //buttons
 
         if (gamepad1.left_bumper){
@@ -52,7 +63,7 @@ class teleOpMain : OpMode() {
         }
 
         if (gamepad1.b){
-            //disable turret
+            Turret.launch(RobotTracker.getPos(false))
         }
 
         if (gamepad1.a){
@@ -67,9 +78,6 @@ class teleOpMain : OpMode() {
         if(gamepad1.left_bumper){
             TransferSystem.setIntakePwr(-1.0)
         }
-
-        TransferSystem.power(0.0, 0.0, 0.0)
-
 
     }
 

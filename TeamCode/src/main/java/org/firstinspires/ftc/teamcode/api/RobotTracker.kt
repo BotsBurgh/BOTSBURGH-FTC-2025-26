@@ -30,8 +30,8 @@ object RobotTracker :API() {
 
         tracker = this.opMode.hardwareMap.get(SparkFunOTOS::class.java, "OTOS")
 
+        readPositionFile()
         configureOtos()
-
     }
 
     /**
