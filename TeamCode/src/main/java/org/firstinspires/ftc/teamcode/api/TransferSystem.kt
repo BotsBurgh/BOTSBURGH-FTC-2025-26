@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.api
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.teamcode.core.API
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
+import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.Servo
 
 
@@ -45,6 +46,7 @@ object TransferSystem : API(){
 
     fun pusherUp(){
         pusher.position = 1.0
+
     }
 
     fun pusherDown(){

@@ -157,15 +157,29 @@ object RobotConfig {
         var CLOSE_BLUE_TO_BASKET: DoubleArray = doubleArrayOf(0.0, 0.0)
 
         @JvmField
-        var FAR_RED_TO_BASKET: DoubleArray = doubleArrayOf(54.0, 144.0)
+        var FAR_RED_TO_BASKET: DoubleArray = doubleArrayOf(129.0, 45.0)
 
         @JvmField
-        var FAR_BLUE_TO_BASKET: DoubleArray = doubleArrayOf(54.0, 144.0)
+        var FAR_BLUE_TO_BASKET: DoubleArray = doubleArrayOf(129.0, -45.0)
 
         /**
          * Ticks in one degree of the aimer motor
          */
+        @JvmField
         var TICKS_PER_DEGREE = 1.473
+
+        /**
+         * Ticks in one degree of the launcher motor
+         */
+        @JvmField
+        var TICKS_PER_RADIANS = 23.55
+
+        /**
+         * Gear ratio of the launcher motor
+         */
+        @JvmField
+        var GEAR_RATIO_LAUNCHER = 2.8
+
 
         @JvmField
         var launchWheelRadius: Double = 0.0
@@ -213,6 +227,6 @@ object RobotConfig {
         var k: Double = 0.0
 
         @JvmField
-        var yd: Double = 0.0
+        var yd: Double = 26.0
     }
 }

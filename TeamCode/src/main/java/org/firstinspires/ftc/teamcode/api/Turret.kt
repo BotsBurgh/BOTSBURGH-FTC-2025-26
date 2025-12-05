@@ -36,6 +36,8 @@ object Turret : API() {
         launcher = this.opMode.hardwareMap.get(DcMotorEx::class.java, "launcher")
 
         aimer.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        launcher.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        aimer.mode = DcMotor.RunMode.RUN_USING_ENCODER
         launcher.mode = DcMotor.RunMode.RUN_USING_ENCODER
     }
 
@@ -63,7 +65,7 @@ object Turret : API() {
      *
      * Returns angle
      */
-    fun trackPos(startPos: DoubleArray, deltaPos: DoubleArray, ): Double {
+    fun trackPos(startPos: DoubleArray, deltaPos: DoubleArray): Double {
 
         //robot’s current  position
         val robotX = startPos[0] + deltaPos[0]
@@ -74,7 +76,7 @@ object Turret : API() {
         val dy = targetPos[1] - robotY
 
         //angle
-        val theta = normalizeDegrees(Math.toDegrees(atan2(dy, dx)) - deltaPos[2])
+        val theta = normalizeDegrees(Math.toDegrees(atan2(dy, dx)) + deltaPos[2])
 
         //convert output angle to motor ticks
         val motorTicks = theta * Turret.TICKS_PER_DEGREE
@@ -86,7 +88,7 @@ object Turret : API() {
         aimer.mode = DcMotor.RunMode.RUN_TO_POSITION
         aimer.power = 0.5
 
-        return theta
+        return theta   
     }
 
     /**
@@ -95,11 +97,11 @@ object Turret : API() {
      */
     fun launch(positon: DoubleArray) {
 
-        var totalDist = positon + Turret.ball_to_sensor
+        launcher.power = 1.0
 
-        var mag = Math.sqrt(positon[0]*positon[1] + positon[1]*positon[1] + positon[2]* positon[2])
+        //var mag = Math.sqrt(positon[0] * targetPos[0] + positon[1] * targetPos[1] + 47 * 47)
 
-        launcher.setVelocity((mag/(Turret.k * Math.sin(Turret.theta))) * Math.sqrt((9.81/ 2.0*(Turret.yd+mag*Math.tan(Turret.theta)))))
+        //launcher.setVelocity((35.6 * mag * Math.sqrt((1/(26+0.9*mag)))) / Turret.GEAR_RATIO_LAUNCHER * Turret.TICKS_PER_RADIANS)
 
     }
 

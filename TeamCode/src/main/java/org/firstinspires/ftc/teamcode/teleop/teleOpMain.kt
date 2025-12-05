@@ -28,6 +28,7 @@ class teleOpMain : OpMode() {
     }
 
     override fun loop() {
+        telemetry.clear()
         // joystick(Movement) input
         val joyX = -this.gamepad1.left_stick_x.toDouble()
         val joyY = -this.gamepad1.left_stick_y.toDouble()
@@ -48,36 +49,58 @@ class teleOpMain : OpMode() {
             rotation = rotationPower * RobotConfig.TeleOpMain.ROTATE_SPEED,
         )
 
-        TransferSystem.setIntakePwr(0.5)
-
-        TransferSystem.power(0.0, 0.0)
+        Turret.setTargetPos(RobotTracker.readPositionFile()[3], RobotTracker.readPositionFile()[4])
 
         Turret.trackPos(initPos, RobotTracker.getPos(false))
-
-        Turret.stop()
 
         //buttons
 
         if (gamepad1.left_bumper){
-            TransferSystem.power(1.0, 1.0, 1.0)
+            TransferSystem.power(1.0, -1.0, 1.0)
         }
 
-        if (gamepad1.b){
+        if (gamepad1.circle){
             Turret.launch(RobotTracker.getPos(false))
+
         }
 
-        if (gamepad1.a){
+        if (gamepad1.cross){
             TransferSystem.pusherUp()
+
+        }
+
+        if(gamepad1.right_trigger > 0.0){
+            TransferSystem.power(-1.0, 1.0)
+        }
+
+        if(gamepad1.left_trigger > 0.0){
+            TransferSystem.setIntakePwr(-1.0)
+        }
+
+        if(gamepad1.triangle){
             TransferSystem.pusherDown()
         }
 
-        if(gamepad1.right_bumper){
-            TransferSystem.power(-1.0, -1.0)
+        if(!gamepad1.left_bumper && gamepad1.right_trigger.toDouble() == 0.0){
+            TransferSystem.power(0.0, 0.0)
         }
 
-        if(gamepad1.left_bumper){
-            TransferSystem.setIntakePwr(-1.0)
+        if(!gamepad1.left_bumper && gamepad1.left_trigger.toDouble() == 0.0){
+            TransferSystem.setIntakePwr(0.5)
         }
+
+        if(!gamepad1.circle){
+            Turret.stop()
+        }
+
+        telemetry.addData("x", RobotTracker.getPos(false)[0])
+        telemetry.addData("y", RobotTracker.getPos(false)[1])
+        telemetry.addData("h", RobotTracker.getPos(false)[2])
+        telemetry.addData("turretAngle", Turret.trackPos(initPos, RobotTracker.getPos(false)))
+        telemetry.addData("TurretMotorPos", Turret.aimer.currentPosition)
+        telemetry.addData("LauncherMotorPos", Turret.launcher.currentPosition)
+
+        telemetry.update()
 
     }
 

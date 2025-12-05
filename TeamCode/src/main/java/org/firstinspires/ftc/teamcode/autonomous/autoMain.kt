@@ -15,7 +15,6 @@ class autoMain : LinearOpMode(){
         TriWheels.init(this)
         SpecterDrive.init(this)
         RobotTracker.autoInit(this)
-        CsvLogging.init(this)
 
         waitForStart()
     }
