@@ -228,5 +228,11 @@ object RobotConfig {
 
         @JvmField
         var yd: Double = 26.0
+
+        @JvmField
+        var lower: Double = 1.0
+
+        @JvmField
+        var higher: Double = 0.0
     }
 }
