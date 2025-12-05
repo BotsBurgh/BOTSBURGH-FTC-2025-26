@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.api
 
-import java.io.File
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil
 import org.firstinspires.ftc.teamcode.RobotConfig
 import org.firstinspires.ftc.teamcode.core.API
 
@@ -30,16 +30,17 @@ object RobotTracker :API() {
 
         tracker = this.opMode.hardwareMap.get(SparkFunOTOS::class.java, "OTOS")
 
+        readPositionFile()
         configureOtos()
-
     }
 
     /**
-     * Used for Initialization of RobotTracker during Autonomous. Does not initialize tracker
+     * Used for Initialization of RobotTracker during Autonomous. Does not initialize tracker. INITIALIZES CSV LOGGING.
      */
     fun autoInit(opMode: OpMode) {
         super.init(opMode)
 
+        CsvLogging.init(opMode)
         CsvLogging.createFile("Position")
     }
 
@@ -143,17 +144,21 @@ object RobotTracker :API() {
      * Reads the Position file, and sets the current position accordingly.
      * Use at the beginning of teleOP
      */
-    fun readPositionFile(){
-        //Turn the first line of the CSV into a string
-        val line = File("Control Hub v1.0\\Internal shared storage\\BotsBurgh\\Position.csv").bufferedReader().use { it.readLine() }
-        //Make a regex(regular expression), this will split the line into useable double values
-        val regex = "[,]"
+    fun readPositionFile() : DoubleArray{
+        val file = AppUtil.getInstance().getSettingsFile("Position.csv")
 
-        //Split the line into a String List, x located at [0], y at [1], h at [2]
-        val arrPos = line.split(regex)
+        if (!file.exists()){
+            setPos(0.0, 0.0, 0.0, false)
+            return doubleArrayOf(0.0, 0.0, 0.0, 0.0, 1.0)
+        }
 
-        //Set the position
-        setPos(arrPos[0].toDouble(), arrPos[1].toDouble(), arrPos[2].toDouble(), false)
+        val line = file.bufferedReader().use { it.readLine() }
+
+        val arr = line.split(",")
+
+        setPos(arr[0].toDouble(), arr[1].toDouble(), arr[2].toDouble(), false)
+
+        return doubleArrayOf(arr[0].toDouble(), arr[1].toDouble(), arr[2].toDouble(), arr[3].toDouble(), arr[4].toDouble())
     }
 
 }

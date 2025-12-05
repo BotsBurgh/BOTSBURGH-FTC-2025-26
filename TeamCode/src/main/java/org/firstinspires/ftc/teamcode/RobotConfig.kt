@@ -38,11 +38,11 @@ object RobotConfig {
     object TeleOpMain {
         /** A multiplier that scales that robot's driving / strafing speed. */
         @JvmField
-        var DRIVE_SPEED: Double = 0.8
+        var DRIVE_SPEED: Double = 0.5
 
         /** A multiplier that scales the robot's rotation speed. */
         @JvmField
-        var ROTATE_SPEED: Double = 0.65
+        var ROTATE_SPEED: Double = 0.5
 
     }
 
@@ -141,8 +141,98 @@ object RobotConfig {
          */
         @JvmField
         var H_THRESHOLD: Double = 4.0
+    }
 
 
+    @Config
+    object Turret {
 
+        /**
+         * Distance from initial positions to basket
+         */
+        @JvmField
+        var CLOSE_RED_TO_BASKET: DoubleArray = doubleArrayOf(0.0, 0.0)
+
+        @JvmField
+        var CLOSE_BLUE_TO_BASKET: DoubleArray = doubleArrayOf(0.0, 0.0)
+
+        @JvmField
+        var FAR_RED_TO_BASKET: DoubleArray = doubleArrayOf(129.0, 45.0)
+
+        @JvmField
+        var FAR_BLUE_TO_BASKET: DoubleArray = doubleArrayOf(129.0, -45.0)
+
+        /**
+         * Ticks in one degree of the aimer motor
+         */
+        @JvmField
+        var TICKS_PER_DEGREE = 1.473
+
+        /**
+         * Ticks in one degree of the launcher motor
+         */
+        @JvmField
+        var TICKS_PER_RADIANS = 23.55
+
+        /**
+         * Gear ratio of the launcher motor
+         */
+        @JvmField
+        var GEAR_RATIO_LAUNCHER = 2.8
+
+
+        @JvmField
+        var launchWheelRadius: Double = 0.0
+
+        @JvmField
+        var ballRadius: Double = 0.0
+
+        @JvmField
+        var MIShooterwheel: Double = 0.0
+
+        @JvmField
+        var MIBall: Double = 0.0
+
+        @JvmField
+        var massBall: Double = 0.0
+
+        @JvmField
+        var densityBall: Double = 0.0
+
+        @JvmField
+        var volumeBall: Double = 0.0
+
+        @JvmField
+        var theta: Double = 42.0
+
+        @JvmField
+        var binDepth: Double = 0.0
+
+        @JvmField
+        var shortLenBin: Double = 0.0
+
+        @JvmField
+        var longLenBin: Double = 0.0
+
+        @JvmField
+        var ball_to_ground: Double = 0.0
+
+        @JvmField
+        var ball_to_sensor: Double = 10.37
+
+        @JvmField
+        var correction_factor: Double = 0.0
+
+        @JvmField
+        var k: Double = 0.0
+
+        @JvmField
+        var yd: Double = 26.0
+
+        @JvmField
+        var lower: Double = 1.0
+
+        @JvmField
+        var higher: Double = 0.0
     }
 }

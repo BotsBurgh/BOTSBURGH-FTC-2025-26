@@ -12,9 +12,9 @@ import kotlin.math.atan2
 import kotlin.math.sqrt
 
 
-@TeleOp(name = "TeleOpRed")
+@TeleOp(name = "TeleOpBlue")
 
-class teleOpMain : OpMode() {
+class teleOpBlue : OpMode() {
 
     var initPos = DoubleArray(3)
 
@@ -49,7 +49,7 @@ class teleOpMain : OpMode() {
             rotation = rotationPower * RobotConfig.TeleOpMain.ROTATE_SPEED,
         )
 
-        Turret.setTargetPos(RobotTracker.readPositionFile()[3], RobotTracker.readPositionFile()[4])
+        Turret.setTargetPos(1.0, 1.0)
 
         Turret.trackPos(initPos, RobotTracker.getPos(false))
 
