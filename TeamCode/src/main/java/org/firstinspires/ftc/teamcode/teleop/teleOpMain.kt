@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.teleop
-
+import org.firstinspires.ftc.teamcode.api.Limelight
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.RobotConfig
@@ -23,6 +23,7 @@ class teleOpMain : OpMode() {
         RobotTracker.teleInit(this)
         Turret.init(this)
         TransferSystem.init(this)
+        Limelight.init(this)
 
         initPos = RobotTracker.getPos(false)
     }
@@ -32,6 +33,13 @@ class teleOpMain : OpMode() {
         // joystick(Movement) input
         val joyX = -this.gamepad1.left_stick_x.toDouble()
         val joyY = -this.gamepad1.left_stick_y.toDouble()
+        Limelight.update()
+
+
+
+
+
+
 
 
         // PI / 3 because 0 radians is right, not forward
@@ -93,10 +101,6 @@ class teleOpMain : OpMode() {
             Turret.stop()
         }
 
-        telemetry.addData("x", RobotTracker.getPos(false)[0])
-        telemetry.addData("y", RobotTracker.getPos(false)[1])
-        telemetry.addData("h", RobotTracker.getPos(false)[2])
-        telemetry.addData("help", TransferSystem.pusher.position)
 
         telemetry.update()
 
