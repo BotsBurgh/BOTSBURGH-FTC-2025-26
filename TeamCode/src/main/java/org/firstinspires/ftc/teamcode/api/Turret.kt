@@ -112,22 +112,20 @@ object Turret : API() {
         launcher.power = 0.0
         aimer.power = 0.0
     }
-    fun aimAtAprilTag21() {
-        // positive tx = target is right → turn right
-        // negative tx = target is left  → turn left
+    fun aimAtTag() {
+        val kP = 0.015
 
-        val kP = 0.015   // tune this
-
-        if (!Limelight.seesTag21()) {
+        if (!Limelight.seesTag()) {
+            // Tag lost — hold position
             aimer.power = 0.0
             return
         }
 
+        // Tag visible — aim
         val error = Limelight.latestTx
-        val turnPower = error * kP
 
         aimer.mode = DcMotor.RunMode.RUN_USING_ENCODER
-        aimer.power = turnPower
+        aimer.power = error * kP
     }
 
 }

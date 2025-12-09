@@ -12,7 +12,7 @@ import kotlin.math.atan2
 import kotlin.math.sqrt
 
 
-@TeleOp(name = "TeleOpRed")
+@TeleOp(name = "TeleOpMain")
 
 class teleOpMain : OpMode() {
 
@@ -34,7 +34,8 @@ class teleOpMain : OpMode() {
         val joyX = -this.gamepad1.left_stick_x.toDouble()
         val joyY = -this.gamepad1.left_stick_y.toDouble()
         Limelight.update()
-
+        Turret.aimAtTag()
+        Limelight.targetTagId = 21
 
 
 
