@@ -33,8 +33,14 @@ class teleOpMain : OpMode() {
 
     override fun loop() {
         telemetry.clear()
+        // joystick(Movement) input
+
         val joyX = -this.gamepad1.left_stick_x.toDouble()
         val joyY = -this.gamepad1.left_stick_y.toDouble()
+
+        // PI / 3 because 0 radians is right, not forward
+
+
 
 
         val joyRadians = atan2(joyY, joyX) - (PI / 3.0) - (2.0 * PI / 3.0)
@@ -42,6 +48,7 @@ class teleOpMain : OpMode() {
         val joyMagnitude = sqrt(joyY * joyY + joyX * joyX)
 
         val rotationPower = -this.gamepad1.right_stick_x.toDouble()
+        // movement of all wheels
 
 
         TriWheels.drive(
@@ -50,7 +57,7 @@ class teleOpMain : OpMode() {
             rotation = rotationPower * RobotConfig.TeleOpMain.ROTATE_SPEED,
         )
 
-        Turret.setTargetPos(1.0, 1.0)
+        Turret.setTargetPos(RobotTracker.readPositionFile()[3], RobotTracker.readPositionFile()[4])
 
 
         //buttons
@@ -77,9 +84,8 @@ class teleOpMain : OpMode() {
 
 
         }
-        if (gamepad1.square) {
 
-        }
+
         if(gamepad1.right_trigger > 0.0){
             TransferSystem.power(-1.0, 1.0)
         }
