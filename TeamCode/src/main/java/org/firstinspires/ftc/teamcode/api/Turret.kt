@@ -112,21 +112,30 @@ object Turret : API() {
         launcher.power = 0.0
         aimer.power = 0.0
     }
+    private var filteredTx = 0.0
+
     fun aimAtTag() {
         val kP = 0.015
+        val deadband = 1.0
 
         if (!Limelight.seesTag()) {
-            // Tag lost — hold position
             aimer.power = 0.0
             return
         }
 
-        // Tag visible — aim
+        // Raw error from Limelight
         val error = Limelight.latestTx
 
+        filteredTx = filteredTx * 0.8 + error * 0.2
+
+        // Deadband to remove tiny jitter
+        val adjustedError =
+            if (kotlin.math.abs(filteredTx) < deadband) 0.0 else filteredTx
+
         aimer.mode = DcMotor.RunMode.RUN_USING_ENCODER
-        aimer.power = error * kP
+        aimer.power = adjustedError * kP
     }
+
 
 }
 
