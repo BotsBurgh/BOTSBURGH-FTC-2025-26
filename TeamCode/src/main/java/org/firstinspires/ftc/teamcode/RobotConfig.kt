@@ -146,7 +146,7 @@ object RobotConfig {
          * Autonomous Speed
          */
         @JvmField
-        var SPEED: Double = 0.25
+        var SPEED: Double = 0.1
     }
 
 
