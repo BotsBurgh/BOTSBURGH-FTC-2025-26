@@ -18,13 +18,13 @@ object Turret : API() {
     /**
      * The motor that aims the turret
      */
-    lateinit var aimer : DcMotorEx
+    lateinit var aimer: DcMotorEx
         private set
 
     /**
      * The motor that launches the ball
      */
-    lateinit var launcher : DcMotorEx
+    lateinit var launcher: DcMotorEx
         private set
 
     var targetPos = doubleArrayOf()
@@ -83,12 +83,13 @@ object Turret : API() {
 
         val turretPos = (motorTicks * 2.14).toInt()
 
+
         //move turret
         aimer.targetPosition = turretPos
         aimer.mode = DcMotor.RunMode.RUN_TO_POSITION
         aimer.power = 0.5
 
-        return theta   
+        return theta
     }
 
     /**

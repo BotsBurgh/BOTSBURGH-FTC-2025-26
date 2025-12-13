@@ -79,7 +79,7 @@ object RobotConfig {
          * adjust the offset. If possible mount in the center and avoid needing to change this.
          */
         @JvmField
-        var OFFSET = SparkFunOTOS.Pose2D(0.0, 0.0 ,0.0)
+        var OFFSET = SparkFunOTOS.Pose2D(0.0, 0.0 ,30.0)
 
         /**
          * Should be set to one by default. If the sensor is reading distances incorrectly
@@ -141,6 +141,12 @@ object RobotConfig {
          */
         @JvmField
         var H_THRESHOLD: Double = 4.0
+
+        /**
+         * Autonomous Speed
+         */
+        @JvmField
+        var SPEED: Double = 0.25
     }
 
 
