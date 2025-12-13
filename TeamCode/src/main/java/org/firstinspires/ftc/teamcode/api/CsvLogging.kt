@@ -1,89 +1,103 @@
 package org.firstinspires.ftc.teamcode.api
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import org.firstinspires.ftc.teamcode.RobotConfig
 import org.firstinspires.ftc.teamcode.core.API
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
+import java.io.IOException
 
 /**
  * An API for creating, managing, and writing to logging files.
  */
 object CsvLogging : API() {
-    private val fileHash = hashMapOf<String, BufferedWriter>()
+
+    //queue of all pending log lines per file.
+    private val buffer = mutableMapOf<String, MutableList<String>>()
+
+    //Actual writers created only on flush/close.
+    private val writers = mutableMapOf<String, BufferedWriter>()
 
     override fun init(opMode: OpMode) {
         super.init(opMode)
-
-        // Create the folder, if it does not exist already.
-        RobotConfig.Logging.BOTSBURGH_FOLDER.mkdirs()
-
-        if (RobotConfig.DEBUG) {
-            for (file in RobotConfig.Logging.BOTSBURGH_FOLDER.listFiles()!!) if (!file.isDirectory) file.delete()
-        }
+        buffer.clear()
+        writers.clear()
     }
 
     /**
-     * Creates new files to log to (old files are deleted after every run). File must be closed.
-     */
+     * Creates a new CSV file in the buffer. Does NOT touch storage yet.
+     * */
     fun createFile(fileName: String) {
-        if (RobotConfig.DEBUG) {
-            fileHash[fileName] = BufferedWriter(FileWriter(File(RobotConfig.Logging.BOTSBURGH_FOLDER, "/$fileName.csv"), true))
-        }
+        buffer[fileName] = mutableListOf()
     }
 
     /**
-     * Stores Double data to the targeted file
-     * @param file Name of the file that is being logged to
-     * @param data Double data that is being logged
-     */
-    fun writeFile(
-        file: String,
-        data: Double,
-    ) {
-        if (RobotConfig.DEBUG) {
-            val writer = this.fileHash[file]!!
-
-            writer.write("${opMode.runtime}, ")
-            writer.write(data.toString())
-            writer.newLine()
-        }
+     * Write a double entry to RAM buffer.
+     * */
+    fun writeFile(file: String, data: Double) {
+        val list = buffer[file] ?: return
+        list.add("${opMode.runtime}, $data")
     }
 
     /**
-     * Stores Array Double data to the targeted file
-     * @param file Name of the file that is being logged to
-     * @param data Array Double data that is being logged
-     */
-    fun writeFile(
-        file: String,
-        data: Array<Double>,
-    ) {
-        if (RobotConfig.DEBUG) {
-            val writer = this.fileHash[file]!!
-
-            writer.write("${opMode.runtime}")
-            for (i in data) fileHash[file]!!.write(", $i")
-            writer.newLine()
-        }
+     * Write an array entry to RAM buffer.
+     * */
+    fun writeFile(file: String, data: Array<Double>) {
+        val list = buffer[file] ?: return
+        val builder = StringBuilder()
+        builder.append(opMode.runtime)
+        for (d in data) builder.append(", ").append(d)
+        list.add(builder.toString())
     }
 
     /**
-     * Writes data to specified file
-     * Call after writeFile
-     * @param file Name of the file that is being logged to
+     * Flushes the RAM buffer to storage safely.
+     * Will create writer lazily (if they cant do it, then they will abort instead of shutting down) and handle errors.
      */
     fun flush(file: String) {
-        this.fileHash[file]!!.flush()
+        val list = buffer[file] ?: return
+        if (list.isEmpty()) return
+
+        val writer = writers.getOrPut(file) {
+            createWriter(file) ?: return   // If file cannot be created, skip
+        }
+
+        try {
+            for (line in list) {
+                writer.write(line)
+                writer.newLine()
+            }
+            writer.flush()
+            list.clear()   // only clear after successful flush
+        } catch (_: IOException) {
+            // DO NOT CRASH THE ROBOT CONTROLLER
+            // If writing fails, just stop.
+        }
     }
 
     /**
-     * Closes all open files.
+     * Close all writers safely.
      */
     fun close() {
-        for (writer in this.fileHash.values) {
-            writer.close()
+        for (writer in writers.values) {
+            try {
+                writer.flush()
+                writer.close()
+            } catch (_: IOException) {}
+        }
+        writers.clear()
+    }
+
+    /**
+     * Creates a writer using FTC-safe storage.
+     */
+    private fun createWriter(name: String): BufferedWriter? {
+        return try {
+            val file: File = AppUtil.getInstance().getSettingsFile("$name.csv")
+            BufferedWriter(FileWriter(file, true))
+        } catch (_: Exception) {
+            null   // If file creation fails, do not crash
         }
     }
 }
