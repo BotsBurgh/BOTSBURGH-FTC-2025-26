@@ -201,12 +201,19 @@ object SpecterDrive : API() {
      */
     private fun computePower() {
         // Adjusted Vector Components (apply gains)
-        val adjX = -(xError * STRAFE_GAIN)
-        val adjY = -(yError * SPEED_GAIN)
+        val headingRad = Math.toRadians(otos.position.h)
+
+        val fieldX = xError * STRAFE_GAIN
+        val fieldY = yError * SPEED_GAIN
+
+        // Rotate field error into robot frame
+        val robotX = fieldX * kotlin.math.cos(headingRad) + fieldY * kotlin.math.sin(headingRad)
+        val robotY = -fieldX * kotlin.math.sin(headingRad) + fieldY * kotlin.math.cos(headingRad)
+
 
         // Direction and magnitude of vector
-        val rad = (atan2(adjY, adjX) - (PI / 3.0) - (2.0 * PI / 3.0))
-        val magnitude = sqrt(adjX * adjX + adjY * adjY)
+        val rad = atan2(robotY, robotX) - (PI / 3.0) - (2.0 * PI / 3.0)
+        val magnitude = sqrt(robotX * robotX + robotY * robotY)
 
         // Compute translation powers
         var (r, g, b) = TriWheels.compute(rad, magnitude * SPEED)

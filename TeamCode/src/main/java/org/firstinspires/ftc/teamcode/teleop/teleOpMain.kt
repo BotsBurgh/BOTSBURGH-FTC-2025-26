@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.teleop
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.RobotConfig
 import org.firstinspires.ftc.teamcode.api.RobotTracker
 import org.firstinspires.ftc.teamcode.api.TransferSystem
@@ -10,8 +12,6 @@ import org.firstinspires.ftc.teamcode.api.Turret
 import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.sqrt
-import com.qualcomm.robotcore.hardware.DcMotor
-
 
 
 @TeleOp(name = "TeleOpMain")
@@ -21,6 +21,8 @@ class teleOpMain : OpMode() {
     var initPos = DoubleArray(3)
     var turretOn = false
     var lastCircle = false
+    var isUp = false
+    var timer: ElapsedTime = ElapsedTime()
 
     override fun init() {
         TriWheels.init(this)
@@ -75,6 +77,16 @@ class teleOpMain : OpMode() {
 
         if (gamepad1.cross){
             TransferSystem.pusherUp()
+            timer.reset()
+            isUp = true
+
+            while (true==true){
+                if (timer.milliseconds() > 1000 && isUp) {
+                    TransferSystem.pusherDown()
+                    isUp = false
+                    break
+                }
+            }
         }
 
         if(gamepad1.right_trigger > 0.0){
@@ -85,9 +97,6 @@ class teleOpMain : OpMode() {
             TransferSystem.setIntakePwr(-1.0)
         }
 
-        if(gamepad1.triangle){
-            TransferSystem.pusherDown()
-        }
 
         val manualTurn = gamepad2.right_stick_x.toDouble()
 
