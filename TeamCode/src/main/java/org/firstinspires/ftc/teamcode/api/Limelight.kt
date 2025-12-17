@@ -52,7 +52,7 @@ object Limelight {
         targetId = id
 
         if (id == 24) {
-            cam.pipelineSwitch(2)
+            cam.pipelineSwitch(1)
         } else {
             cam.pipelineSwitch(0)
         }
