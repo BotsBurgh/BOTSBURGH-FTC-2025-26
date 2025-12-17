@@ -18,13 +18,13 @@ object Turret : API() {
     /**
      * The motor that aims the turret
      */
-    lateinit var aimer : DcMotorEx
+    lateinit var aimer: DcMotorEx
         private set
 
     /**
      * The motor that launches the ball
      */
-    lateinit var launcher : DcMotorEx
+    lateinit var launcher: DcMotorEx
         private set
 
     var targetPos = doubleArrayOf()
@@ -83,12 +83,13 @@ object Turret : API() {
 
         val turretPos = (motorTicks * 2.14).toInt()
 
+
         //move turret
         aimer.targetPosition = turretPos
         aimer.mode = DcMotor.RunMode.RUN_TO_POSITION
         aimer.power = 0.5
 
-        return theta   
+        return theta
     }
 
     /**
@@ -112,32 +113,5 @@ object Turret : API() {
         launcher.power = 0.0
         aimer.power = 0.0
     }
-    private var filteredTx = 0.0
-
-    fun aimAtTag() {
-        val kP = 0.015
-        val deadband = 1.0
-
-        if (!Limelight.seesTag()) {
-            aimer.power = 0.0
-            return
-        }
-
-        // Raw error from Limelight
-        val error = Limelight.latestTx
-
-        filteredTx = filteredTx * 0.8 + error * 0.2
-
-        // Deadband to remove tiny jitter
-        val adjustedError =
-            if (kotlin.math.abs(filteredTx) < deadband) 0.0 else filteredTx
-
-        aimer.mode = DcMotor.RunMode.RUN_USING_ENCODER
-        aimer.power = adjustedError * kP
-    }
-
 
 }
-
-
-

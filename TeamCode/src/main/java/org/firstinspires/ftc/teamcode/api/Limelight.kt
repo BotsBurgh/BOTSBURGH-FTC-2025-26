@@ -2,50 +2,59 @@ package org.firstinspires.ftc.teamcode.api
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.hardware.limelightvision.Limelight3A
-import com.qualcomm.hardware.limelightvision.LLResultTypes.FiducialResult
 
-/**
- * Reads AprilTag data from the Limelight3A camera.
- * Does NOT control any motors — Turret handles that.
- */
 object Limelight {
 
     private lateinit var cam: Limelight3A
 
-    // Which tag to aim at
-    var targetTagId = 21
+    private var targetId: Int = -1
 
-    // Horizontal angle offset to tag (degrees)
-    var latestTx = 0.0
+    var angleX = 0.0
         private set
 
-    // Whether the tag is visible
-    private var targetVisible = false
+    var seesTag = false
+        private set
 
     fun init(opMode: OpMode) {
         cam = opMode.hardwareMap.get(Limelight3A::class.java, "limelight")
-        cam.pipelineSwitch(0)  // AprilTag pipeline
+
+        // Start on default pipeline
+        cam.pipelineSwitch(0)
+        cam.start()
     }
 
     fun update() {
         val result = cam.latestResult
 
-        if (result != null && result.isValid) {
-
-            val fiducials: List<FiducialResult> = result.fiducialResults
-            val tag = fiducials.firstOrNull { it.fiducialId == targetTagId }
-
-            if (tag != null) {
-                targetVisible = true
-                latestTx = tag.targetXDegrees
-                return
-            }
+        if (result == null || !result.isValid) {
+            seesTag = false
+            angleX = 0.0
+            return
         }
 
-        // No valid tag found
-        targetVisible = false
-        latestTx = 0.0
+        val tag = if (targetId == -1) {
+            result.fiducialResults.firstOrNull()
+        } else {
+            result.fiducialResults.find { it.fiducialId == targetId }
+        }
+
+        if (tag != null) {
+            seesTag = true
+            angleX = tag.targetXDegrees
+        } else {
+            seesTag = false
+            angleX = 0.0
+        }
     }
 
-    fun seesTag(): Boolean = targetVisible
+
+    fun changeTagID(id: Int) {
+        targetId = id
+
+        if (id == 24) {
+            cam.pipelineSwitch(2)
+        } else {
+            cam.pipelineSwitch(0)
+        }
+    }
 }
