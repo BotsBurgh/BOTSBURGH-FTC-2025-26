@@ -28,15 +28,12 @@ class teleOpMain : OpMode() {
         RobotTracker.teleInit(this)
         Turret.init(this)
         TransferSystem.init(this)
-        Limelight.init(this)
-
         initPos = RobotTracker.getPos(false)
     }
 
     override fun loop() {
         telemetry.clear()
         // joystick(Movement) input
-        Limelight.update()
 
         val joyX = -this.gamepad1.left_stick_x.toDouble()
         val joyY = -this.gamepad1.left_stick_y.toDouble()
