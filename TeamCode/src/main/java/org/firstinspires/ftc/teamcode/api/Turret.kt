@@ -62,7 +62,6 @@ object Turret : API() {
      * Constantly makes sure that the turret is facing the basket.
      * @param startPos the starting position of the robot
      * @param deltaPos the change in position of the robot
-     *
      * Returns angle
      */
     fun trackPos(startPos: DoubleArray, deltaPos: DoubleArray): Double {
@@ -81,7 +80,7 @@ object Turret : API() {
         //convert output angle to motor ticks
         val motorTicks = theta * Turret.TICKS_PER_DEGREE
 
-        val turretPos = (motorTicks * 2.14).toInt()
+        val turretPos = (motorTicks * Turret.GEAR_RATIO_AIMER).toInt()
 
 
         //move turret
@@ -105,6 +104,7 @@ object Turret : API() {
         //launcher.setVelocity((35.6 * mag * Math.sqrt((1/(26+0.9*mag)))) / Turret.GEAR_RATIO_LAUNCHER * Turret.TICKS_PER_RADIANS)
 
     }
+
 
     /**
      * Stops the launcher

@@ -23,6 +23,13 @@ import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.sqrt
 
+/**
+ * An API for our Autonomous Pathing, initializes auto RobotTracking
+ */
+
+// Build Details: The OTOS sensor should be 8-10 mm from the ground. THIS IS A REQUIREMENT NOT A SUGGESTION.
+// The sensor should be in the center of the robot, facing forward. You dont technically have to do this, but unless you want
+// a fun time with offsets, its not a good idea to have an offset.
 object SpecterDrive : API() {
 
     override val isLinear = true
@@ -85,7 +92,7 @@ object SpecterDrive : API() {
      * @param h The target global heading
      * @param t Max runtime in seconds before timing out
      */
-    fun path(y: Double, x: Double, h: Double, t: Double) {
+    fun path(x: Double, y: Double, h: Double, t: Double) {
         //Reset tracking for otos
         otos.resetTracking()
 
@@ -120,6 +127,9 @@ object SpecterDrive : API() {
                 addData("yError", yError)
                 addData("yawError", hError)
                 addData("Turn", turn)
+                addData("Red", TriWheels.red.power)
+                addData("Green", TriWheels.green.power)
+                addData("Blue", TriWheels.blue.power)
                 update()
             }
 
@@ -160,7 +170,7 @@ object SpecterDrive : API() {
      * @param y The target global y coordinate on the field
      * @param h The target global heading
      */
-    fun linearPath(y: Double, x: Double, h: Double = 0.0) {
+    fun linearPath(x: Double, y: Double, h: Double = 0.0) {
         //Reset tracking for otos
         otos.resetTracking()
 
@@ -200,23 +210,17 @@ object SpecterDrive : API() {
      * Calculates the powers to follow any given path. All powers are normalized and adjusted with Drive and Rotate Speed
      */
     private fun computePower() {
-        // Adjusted Vector Components (apply gains)
-        val headingRad = Math.toRadians(otos.position.h)
 
-        val fieldX = xError * STRAFE_GAIN
-        val fieldY = yError * SPEED_GAIN
-
-        // Rotate field error into robot frame
-        val robotX = fieldX * kotlin.math.cos(headingRad) + fieldY * kotlin.math.sin(headingRad)
-        val robotY = -fieldX * kotlin.math.sin(headingRad) + fieldY * kotlin.math.cos(headingRad)
-
+        //Add speed
+        val adjX = -(xError * STRAFE_GAIN)
+        val adjY = (yError * SPEED_GAIN)
 
         // Direction and magnitude of vector
-        val rad = atan2(robotY, robotX) - (PI / 3.0) - (2.0 * PI / 3.0)
-        val magnitude = sqrt(robotX * robotX + robotY * robotY)
+        val rad = abs((atan2(adjY, adjX) - (PI / 3.0) - (2.0 * PI / 3.0)) - Math.toRadians(RobotTracker.getPos(true)[2]))
+        val magnitude = sqrt(adjX * adjX + adjY * adjY)
 
         // Compute translation powers
-        var (r, g, b) = TriWheels.compute(rad, magnitude * SPEED)
+        var (r, g, b) = TriWheels.compute(rad, magnitude * DRIVE_SPEED)
 
         // Compute rotation
         turn = Range.clip(hError * TURN_GAIN * ROTATE_SPEED, -MAX_AUTO_TURN, MAX_AUTO_TURN)
@@ -226,40 +230,56 @@ object SpecterDrive : API() {
         g += turn
         b += turn
 
-        // Normalize so no wheel exceeds ±1
+        // Make sure that no power is > 1.0
         val max = maxOf(abs(r), abs(g), abs(b), 1.0)
         r /= max; g /= max; b /= max
 
         //Power
-        TriWheels.power(r, g, b)
+        TriWheels.power(roundPower(r), roundPower(g), roundPower(b))
     }
 
-    /**
-     * Rotates until reaches a certain position
-     *
-     * @param d: the degree the robot rotates to, assuming that its current degree is 0
-     * @param p: the power which the robot rotates with towards said degree, cannot be 0.0, recommended low value
-     */
+    private fun roundPower(Pwr: Double) : Double{
+        return if(Pwr < RobotConfig.OTOS.PWRTHRESHOLD){
+            0.0
+        } else{
+            Pwr
+        }
+    }
 
-    fun rotate(d :Double, p :Double = 0.1) {
-        //reset tracking
+
+    /**
+     * Rotates clockwise until reaches a certain degree. Always assumes that current heading is 0 degrees.
+     *
+     * @param d the degree you want the robot to face toward
+     * @param p the power you want the robot to rotate at
+     */
+    fun rotate(d: Double, p: Double = 0.1) {
         otos.resetTracking()
 
-        while (linearOpMode.opModeIsActive() && otos.position.h <= AngleUnit.normalizeDegrees(d)) {
-            TriWheels.rotate(p)
+        val target = AngleUnit.normalizeDegrees(d)
+
+        while (linearOpMode.opModeIsActive()) {
+            val error = AngleUnit.normalizeDegrees(target - otos.position.h)
+
+            if (abs(error) < 1.0) break
+
+            TriWheels.rotate(p * kotlin.math.sign(error))
+            linearOpMode.idle()
         }
 
-        //Stop rotation
         TriWheels.power(0.0, 0.0, 0.0)
 
-        //Reset Position
         otos.position = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
 
         RobotTracker.addPos(0.0 ,0.0, d, true)
+
     }
 
 
-
-
-
 }
+
+
+
+
+
+

@@ -38,7 +38,7 @@ object RobotConfig {
     object TeleOpMain {
         /** A multiplier that scales that robot's driving / strafing speed. */
         @JvmField
-        var DRIVE_SPEED: Double = 0.75
+        var DRIVE_SPEED: Double = 1.0
 
         /** A multiplier that scales the robot's rotation speed. */
         @JvmField
@@ -79,7 +79,7 @@ object RobotConfig {
          * adjust the offset. If possible mount in the center and avoid needing to change this.
          */
         @JvmField
-        var OFFSET = SparkFunOTOS.Pose2D(0.0, 0.0 ,30.0)
+        var OFFSET = SparkFunOTOS.Pose2D(0.0, 0.0 ,0.0)
 
         /**
          * Should be set to one by default. If the sensor is reading distances incorrectly
@@ -128,13 +128,13 @@ object RobotConfig {
          * The accepted value for the x-axis error.
          */
         @JvmField
-        var X_THRESHOLD: Double = 5.0
+        var X_THRESHOLD: Double = 1.0
 
         /**
          * The accepted value for the y-axis error.
          */
         @JvmField
-        var Y_THRESHOLD: Double = 5.0
+        var Y_THRESHOLD: Double = 1.0
 
         /**
          * The accepted value for the heading error.
@@ -146,7 +146,13 @@ object RobotConfig {
          * Autonomous Speed
          */
         @JvmField
-        var SPEED: Double = 0.1
+        var SPEED: Double = 0.5
+
+        /**
+         * The low power threshold
+         */
+        @JvmField
+        var PWRTHRESHOLD: Double = 0.01
     }
 
 
@@ -157,10 +163,10 @@ object RobotConfig {
          * Distance from initial positions to basket
          */
         @JvmField
-        var CLOSE_RED_TO_BASKET: DoubleArray = doubleArrayOf(0.0, 0.0)
+        var CLOSE_RED_TO_BASKET: DoubleArray = doubleArrayOf(0.68, 0.97)
 
         @JvmField
-        var CLOSE_BLUE_TO_BASKET: DoubleArray = doubleArrayOf(0.0, 0.0)
+        var CLOSE_BLUE_TO_BASKET: DoubleArray = doubleArrayOf(-0.99, 0.79)
 
         @JvmField
         var FAR_RED_TO_BASKET: DoubleArray = doubleArrayOf(129.0, 45.0)
@@ -175,6 +181,12 @@ object RobotConfig {
         var TICKS_PER_DEGREE = 1.473
 
         /**
+         * Gear ratio of the launcher motor
+         */
+        @JvmField
+        var GEAR_RATIO_AIMER = 2.14
+
+        /**
          * Ticks in one degree of the launcher motor
          */
         @JvmField
@@ -186,59 +198,5 @@ object RobotConfig {
         @JvmField
         var GEAR_RATIO_LAUNCHER = 2.8
 
-
-        @JvmField
-        var launchWheelRadius: Double = 0.0
-
-        @JvmField
-        var ballRadius: Double = 0.0
-
-        @JvmField
-        var MIShooterwheel: Double = 0.0
-
-        @JvmField
-        var MIBall: Double = 0.0
-
-        @JvmField
-        var massBall: Double = 0.0
-
-        @JvmField
-        var densityBall: Double = 0.0
-
-        @JvmField
-        var volumeBall: Double = 0.0
-
-        @JvmField
-        var theta: Double = 42.0
-
-        @JvmField
-        var binDepth: Double = 0.0
-
-        @JvmField
-        var shortLenBin: Double = 0.0
-
-        @JvmField
-        var longLenBin: Double = 0.0
-
-        @JvmField
-        var ball_to_ground: Double = 0.0
-
-        @JvmField
-        var ball_to_sensor: Double = 10.37
-
-        @JvmField
-        var correction_factor: Double = 0.0
-
-        @JvmField
-        var k: Double = 0.0
-
-        @JvmField
-        var yd: Double = 26.0
-
-        @JvmField
-        var lower: Double = 1.0
-
-        @JvmField
-        var higher: Double = 0.0
     }
 }
