@@ -111,9 +111,7 @@ object Turret : API() {
      */
     fun stop() {
         launcher.power = 0.0
+        aimer.power = 0.0
     }
 
 }
-
-
-

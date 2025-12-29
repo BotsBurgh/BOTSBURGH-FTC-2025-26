@@ -27,7 +27,6 @@ class teleOpMain : OpMode() {
         RobotTracker.teleInit(this)
         Turret.init(this)
         TransferSystem.init(this)
-
         initPos = RobotTracker.getPos(false)
     }
 
