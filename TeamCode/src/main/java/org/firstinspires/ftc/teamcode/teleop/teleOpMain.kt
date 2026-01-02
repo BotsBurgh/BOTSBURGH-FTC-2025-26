@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.RobotConfig
 import org.firstinspires.ftc.teamcode.api.*
 import kotlin.math.*
 
-@TeleOp(name = "TeleOpMAINPLEAASESPEED")
+@TeleOp(name = "TeleOpMAINPleeease")
 class teleOpMain : OpMode() {
 //position
     private var initPos = DoubleArray(3)
@@ -72,8 +72,8 @@ class teleOpMain : OpMode() {
         }
         lastCircle = gamepad1.circle
 
-        if (gamepad1.cross) TransferSystem.pusherUp()
-        if (gamepad1.triangle) TransferSystem.pusherDown()
+//        if (gamepad1.cross) TransferSystem.pusherUp()
+//        if (gamepad1.triangle) TransferSystem.pusherDown()
 
 
     }

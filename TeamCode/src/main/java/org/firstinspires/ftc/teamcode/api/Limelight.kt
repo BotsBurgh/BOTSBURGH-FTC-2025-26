@@ -45,6 +45,7 @@ object Limelight : API() {
 
     fun changeTagID(id: Int) {
         targetId = id
-        cam.pipelineSwitch(if (id == 24) 1 else 0)
+        cam.pipelineSwitch(if (id == 24) 1
+        else 0)
     }
 }

@@ -30,7 +30,7 @@ object Turret : API() {
 
         if (Limelight.seesTag) {
             trackTag(Limelight.angleX)
-            return Limelight.angleX // Returns error for telemetry
+            return Limelight.angleX
         }
 
         val robotX = startPos[0] + deltaPos[0]
@@ -51,7 +51,7 @@ object Turret : API() {
     /**
      * Limelight-specific proportional control
      */
-    private fun trackTag(angleX: Double) {
+     fun trackTag(angleX: Double) {
         val Kp = 0.04
         val minPower = 0.05
         val deadband = 0.5

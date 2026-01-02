@@ -18,8 +18,8 @@ object TransferSystem : API(){
         private set
     lateinit var intake : DcMotorEx
         private set
-    lateinit var pusher : Servo
-        private set
+//    lateinit var pusher : Servo
+//        private set
 
     override fun init(opMode: OpMode) {
         super.init(opMode)
@@ -27,7 +27,7 @@ object TransferSystem : API(){
         leftTransfer = this.opMode.hardwareMap.get(DcMotorEx::class.java, "leftTransfer")
         rightTransfer = this.opMode.hardwareMap.get(DcMotorEx::class.java, "rightTransfer")
         intake = this.opMode.hardwareMap.get(DcMotorEx::class.java, "intake")
-        pusher = this.opMode.hardwareMap.get(Servo::class.java, "pusher")
+//        pusher = this.opMode.hardwareMap.get(Servo::class.java, "pusher")
     }
 
     fun power(lP : Double, rP : Double, iP : Double){
@@ -45,12 +45,12 @@ object TransferSystem : API(){
         intake.power = iP
     }
 
-    fun pusherUp(){
-        pusher.position = 1.0
+//    fun pusherUp(){
+//        pusher.position = 1.0
+//
+//    }
 
-    }
-
-    fun pusherDown(){
-        pusher.position = 0.0
-    }
+//    fun pusherDown(){
+//        pusher.position = 0.0
+//    }
 }
