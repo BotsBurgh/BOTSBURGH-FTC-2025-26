@@ -43,7 +43,7 @@ object Turret : API() {
 
         aimer.targetPosition = motorTicks
         aimer.mode = DcMotor.RunMode.RUN_TO_POSITION
-        aimer.power = 0.5
+        aimer.power = Limelight.angleX*2.14
 
         return theta
     }
@@ -53,7 +53,7 @@ object Turret : API() {
      */
      fun trackTag(angleX: Double) {
         val Kp = 0.04
-        val minPower = 0.05
+        val minPower = 0.0
         val deadband = 0.5
 
         if (Math.abs(angleX) > deadband) {
