@@ -24,8 +24,8 @@ object Turret : API() {
     /**
      * The motor that launches the ball
      */
-    lateinit var launcher: DcMotorEx
-        private set
+//    lateinit var launcher: DcMotorEx
+//        private set
 
     var targetPos = doubleArrayOf()
 
@@ -33,12 +33,12 @@ object Turret : API() {
         super.init(opMode)
 
         aimer = this.opMode.hardwareMap.get(DcMotorEx::class.java, "aimer")
-        launcher = this.opMode.hardwareMap.get(DcMotorEx::class.java, "launcher")
+//        launcher = this.opMode.hardwareMap.get(DcMotorEx::class.java, "launcher")
 
         aimer.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        launcher.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+//        launcher.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         aimer.mode = DcMotor.RunMode.RUN_USING_ENCODER
-        launcher.mode = DcMotor.RunMode.RUN_USING_ENCODER
+//        launcher.mode = DcMotor.RunMode.RUN_USING_ENCODER
     }
 
     /**
@@ -87,7 +87,7 @@ object Turret : API() {
         //move turret
         aimer.targetPosition = turretPos
         aimer.mode = DcMotor.RunMode.RUN_TO_POSITION
-        aimer.power = 0.5
+        aimer.power = 0.05
 
         return theta
     }
@@ -99,21 +99,21 @@ object Turret : API() {
     fun setAimerPower(power: Double) {
         aimer.power = power
     }
-    fun launch(positon: DoubleArray) {
-
-        launcher.power = 1.0
-
-        //var mag = Math.sqrt(positon[0] * targetPos[0] + positon[1] * targetPos[1] + 47 * 47)
-
-        //launcher.setVelocity((35.6 * mag * Math.sqrt((1/(26+0.9*mag)))) / Turret.GEAR_RATIO_LAUNCHER * Turret.TICKS_PER_RADIANS)
-    }
-
-    /**
-     * Stops the launcher
-     */
-    fun stop() {
-        launcher.power = 0.0
-        aimer.power = 0.0
-    }
+//    fun launch(positon: DoubleArray) {
+//
+//        launcher.power = 1.0
+//
+//        //var mag = Math.sqrt(positon[0] * targetPos[0] + positon[1] * targetPos[1] + 47 * 47)
+//
+//        //launcher.setVelocity((35.6 * mag * Math.sqrt((1/(26+0.9*mag)))) / Turret.GEAR_RATIO_LAUNCHER * Turret.TICKS_PER_RADIANS)
+//    }
+//
+//    /**
+//     * Stops the launcher
+//     */
+//    fun stop() {
+//        launcher.power = 0.0
+//        aimer.power = 0.0
+//    }
 
 }

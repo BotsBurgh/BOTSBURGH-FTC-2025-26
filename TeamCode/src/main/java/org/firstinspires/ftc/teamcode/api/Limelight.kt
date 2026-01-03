@@ -13,12 +13,12 @@ object Limelight : API() {
     var seesTag = false
         private set
 // increase kP until it tracks the turret properly.if it starts shaking, lower it
-    private val Kp = 0.04
-    private val deadband = 1.0
+    private val Kp = 0.025
+    private val deadband = 5.0
     //deadbands purpose is to make less jitter in the motor
 
-    private val Ki = 0.001  // increase THis VERY VERY slowly to make sure nothing overshoots and vibrates
-    private val Kd = 0.01   //change this if the turret doesn't full reach target(keep this very small)
+    private val Ki = 0.02  // increase THis VERY VERY slowly to make sure nothing overshoots and vibrates
+    private val Kd = 0.075   //change this if the turret doesn't full reach target(keep this very small)
     //memory variabls
     private var lastError = 0.0 //previous angle difference
     private var integralSum = 0.0 //error adding up
