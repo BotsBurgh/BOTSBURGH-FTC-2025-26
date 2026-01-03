@@ -86,11 +86,11 @@ class teleOpMain : OpMode() {
         lastCircle = gamepad1.circle
 
 
-        if (gamepad1.cross){
-            TransferSystem.pusherUp()
-
-
-        }
+//        if (gamepad1.cross){
+//            TransferSystem.pusherUp()
+//
+//
+//        }
 
 
         if(gamepad1.right_trigger > 0.0){
@@ -101,9 +101,9 @@ class teleOpMain : OpMode() {
             TransferSystem.setIntakePwr(-1.0)
         }
 
-        if(gamepad1.triangle){
-            TransferSystem.pusherDown()
-        }
+//        if(gamepad1.triangle){
+//            TransferSystem.pusherDown()
+//        }
 
 
         if(!gamepad1.left_bumper && gamepad1.right_trigger.toDouble() == 0.0){
