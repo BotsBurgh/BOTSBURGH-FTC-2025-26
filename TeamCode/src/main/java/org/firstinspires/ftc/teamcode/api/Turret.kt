@@ -87,7 +87,7 @@ object Turret : API() {
         //move turret
         aimer.targetPosition = turretPos
         aimer.mode = DcMotor.RunMode.RUN_TO_POSITION
-        aimer.power = 0.05
+        aimer.power = 0.15
 
         return theta
     }
