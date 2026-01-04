@@ -56,19 +56,19 @@ object Limelight : API() {
      */
     fun veryCOMPLEXMATHAMATICS(): Double {
         if (!seesTag) {
-            integralSum = 0.0 // resets the memory if it cant see tag :(
+            integralSum = 0.0 // resets the memory if it cant see tag
             return 0.0
         }
         val currentTime = System.currentTimeMillis() //time
         val deltaTime = (currentTime - lastTime) / 1000.0 //conversion to seconds to make life easier :)
-        if (deltaTime <= 0) //just to maek sure no dividing by zero
+        if (deltaTime <= 0) //just to make sure no dividing by zero
             return 0.0
 
-        val error = angleX //this is the anglex differnce which is angle the turret needs to turn
+        val error = angleX //this is the anglex difference which is angle the turret needs to turn
         if (Math.abs(error) < deadband) {
             return 0.0
         }
-        val P = error * Kp  //porpotional term
+        val P = error * Kp  //proportional term
 
         integralSum += error * deltaTime
         //capping the interval so it doesn't just start spinning
@@ -78,14 +78,14 @@ object Limelight : API() {
         //derivative (future error)
         val derivative = if (deltaTime > 0)(error - lastError)/deltaTime
         else 0.0
-        //DERIRATIVE :)
+        //derivative
         val D = derivative * Kd
         //error
-        lastTime = currentTime   //setting up variables
+        lastTime = currentTime
 
         lastError = error
 
-        //ADDING EVERYTHINGGGGG
+        //Adding PID together
         val totalPower = P + I + D
     //return the value, and making sure it fits within the limits(double btw)
         return totalPower.coerceIn(-0.6, 0.6)

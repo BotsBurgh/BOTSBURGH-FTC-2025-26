@@ -24,7 +24,7 @@ class teleOpMain : OpMode() {
         TriWheels.init(this)
         RobotTracker.teleInit(this)
         Turret.init(this)
-//        TransferSystem.init(this)
+        TransferSystem.init(this)
         Limelight.init(this)
         initPos = RobotTracker.getPos(false)
     }
@@ -68,56 +68,55 @@ class teleOpMain : OpMode() {
 
         //buttons
 
-//        if (gamepad1.left_bumper){
-//            TransferSystem.power(1.0, -1.0, 1.0)
-//        }
+        if (gamepad1.left_bumper){
+            TransferSystem.power(1.0, -1.0, 1.0)
+        }
 
-//        if (gamepad1.circle && !lastCircle) {
-//            turretOn = !turretOn
-//
-//            if (turretOn) {
-//                Turret.launch(RobotTracker.getPos(false))}   // turn on
-//            else {
-//                Turret.launcher.power = 0.0
-//            }
-//        }
+        if (gamepad1.circle && !lastCircle) {
+            turretOn = !turretOn
 
-
-//        lastCircle = gamepad1.circle
+            if (turretOn) {
+                Turret.launch(RobotTracker.getPos(false))}   // turn on
+            else {
+                Turret.launcher.power = 0.0
+            }
+        }
 
 
-//        if (gamepad1.cross){
-//            TransferSystem.pusherUp()
-//
-//
-//        }
+        lastCircle = gamepad1.circle
 
 
-//        if(gamepad1.right_trigger > 0.0){
-//            TransferSystem.power(-1.0, 1.0)
-//        }
-//
-//        if(gamepad1.left_trigger > 0.0){
-//            TransferSystem.setIntakePwr(-1.0)
-//        }
-
-//        if(gamepad1.triangle){
-//            TransferSystem.pusherDown()
-//        }
+        if (gamepad1.cross){
+            TransferSystem.pusherUp()
 
 
-//        if(!gamepad1.left_bumper && gamepad1.right_trigger.toDouble() == 0.0){
-//            TransferSystem.power(0.0, 0.0)
-//        }
-//
-//        if(!gamepad1.left_bumper && gamepad1.left_trigger.toDouble() == 0.0){
-//            TransferSystem.setIntakePwr(0.5)
-//        }
+        }
+
+
+        if(gamepad1.right_trigger > 0.0){
+            TransferSystem.power(-1.0, 1.0)
+        }
+
+        if(gamepad1.left_trigger > 0.0){
+            TransferSystem.setIntakePwr(-1.0)
+        }
+
+        if(gamepad1.triangle){
+            TransferSystem.pusherDown()
+        }
+
+
+        if(!gamepad1.left_bumper && gamepad1.right_trigger.toDouble() == 0.0){
+            TransferSystem.power(0.0, 0.0)
+        }
+
+        if(!gamepad1.left_bumper && gamepad1.left_trigger.toDouble() == 0.0){
+            TransferSystem.setIntakePwr(0.5)
+        }
 
         telemetry.addData("x", RobotTracker.getPos(false)[0])
         telemetry.addData("y", RobotTracker.getPos(false)[1])
         telemetry.addData("h", RobotTracker.getPos(false)[2])
-        telemetry.addData("Limelight'sANGLEE", Limelight.angleX)
         telemetry.update()
 
     }
