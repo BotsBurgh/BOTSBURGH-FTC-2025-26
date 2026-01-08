@@ -24,7 +24,9 @@ object Turret : API() {
     /**
      * The motor that launches the ball
      */
-    lateinit var launcher: DcMotorEx
+    lateinit var outtakeL: DcMotorEx
+        private set
+    lateinit var outtakeR: DcMotorEx
         private set
 
     var targetPos = doubleArrayOf()
@@ -33,12 +35,17 @@ object Turret : API() {
         super.init(opMode)
 
         aimer = this.opMode.hardwareMap.get(DcMotorEx::class.java, "aimer")
-        launcher = this.opMode.hardwareMap.get(DcMotorEx::class.java, "launcher")
+        outtakeL = this.opMode.hardwareMap.get(DcMotorEx::class.java, "outtakeL")
+        outtakeR = this.opMode.hardwareMap.get(DcMotorEx::class.java, "outtakeR")
 
         aimer.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        launcher.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        outtakeL.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        outtakeR.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+
         aimer.mode = DcMotor.RunMode.RUN_USING_ENCODER
-        launcher.mode = DcMotor.RunMode.RUN_USING_ENCODER
+        outtakeL.mode = DcMotor.RunMode.RUN_USING_ENCODER
+        outtakeR.mode = DcMotor.RunMode.RUN_USING_ENCODER
+
     }
 
     /**
@@ -81,13 +88,13 @@ object Turret : API() {
         //convert output angle to motor ticks
         val motorTicks = theta * Turret.TICKS_PER_DEGREE
 
-        val turretPos = (motorTicks * 2.14).toInt()
+        val turretPos = (motorTicks * 5.875).toInt()
 
 
         //move turret
         aimer.targetPosition = turretPos
         aimer.mode = DcMotor.RunMode.RUN_TO_POSITION
-        aimer.power = 0.15
+        aimer.power = 0.6
 
         return theta
     }
@@ -101,8 +108,8 @@ object Turret : API() {
     }
     fun launch(positon: DoubleArray) {
 
-        launcher.power = 1.0
-
+        outtakeL.power = -0.8
+        outtakeR.power = -0.8
         //var mag = Math.sqrt(positon[0] * targetPos[0] + positon[1] * targetPos[1] + 47 * 47)
 
         //launcher.setVelocity((35.6 * mag * Math.sqrt((1/(26+0.9*mag)))) / Turret.GEAR_RATIO_LAUNCHER * Turret.TICKS_PER_RADIANS)
@@ -112,8 +119,13 @@ object Turret : API() {
      * Stops the launcher
      */
     fun stop() {
-        launcher.power = 0.0
+        outtakeL.power=0.0
+        outtakeR.power=0.0
+
+    }
+    fun stopAimer(){
         aimer.power = 0.0
+
     }
 
 }

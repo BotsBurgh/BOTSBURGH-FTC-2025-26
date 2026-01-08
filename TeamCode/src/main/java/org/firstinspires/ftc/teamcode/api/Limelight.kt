@@ -3,37 +3,54 @@ package org.firstinspires.ftc.teamcode.api
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.hardware.limelightvision.Limelight3A
 import org.firstinspires.ftc.teamcode.core.API
+import kotlin.math.abs
 
 object Limelight : API() {
+
     private lateinit var cam: Limelight3A
     private var targetId: Int = -1
+    //for limits
+    private var turretPosition = 0
+    private const val LEFT_LIMIT_TICKS = -100
+    private const val RIGHT_LIMIT_TICKS = 100
 
-    var angleX = 0.0
+
+    // Variables for Vision
+    var area = 0.0     //DistanceCalculation
+        private set
+    var angleX = 0.0    // TurretTracking
         private set
     var seesTag = false
         private set
-// increase kP until it tracks the turret properly.if it starts shaking, lower it
-    private val Kp = 0.01
-    private val deadband = 1.0
-    //deadbands purpose is to make less jitter in the motor
 
-    private val Ki = 0.0  // increase THis VERY VERY slowly to make sure nothing overshoots and vibrates
-    private val Kd = 0.0   //change this if the turret doesn't full reach target(keep this very small)
-    //memory variabls
-    private var lastError = 0.0 //previous angle difference
-    private var integralSum = 0.0 //error adding up
-    private var lastTime = System.currentTimeMillis() //difference in time in MS(idk man)
+    //PID constants
+    private val Kp = 0.01
+    private val Ki = 0.0
+    private val Kd = 0.0
+
+    //deadband is so the turret doesn't jitter
+    private val deadband = 1.0
+
+    //PID memory
+    private var lastError = 0.0
+    private var integralSum = 0.0
+    private var lastTime = System.currentTimeMillis()
 
     override fun init(opMode: OpMode) {
         cam = opMode.hardwareMap.get(Limelight3A::class.java, "limelight")
-        cam.pipelineSwitch(0)
+        cam.pipelineSwitch(0) //tracks blue, switch to 1 to track red
         cam.start()
     }
 
-    fun update() {
+   //run this in loop
+    fun update(currentTicks: Int) {
         val result = cam.latestResult
-        if (result == null || !result.isValid) {
+        turretPosition = currentTicks
+
+       if (result == null || !result.isValid) {
             seesTag = false
+            angleX = 0.0
+            area = 0.0
             return
         }
 
@@ -45,53 +62,61 @@ object Limelight : API() {
 
         if (tag != null) {
             seesTag = true
-            angleX = tag.targetXDegrees
+            angleX = tag.targetXDegrees //tracks angle offset
+            area = tag.targetArea   //tracks area
         } else {
             seesTag = false
+            angleX = 0.0  //default
+            area = 0.0
         }
     }
 
-    /**
-     * does very complex hard math to get angle to turret movement
-     */
-    fun veryCOMPLEXMATHAMATICS(): Double {
+    //Auto Aiming Function
+    fun getTurretPower(): Double {
         if (!seesTag) {
-            integralSum = 0.0 // resets the memory if it cant see tag
+            //resets the stuff when lost
+            integralSum = 0.0
+            lastError = 0.0
+            lastTime = System.currentTimeMillis()
             return 0.0
         }
-        val currentTime = System.currentTimeMillis() //time
-        val deltaTime = (currentTime - lastTime) / 1000.0 //conversion to seconds to make life easier :)
-        if (deltaTime <= 0) //just to make sure no dividing by zero
-            return 0.0
 
-        val error = angleX //this is the anglex difference which is angle the turret needs to turn
-        if (Math.abs(error) < deadband) {
+        val currentTime = System.currentTimeMillis()
+        val deltaTime = (currentTime - lastTime) / 1000.0
+        if (deltaTime <= 0.0) return 0.0
+
+        val error = angleX  // degrees off center
+
+        if (abs(error) < deadband) {
+            integralSum = 0.0
+            lastError = error
+            lastTime = currentTime
             return 0.0
         }
-        val P = error * Kp  //proportional term
-
-        integralSum += error * deltaTime
-        //capping the interval so it doesn't just start spinning
-        integralSum = integralSum.coerceIn(-0.2, 0.2)
+        //porpotional
+        val P = error * Kp
         //integral
+        integralSum += error * deltaTime
+        integralSum = integralSum.coerceIn(-0.2, 0.2)
         val I = integralSum * Ki
-        //derivative (future error)
-        val derivative = if (deltaTime > 0)(error - lastError)/deltaTime
-        else 0.0
-        //derivative
+        //derivatice
+        val derivative = (error - lastError) / deltaTime
         val D = derivative * Kd
-        //error
-        lastTime = currentTime
 
         lastError = error
+        lastTime = currentTime
 
-        //Adding PID together
-        val totalPower = P + I + D
-    //return the value, and making sure it fits within the limits(double btw)
-        return totalPower.coerceIn(-0.6, 0.6)
+        val output = (P + I + D).coerceIn(-1.0, 1.0)
 
+        if (turretPosition <= LEFT_LIMIT_TICKS && output < 0) return 0.0
+        if (turretPosition >= RIGHT_LIMIT_TICKS && output > 0) return 0.0
+
+        //adds them
+        return output
     }
-    fun changeTagID(){
 
+
+    fun getDistance(): Double {
+        return area
     }
 }

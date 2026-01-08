@@ -46,7 +46,7 @@ object TriWheels : API() {
         greenPower: Double,
         bluePower: Double,
     ) {
-        red.power = redPower
+        red.power = -redPower
         green.power = greenPower
         blue.power = bluePower
     }
