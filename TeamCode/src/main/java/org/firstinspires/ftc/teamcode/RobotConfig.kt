@@ -79,7 +79,7 @@ object RobotConfig {
          * adjust the offset. If possible mount in the center and avoid needing to change this.
          */
         @JvmField
-        var OFFSET = SparkFunOTOS.Pose2D(0.0, 0.0 ,0.0)
+        var OFFSET = SparkFunOTOS.Pose2D(-4.0, 0.0 ,90.0)
 
         /**
          * Should be set to one by default. If the sensor is reading distances incorrectly
@@ -169,7 +169,7 @@ object RobotConfig {
         var CLOSE_BLUE_TO_BASKET: DoubleArray = doubleArrayOf(-0.99, 0.79)
 
         @JvmField
-        var FAR_RED_TO_BASKET: DoubleArray = doubleArrayOf(129.0, 45.0)
+        var FAR_RED_TO_BASKET: DoubleArray = doubleArrayOf(45.0, 129.0)
 
         @JvmField
         var FAR_BLUE_TO_BASKET: DoubleArray = doubleArrayOf(129.0, -45.0)
@@ -178,13 +178,13 @@ object RobotConfig {
          * Ticks in one degree of the aimer motor
          */
         @JvmField
-        var TICKS_PER_DEGREE = 1.473
+        var TICKS_PER_DEGREE = 5.643
 
         /**
          * Gear ratio of the launcher motor
          */
         @JvmField
-        var GEAR_RATIO_AIMER = 2.14
+        var GEAR_RATIO_AIMER = 5.875
 
         /**
          * Ticks in one degree of the launcher motor

@@ -46,7 +46,7 @@ object TriWheels : API() {
         greenPower: Double,
         bluePower: Double,
     ) {
-        red.power = redPower
+        red.power = -redPower
         green.power = greenPower
         blue.power = bluePower
     }
@@ -68,9 +68,11 @@ object TriWheels : API() {
         radians: Double,
         magnitude: Double,
         rotation: Double = 0.0,
-    ) {
+    ) : DoubleArray{
         val (r, g, b) = compute(radians, magnitude)
         power(r + rotation, g + rotation, b + rotation)
+
+        return doubleArrayOf(r+rotation, g+rotation, b+rotation)
     }
 
     fun drive(

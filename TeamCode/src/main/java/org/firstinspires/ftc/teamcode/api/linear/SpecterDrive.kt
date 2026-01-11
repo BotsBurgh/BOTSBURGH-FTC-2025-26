@@ -216,7 +216,7 @@ object SpecterDrive : API() {
         val adjY = (yError * SPEED_GAIN)
 
         // Direction and magnitude of vector
-        val rad = abs((atan2(adjY, adjX) - (PI / 3.0) - (2.0 * PI / 3.0)) - Math.toRadians(RobotTracker.getPos(true)[2]))
+        val rad = abs(atan2(adjY, adjX) - (PI / 3.0) - (2.0 * PI / 3.0))
         val magnitude = sqrt(adjX * adjX + adjY * adjY)
 
         // Compute translation powers
@@ -238,13 +238,20 @@ object SpecterDrive : API() {
         TriWheels.power(roundPower(r), roundPower(g), roundPower(b))
     }
 
-    private fun roundPower(Pwr: Double) : Double{
-        return if(Pwr < RobotConfig.OTOS.PWRTHRESHOLD){
+
+    /**
+     * Rounds power to 0 in case of math returning miniscule powers
+     *
+     * @param pwr the raw power given to the wheel
+     */
+    private fun roundPower(pwr: Double): Double {
+        return if (abs(pwr) < RobotConfig.OTOS.PWRTHRESHOLD) {
             0.0
-        } else{
-            Pwr
+        } else {
+            pwr
         }
     }
+
 
 
     /**
@@ -272,9 +279,7 @@ object SpecterDrive : API() {
         otos.position = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
 
         RobotTracker.addPos(0.0 ,0.0, d, true)
-
     }
-
 
 }
 
