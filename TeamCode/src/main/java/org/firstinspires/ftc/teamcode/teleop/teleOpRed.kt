@@ -13,9 +13,9 @@ import kotlin.math.atan2
 import kotlin.math.sqrt
 
 
-@TeleOp(name = "teleOpBlue")
+@TeleOp(name = "teleOpRed")
 
-class teleOpBlue : OpMode() {
+class teleOpRed : OpMode() {
 
     var initPos = DoubleArray(3)
     var turretOn = false
@@ -31,7 +31,7 @@ class teleOpBlue : OpMode() {
         Turret.init(this)
         TransferSystem.init(this)
         Voltage.init(this)
-        Limelight.init(this, 0)
+        Limelight.init(this, 1)
 
         initPos = doubleArrayOf(RobotTracker.readPositionFile()[0], RobotTracker.readPositionFile()[1], RobotTracker.readPositionFile()[2])
     }
