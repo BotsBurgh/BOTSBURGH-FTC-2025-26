@@ -31,13 +31,13 @@ class teleOpBlue : OpMode() {
         Turret.init(this)
         TransferSystem.init(this)
         Voltage.init(this)
-        Limelight.init(this, 0)
+        Limelight.init(this)
 
         initPos = doubleArrayOf(RobotTracker.readPositionFile()[0], RobotTracker.readPositionFile()[1], RobotTracker.readPositionFile()[2])
     }
 
     override fun loop() {
-        Limelight.update()
+        Limelight.update(Turret.aimer.currentPosition)
         telemetry.clear()
         // joystick(Movement) input
 
