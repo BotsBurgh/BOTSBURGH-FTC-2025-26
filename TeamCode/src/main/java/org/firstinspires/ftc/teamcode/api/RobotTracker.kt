@@ -130,14 +130,12 @@ object RobotTracker :API() {
      * @param startSide the side in which the robot starts. 0.0 = red, 1.0 = blue
      * @param startPos the further away the robot is at start, the more the value is. 0.0 = close to obelisk, 1.0 far from obelisk
      */
-    fun logPos(startSide: Double, startPos: Double){
-        //Create the file
-        CsvLogging.createFile("Position")
-        //Write the file
-        CsvLogging.writeFile("Position", arrayOf(getPos(true)[0], getPos(true)[1], getPos(true)[2], startSide, startPos))
-        //Flush
+    fun logPos(startSide: Double, startPos: Double) {
+        CsvLogging.writeFile(
+            "Position",
+            arrayOf(autoX, autoY, autoH, startSide, startPos)
+        )
         CsvLogging.flush("Position")
-        //Close writer
         CsvLogging.close()
     }
 
