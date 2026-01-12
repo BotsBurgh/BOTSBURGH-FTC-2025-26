@@ -8,8 +8,8 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil
 import org.firstinspires.ftc.teamcode.RobotConfig
 import org.firstinspires.ftc.teamcode.core.API
 
-/*
-An API to track the current coordinates of the robot.
+/**
+ * An API to track the current coordinates of the robot.
  */
 object RobotTracker :API() {
 

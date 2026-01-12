@@ -1,11 +1,10 @@
 package org.firstinspires.ftc.teamcode.api
 
-import android.view.Gravity
 import org.firstinspires.ftc.teamcode.RobotConfig.Turret
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
-import org.firstinspires.ftc.teamcode.RobotConfig
+import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.core.API
 import kotlin.math.atan2
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeDegrees
@@ -22,23 +21,41 @@ object Turret : API() {
         private set
 
     /**
-     * The motor that launches the ball
+     * The motors that launch the ball
      */
-    lateinit var launcher: DcMotorEx
+    lateinit var launcherL: DcMotorEx
+        private set
+    lateinit var launcherR: DcMotorEx
         private set
 
+    /**
+     * The hood
+     */
+    lateinit var hood: Servo
+        private set
+
+    /**
+     * The light
+     */
+    lateinit var light: Servo
+        private set
     var targetPos = doubleArrayOf()
 
     override fun init(opMode: OpMode) {
         super.init(opMode)
 
         aimer = this.opMode.hardwareMap.get(DcMotorEx::class.java, "aimer")
-        launcher = this.opMode.hardwareMap.get(DcMotorEx::class.java, "launcher")
+        launcherL = this.opMode.hardwareMap.get(DcMotorEx::class.java, "launcherL")
+        launcherR = this.opMode.hardwareMap.get(DcMotorEx::class.java, "launcherR")
+        hood = this.opMode.hardwareMap.get(Servo::class.java, "hood")
+        light = this.opMode.hardwareMap.get(Servo::class.java, "light")
 
         aimer.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        launcher.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        launcherL.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        launcherR.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         aimer.mode = DcMotor.RunMode.RUN_USING_ENCODER
-        launcher.mode = DcMotor.RunMode.RUN_USING_ENCODER
+        launcherL.mode = DcMotor.RunMode.RUN_USING_ENCODER
+        launcherR.mode = DcMotor.RunMode.RUN_USING_ENCODER
     }
 
     /**
@@ -93,25 +110,51 @@ object Turret : API() {
     }
 
     /**
-     * Calculates and fires the needed velocity for the ball to reach the basket
-     * @param position the current position of the robot
+     * Fires the ball
+     * @param power the power it fires at
      */
-    fun launch(positon: DoubleArray) {
+    fun launch(power: Double) {
 
-        launcher.power = 1.0
-
-        //var mag = Math.sqrt(positon[0] * targetPos[0] + positon[1] * targetPos[1] + 47 * 47)
-
-        //launcher.setVelocity((35.6 * mag * Math.sqrt((1/(26+0.9*mag)))) / Turret.GEAR_RATIO_LAUNCHER * Turret.TICKS_PER_RADIANS)
-
+        launcherL.power = power
+        launcherR.power = power
     }
 
     /**
      * Stops the launcher
      */
     fun stop() {
-        launcher.power = 0.0
-        aimer.power = 0.0
+        launcherL.power = 0.0
+        launcherR.power = 0.0
+    }
+
+    /**
+     * Powers the aimer
+     */
+    fun setAimerPower(power: Double){
+        aimer.power = power
+    }
+
+    /**
+     * Moves the servo to a given position
+     * @param pos the position
+     */
+    fun moveHood(pos: Double){
+        hood.position = pos
+    }
+
+    /**
+     * Locks the servo
+     */
+    fun lockServo(){
+        moveHood(0.0)
+    }
+
+    /**
+     * Turns the light a certain color given a PWM value
+     * @param PWM the pwm value given
+     */
+    fun light(PWM: Double){
+        light.position = PWM
     }
 
 }
