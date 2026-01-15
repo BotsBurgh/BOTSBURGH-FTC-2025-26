@@ -11,8 +11,6 @@ object Limelight : API() {
     private var targetId: Int = -1
     //for limits
     private var turretPosition = 0
-    private const val LEFT_LIMIT_TICKS = -100
-    private const val RIGHT_LIMIT_TICKS = 100
 
 
     // Variables for Vision
@@ -36,9 +34,9 @@ object Limelight : API() {
     private var integralSum = 0.0
     private var lastTime = System.currentTimeMillis()
 
-    override fun init(opMode: OpMode) {
+    fun init(opMode: OpMode, side: Int) {
         cam = opMode.hardwareMap.get(Limelight3A::class.java, "limelight")
-        cam.pipelineSwitch(0) //tracks blue, switch to 1 to track red
+        cam.pipelineSwitch(side) //tracks blue, switch to 1 to track red
         cam.start()
     }
 
@@ -108,8 +106,6 @@ object Limelight : API() {
 
         val output = (P + I + D).coerceIn(-1.0, 1.0)
 
-        if (turretPosition <= LEFT_LIMIT_TICKS && output < 0) return 0.0
-        if (turretPosition >= RIGHT_LIMIT_TICKS && output > 0) return 0.0
 
         //adds them
         return output

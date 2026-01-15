@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.api.Turret
 import org.firstinspires.ftc.teamcode.api.linear.SpecterDrive
 
-@Autonomous(name = "autoFarRed(6 ball)")
+@Autonomous(name = "autoFarBlue(6 ball)")
 class autoFarBlue6: LinearOpMode() {
     override fun runOpMode() {
         SpecterDrive.init(this)
