@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.core.API
 import kotlin.math.atan2
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeDegrees
+import kotlin.math.abs
 
 /**
  * An API to control the turret
@@ -155,6 +156,17 @@ object Turret : API() {
      */
     fun light(PWM: Double){
         light.position = PWM
+    }
+
+    /**
+     * Moves the turret to a certain tick
+     */
+    fun moveToTick(
+        targetTick: Int
+    ) {
+        aimer.targetPosition = targetTick
+        aimer.mode = DcMotor.RunMode.RUN_TO_POSITION
+        aimer.power = abs(1.0)
     }
 
 }

@@ -31,7 +31,7 @@ class teleOpRed : OpMode() {
         Turret.init(this)
         TransferSystem.init(this)
         Voltage.init(this)
-        Limelight.init(this)
+        Limelight.init(this, 0)
 
         initPos = doubleArrayOf(RobotTracker.readPositionFile()[0], RobotTracker.readPositionFile()[1], RobotTracker.readPositionFile()[2])
     }
