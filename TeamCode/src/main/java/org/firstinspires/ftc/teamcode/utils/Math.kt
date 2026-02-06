@@ -9,6 +9,7 @@ import kotlin.math.pow
 import kotlin.math.round
 import kotlin.math.sign
 import kotlin.math.withSign
+import kotlin.math.sqrt
 
 /** PI / 2 */
 const val PI_2: Double = PI / 2.0
@@ -90,7 +91,7 @@ private val <Param> Vector2dDual<Param>.size
     get() = min(this.x.size(), this.y.size())
 
 /** Squares a number `x^2`. */
-private fun Double.squared() = this * this
+fun Double.squared() = this * this
 
 /** Cubes a number `x^3`. */
-private fun Double.cubed() = this * this * this
+fun Double.cubed() = this * this * this

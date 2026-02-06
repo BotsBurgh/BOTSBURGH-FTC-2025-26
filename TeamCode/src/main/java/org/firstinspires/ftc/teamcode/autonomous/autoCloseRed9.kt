@@ -21,9 +21,9 @@ class autoCloseRed9: LinearOpMode() {
 
         TransferSystem.setIntakePwr(-1.0)
         Turret.launch(-0.63)
-        SpecterDrive.linearPath(0.0, -24.0, 0.0)
-        sleep(100)
-        SpecterDrive.linearPath(36.0, 0.0, 0.0)
+        SpecterDrive.path(0.0, -24.0, 0.0)
+        sleep(10)
+        SpecterDrive.path(36.0, 0.0, 0.0)
         Turret.moveToTick(-264)
 
         //fire
@@ -36,7 +36,7 @@ class autoCloseRed9: LinearOpMode() {
 
         TransferSystem.setTransferPwr(-1.0)
         SpecterDrive.path(0.0, 35.0, 0.0, 1.5)
-        sleep(100)
+        sleep(10)
         TransferSystem.setTransferPwr(0.0)
         SpecterDrive.path(0.0, -35.0, 0.0, 1.5)
 
@@ -50,15 +50,15 @@ class autoCloseRed9: LinearOpMode() {
         //eofire
 
 
-        SpecterDrive.linearPath(22.5, 0.0, 0.0)
-        sleep(100)
+        SpecterDrive.path(22.5, 0.0, 0.0)
+        sleep(10)
         TransferSystem.setTransferPwr(-1.0)
         SpecterDrive.path(0.0, 42.0, 0.0, 2.5)
         TransferSystem.setTransferPwr(0.0)
-        sleep(100)
+        sleep(10)
         SpecterDrive.path(0.0, -42.0, 0.0, 2.5)
-        sleep(100)
-        SpecterDrive.linearPath(-24.0, 0.0, 0.0)
+        sleep(10)
+        SpecterDrive.path(-24.0, 0.0, 0.0)
 
         //fire
         TransferSystem.setIntakePwr(0.0)
@@ -70,8 +70,8 @@ class autoCloseRed9: LinearOpMode() {
 
         Turret.moveToTick(0)
 
-        SpecterDrive.linearPath(43.0, 0.0, 0.0)
-        sleep(100)
+        SpecterDrive.path(43.0, 0.0, 0.0)
+        sleep(10)
         TransferSystem.setTransferPwr(-1.0)
         SpecterDrive.path(0.0, 45.0, 0.0, 2.5)
         sleep(100)

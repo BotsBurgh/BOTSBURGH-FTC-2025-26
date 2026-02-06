@@ -31,8 +31,8 @@ class autoFarBlue6: LinearOpMode() {
 
         TransferSystem.setTransferPwr(-1.0)
         SpecterDrive.path(0.0, 50.0, 0.0, 3.0)
-        SpecterDrive.linearPath(0.0, -12.0, 0.0)
-        SpecterDrive.linearPath(-10.0, 0.0, 0.0)
+        SpecterDrive.path(0.0, -12.0, 0.0)
+        SpecterDrive.path(-10.0, 0.0, 0.0)
         SpecterDrive.path(0.0, 14.0, 0.0, 1.0)
         SpecterDrive.path(0.0, -50.0, 0.0, 3.0)
 

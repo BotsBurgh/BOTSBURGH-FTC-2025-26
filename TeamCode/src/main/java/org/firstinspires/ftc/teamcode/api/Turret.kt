@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.core.API
 import kotlin.math.atan2
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeDegrees
+import org.firstinspires.ftc.teamcode.RobotConfig
 import kotlin.math.abs
 
 /**
@@ -67,10 +68,10 @@ object Turret : API() {
     fun setTargetPos(startSide: Double, startPos: Double) {
         //TODO: Magic Number system SUCKS, but csv only logs doubles for now, so we have to until we can log strings and use enums
         targetPos = when {
-            startSide == 0.0 && startPos == 0.0 -> Turret.CLOSE_RED_TO_BASKET
-            startSide == 1.0 && startPos == 0.0 -> Turret.CLOSE_BLUE_TO_BASKET
-            startSide == 0.0 && startPos == 1.0 -> Turret.FAR_RED_TO_BASKET
-            startSide == 1.0 && startPos == 1.0 -> Turret.FAR_BLUE_TO_BASKET
+            startSide == 0.0 && startPos == 0.0 -> doubleArrayOf(0.0, 0.0)
+            startSide == 1.0 && startPos == 0.0 -> doubleArrayOf(0.0, 0.0)
+            startSide == 0.0 && startPos == 1.0 -> doubleArrayOf(0.0, 0.0)
+            startSide == 1.0 && startPos == 1.0 -> doubleArrayOf(0.0, 0.0)
             else -> doubleArrayOf(0.0, 0.0)
         }
     }
@@ -78,36 +79,24 @@ object Turret : API() {
 
     /**
      * Constantly makes sure that the turret is facing the basket.
-     * @param startPos the starting position of the robot
-     * @param deltaPos the change in position of the robot
-     *
-     * Returns angle
      */
-    fun trackPos(startPos: DoubleArray, deltaPos: DoubleArray): Double {
-
-        //robot’s current  position
-        val robotX = startPos[0] + deltaPos[0]
-        val robotY = startPos[1] + deltaPos[1]
-
-        //direction vector to target
-        val dx = targetPos[0] - robotX
-        val dy = targetPos[1] - robotY
+    fun trackPos(isAuto: Boolean){
 
         //angle
-        val theta = normalizeDegrees(Math.toDegrees(atan2(dy, dx)) + deltaPos[2])
+        val theta =
+            normalizeDegrees(
+                Math.toDegrees
+                    (atan2(RobotConfig.UniversalCoordinates.RED_POS[1] - RobotTracker.getPos(false)[1], RobotConfig.UniversalCoordinates.RED_POS[0] -  RobotTracker.getPos(false)[0]))
+                        + RobotTracker.getPos(false)[2])
 
         //convert output angle to motor ticks
-        val motorTicks = theta * Turret.TICKS_PER_DEGREE
-
-        val turretPos = (motorTicks * 2.14).toInt()
-
+        val motorTicks = (theta * Turret.TICKS_PER_DEGREE).toInt()
 
         //move turret
-        aimer.targetPosition = turretPos
+        aimer.targetPosition = motorTicks
         aimer.mode = DcMotor.RunMode.RUN_TO_POSITION
-        aimer.power = 0.5
+        aimer.power = -0.9
 
-        return theta
     }
 
     /**

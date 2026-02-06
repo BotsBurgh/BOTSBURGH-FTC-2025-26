@@ -8,14 +8,16 @@ import org.firstinspires.ftc.teamcode.api.TransferSystem
 import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.api.Turret
 import org.firstinspires.ftc.teamcode.api.Voltage
+import org.firstinspires.ftc.teamcode.Singleton
+import org.firstinspires.ftc.teamcode.api.UniversalCoordinates
 import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.sqrt
 
 
-@TeleOp(name = "teleOpBlue")
+@TeleOp(name = "teleOpTest")
 
-class teleOpBlue : OpMode() {
+class teleOpTest : OpMode() {
 
     var initPos = DoubleArray(3)
     var turretOn = false
@@ -33,7 +35,7 @@ class teleOpBlue : OpMode() {
         Voltage.init(this)
         Limelight.init(this, 0)
 
-        initPos = doubleArrayOf(RobotTracker.readPositionFile()[0], RobotTracker.readPositionFile()[1], RobotTracker.readPositionFile()[2])
+        RobotTracker.setPos(Singleton.finalXInches, Singleton.finalYInches, Singleton.finalHeadingDeg, false)
     }
 
     override fun loop() {
@@ -59,17 +61,7 @@ class teleOpBlue : OpMode() {
             rotation = rotationPower * RobotConfig.TeleOpMain.ROTATE_SPEED,
         )
 
-        Turret.setTargetPos(0.0, 1.0)
-
-        //Turret.trackPos(initPos, RobotTracker.getPos(false))
-
-        //limelight
-        if (Limelight.seesTag && gamepad2.left_stick_x.toDouble() == 0.0) {
-            val power = Limelight.getTurretPower()
-            Turret.setAimerPower(power)
-        } else {
-            Turret.setAimerPower(gamepad2.left_stick_x.toDouble())
-        }
+        Turret.trackPos(false)
 
         //Lock turret
         Turret.lockServo()
@@ -161,8 +153,13 @@ class teleOpBlue : OpMode() {
         }
 
 
-        telemetry.addData("Tick", Turret.aimer.currentPosition)
-        telemetry.addData("Power", launchPwr)
+        telemetry.addData("Is in Far?", UniversalCoordinates.inFarTriangle(RobotTracker.getPos(false)))
+        telemetry.addData("Is in close", UniversalCoordinates.inCloseTriangle(RobotTracker.getPos(false)))
+        telemetry.addData("Is in parking zone?", UniversalCoordinates.inParkingZone(RobotTracker.getPos(false), "Red"))
+
+        telemetry.addData("X", RobotTracker.getPos(false)[0])
+        telemetry.addData("X", RobotTracker.getPos(false)[1])
+        telemetry.addData("X", RobotTracker.getPos(false)[2])
 
     }
 
