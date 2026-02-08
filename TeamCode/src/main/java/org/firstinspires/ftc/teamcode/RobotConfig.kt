@@ -183,6 +183,15 @@ object RobotConfig {
         @JvmField
         var GEAR_RATIO_LAUNCHER = 2.8
 
+        /**
+         * Servo Position
+         */
+        @JvmField
+        var pos = 0.0
+
+        @JvmField
+        var pwr = 0.0
+
     }
 
     @Config

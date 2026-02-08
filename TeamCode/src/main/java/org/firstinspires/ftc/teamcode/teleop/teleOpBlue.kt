@@ -59,8 +59,6 @@ class teleOpBlue : OpMode() {
             rotation = rotationPower * RobotConfig.TeleOpMain.ROTATE_SPEED,
         )
 
-        Turret.setTargetPos(0.0, 1.0)
-
         //Turret.trackPos(initPos, RobotTracker.getPos(false))
 
         //limelight

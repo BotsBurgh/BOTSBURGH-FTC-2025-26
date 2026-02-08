@@ -23,8 +23,8 @@ object Singleton {
      * Position Localization
      */
     var finalHeadingDeg: Double = 0.0
-    var finalXInches: Double = 0.0
-    var finalYInches: Double = 0.0
+    var finalXInches: Double = 12.0
+    var finalYInches: Double = 12.0
 
     var initXInches: Double = 0.0
 
