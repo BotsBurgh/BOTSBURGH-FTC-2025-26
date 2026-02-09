@@ -266,14 +266,15 @@ object Turret : API() {
     }
 
     fun changeTargetVelocity(distance: Double){
-        if(distance < 78.0){
-            TARGET_VELOCITY = 0.104167 * distance.squared() - 5.41667 * distance + 1040
+        var dist = distance - 18
+        if(dist < 78.0){
+            TARGET_VELOCITY = 0.104167 * dist.squared() - 5.41667 * dist + 1040
             moveHood(0.86)
             light2(0.28)
         }
 
-        else if(78.0 < distance && distance < 120){
-            TARGET_VELOCITY = 0.00000223265 * distance * distance * distance * distance + 0.00160751 * distance * distance * distance - 0.465213 * distance.squared() + 41.41204 * distance
+        else if(78.0 < dist && dist < 120){
+            TARGET_VELOCITY = 0.00000223265 * dist * dist * dist * dist + 0.00160751 * dist * dist * dist - 0.465213 * dist.squared() + 41.41204 * dist
             moveHood(0.6)
             light2(0.388)
         }
