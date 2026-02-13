@@ -106,7 +106,7 @@ object SpecterDrive : API() {
      * @param t Max runtime in seconds before timing out
      * @param rC The centricity of the robot (assumes robot-centric unless specified)
      */
-    fun path(x: Double, y: Double, h: Double, t: Double = 999.99999, rC: Boolean = true) {
+    fun path(x: Double, y: Double, h: Double, t: Double = 999.99999,  rC: Boolean = true) {
 
         var otosScreenshot = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
 
@@ -129,6 +129,12 @@ object SpecterDrive : API() {
         while (linearOpMode.opModeIsActive() && (runtime.milliseconds() < t * 1000) && ((abs(xError) > RobotConfig.OTOS.X_THRESHOLD) ||
                     (abs(yError) > RobotConfig.OTOS.Y_THRESHOLD) || (abs(hError) > RobotConfig.OTOS.H_THRESHOLD))
         ) {
+            with(linearOpMode.telemetry) {
+                addData("current X coordinate", otos.position.x)
+                addData("current Y coordinate", otos.position.y)
+                addData("current Heading angle", otos.position.h)
+                update()
+            }
             computePower(otos.position.h)
 
             // Update errors based on global position
@@ -156,18 +162,14 @@ object SpecterDrive : API() {
     private fun computePower(currentHeading: Double) {
         // Calculate the error vector in field coordinates
         val fieldX = -(xError * STRAFE_GAIN)
-        val fieldY = (yError * SPEED_GAIN)
+        val fieldY = -(yError * SPEED_GAIN)
 
-        // Rotate the vector to be relative to the robot's current heading
-        val robotHeadingRad = Math.toRadians(currentHeading)
-        val adjX = fieldX * cos(robotHeadingRad) + fieldY * sin(robotHeadingRad)
-        val adjY = -fieldX * sin(robotHeadingRad) + fieldY * cos(robotHeadingRad)
 
         // Direction and magnitude
-        val rad = atan2(adjY, adjX) - (PI / 3.0) - (2.0 * PI / 3.0)
-        val magnitude = sqrt(adjX * adjX + adjY * adjY)
+        val rad = atan2(fieldY, fieldX) - (PI / 3.0) - (2.0 * PI / 3.0)
+        val magnitude = sqrt(fieldX * fieldX + fieldY * fieldY)
 
-        var (r, g, b) = TriWheels.compute(rad, magnitude * DRIVE_SPEED)
+        var (r, g, b) = TriWheels.compute(rad, magnitude)
 
         turn = Range.clip(hError * TURN_GAIN * ROTATE_SPEED, -MAX_AUTO_TURN, MAX_AUTO_TURN)
 
@@ -178,7 +180,7 @@ object SpecterDrive : API() {
         val max = maxOf(abs(r), abs(g), abs(b), 1.0)
         r /= max; g /= max; b /= max
 
-        TriWheels.power(roundPower(r), roundPower(g), roundPower(b))
+        TriWheels.power(r, roundPower(g), roundPower(b))
     }
 
 

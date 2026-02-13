@@ -76,6 +76,13 @@ class teleOpTest : OpMode() {
             Turret.setAimerPower(0.0)
         }
 
+        if(!Limelight.seesTag){
+            Turret.light(0.28)
+        }
+        else if(Limelight.seesTag){
+            Turret.light(0.5)
+        }
+
         //Toggle turret on and off
         if (gamepad2.b && !lastCircle) {
             turretOn = !turretOn
@@ -165,6 +172,7 @@ class teleOpTest : OpMode() {
         telemetry.addData("X", RobotTracker.getPos(false)[0])
         telemetry.addData("Y", RobotTracker.getPos(false)[1])
         telemetry.addData("H", RobotTracker.getPos(false)[2])
+        telemetry.addData("Tick", Turret.aimer.currentPosition)
     }
 //small 0.86, medium 0.6, far = 0.3
 }

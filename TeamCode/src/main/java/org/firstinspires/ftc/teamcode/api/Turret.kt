@@ -43,7 +43,7 @@ object Turret : API() {
     var LAUNCHER_KF = 0.475
 
     @JvmField
-    var LAUNCHER_KP = 200.1
+    var LAUNCHER_KP = 210.1
 
     @JvmField
     var TARGET_VELOCITY = 1660.0
@@ -267,20 +267,20 @@ object Turret : API() {
 
     fun changeTargetVelocity(distance: Double){
         var dist = distance - 18
-        if(dist < 78.0){
+        if(dist < 67.0){
             TARGET_VELOCITY = 0.104167 * dist.squared() - 5.41667 * dist + 1040
             moveHood(0.86)
             light2(0.28)
         }
 
-        else if(78.0 < dist && dist < 120){
+        else if(67.0 < dist && dist < 110){
             TARGET_VELOCITY = 0.00000223265 * dist * dist * dist * dist + 0.00160751 * dist * dist * dist - 0.465213 * dist.squared() + 41.41204 * dist
             moveHood(0.6)
             light2(0.388)
         }
 
         else{
-            TARGET_VELOCITY = 1640.0
+            TARGET_VELOCITY = 1630.0 //0.000159794*distance*distance*distance*distance-0.06844*distance*distance*distance+9.67655*distance.squared()-440.57503*distance
             moveHood(0.3)
             light2(0.5)
         }
