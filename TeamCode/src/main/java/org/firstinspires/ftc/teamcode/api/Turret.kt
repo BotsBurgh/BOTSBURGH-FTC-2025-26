@@ -43,7 +43,7 @@ object Turret : API() {
     var LAUNCHER_KF = 0.475
 
     @JvmField
-    var LAUNCHER_KP = 210.1
+    var LAUNCHER_KP = 215.1
 
     @JvmField
     var TARGET_VELOCITY = 1660.0
@@ -280,7 +280,7 @@ object Turret : API() {
         }
 
         else{
-            TARGET_VELOCITY = 1630.0 //0.000159794*distance*distance*distance*distance-0.06844*distance*distance*distance+9.67655*distance.squared()-440.57503*distance
+            TARGET_VELOCITY = 1650.0 //0.000159794*distance*distance*distance*distance-0.06844*distance*distance*distance+9.67655*distance.squared()-440.57503*distance
             moveHood(0.3)
             light2(0.5)
         }

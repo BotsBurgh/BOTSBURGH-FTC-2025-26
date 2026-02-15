@@ -31,11 +31,21 @@ class teleOpTest : OpMode() {
     var launchPwr = 1.0
 
     override fun init() {
+        //Scan for Singleton
         TriWheels.init(this)
         RobotTracker.teleInit(this)
         Turret.init(this)
         TransferSystem.init(this)
         Voltage.init(this)
+        //Warning in case singleton did not write correctly
+        if(!Singleton.autoRan){
+            telemetry.addLine("WARNING: AUTO DATA NOT FOUND")
+            telemetry.addLine("PRESS DPAD BUTTONS ON GAMEPAD 2 TO CORRESPOND WITH STARTING AUTO POSITION")
+            telemetry.addLine("UP > FAR RED")
+            telemetry.addLine("LEFT > FAR BLUE")
+            telemetry.addLine("RIGHT > CLOSE RED")
+            telemetry.addLine("DOWN > CLOSE BLUE")
+        }
         Limelight.init(this, 1)
 
         RobotTracker.setPos(Singleton.finalXInches, Singleton.finalYInches, Singleton.finalHeadingDeg, false)
@@ -68,7 +78,7 @@ class teleOpTest : OpMode() {
             rotation = rotationPower * RobotConfig.TeleOpMain.ROTATE_SPEED,
         )
 
-        //limelight
+        //limelight tracking
         if (Limelight.seesTag) {
             val power = Turret.getTurretPower()
             Turret.setAimerPower(power)
@@ -76,6 +86,10 @@ class teleOpTest : OpMode() {
             Turret.setAimerPower(0.0)
         }
 
+        //LL overrides
+        Turret.setAimerPower(gamepad2.left_stick_x.toDouble())
+
+        //LimeLight LED tracker
         if(!Limelight.seesTag){
             Turret.light(0.28)
         }
@@ -84,7 +98,7 @@ class teleOpTest : OpMode() {
         }
 
         //Toggle turret on and off
-        if (gamepad2.b && !lastCircle) {
+        if (gamepad1.circle && !lastCircle) {
             turretOn = !turretOn
 
             if (turretOn) {
@@ -95,9 +109,9 @@ class teleOpTest : OpMode() {
             }
         }
 
-        lastCircle = gamepad2.b
+        lastCircle = gamepad1.circle
 
-        //Toggle launch power between 1, 0.9, and 0.75
+        //Toggle launch power between diff powers
         if (gamepad2.a) {
             if (!crossPressed) {
                 launchPwr = when (launchPwr) {
@@ -129,7 +143,7 @@ class teleOpTest : OpMode() {
             crossPressed = false
         }
 
-
+        //buttons
         if (gamepad1.left_bumper) {
             TransferSystem.setIntakePwr(-1.0)
         }
@@ -155,7 +169,7 @@ class teleOpTest : OpMode() {
             TransferSystem.setTransferPwr(0.0)
         }
 
-
+        //Debug/telemetry statements
         val theta =
             normalizeDegrees(
                 Math.toDegrees
@@ -174,5 +188,4 @@ class teleOpTest : OpMode() {
         telemetry.addData("H", RobotTracker.getPos(false)[2])
         telemetry.addData("Tick", Turret.aimer.currentPosition)
     }
-//small 0.86, medium 0.6, far = 0.3
 }
