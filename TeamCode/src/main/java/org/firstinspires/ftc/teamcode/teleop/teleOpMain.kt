@@ -207,19 +207,9 @@ class teleOpMain : OpMode() {
             TransferSystem.setTransferPwr(0.0)
         }
 
-        //Debug/telemetry statements
-        val theta =
-            normalizeDegrees(
-                Math.toDegrees
-                    (atan2(RobotConfig.UniversalCoordinates.RED_POS[1] - RobotTracker.getPos(false)[1], RobotConfig.UniversalCoordinates.RED_POS[0] -  RobotTracker.getPos(false)[0]))
-                        - RobotTracker.getPos(false)[2])
-
-        telemetry.addData("theta", theta)
-
         telemetry.addData("Distance", sqrt((RobotConfig.UniversalCoordinates.RED_POS[0]- RobotTracker.getPos(false)[0]).squared()+(RobotConfig.UniversalCoordinates.RED_POS[1]- RobotTracker.getPos(false)[1]).squared()))
         telemetry.addData("Velocity", Turret.launcherL.velocity)
         telemetry.addData("Power", Turret.launcherL.power)
-
 
         telemetry.addData("X", RobotTracker.getPos(false)[0])
         telemetry.addData("Y", RobotTracker.getPos(false)[1])

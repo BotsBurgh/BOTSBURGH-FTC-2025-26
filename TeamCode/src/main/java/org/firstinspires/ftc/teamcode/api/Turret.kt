@@ -119,27 +119,8 @@ object Turret : API() {
     /**
      * Constantly makes sure that the turret is facing the basket.
      */
-    fun trackPos(isAuto: Boolean){
-        //angle
-        val theta =
-            normalizeDegrees(
-                Math.toDegrees
-                    (atan2(RobotConfig.UniversalCoordinates.RED_POS[1] - RobotTracker.getPos(false)[1], RobotConfig.UniversalCoordinates.RED_POS[0] -  RobotTracker.getPos(false)[0]))
-                        - RobotTracker.getPos(false)[2])
-
-        //convert output angle to motor ticks
-        val motorTicks = (theta * Turret.TICKS_PER_DEGREE).toInt()
-
-        //move turret
-        aimer.targetPosition = motorTicks
-        aimer.mode = DcMotor.RunMode.RUN_TO_POSITION
-        if (motorTicks>0){
-            aimer.power = -0.9
-        }
-        else if (motorTicks<0){
-            aimer.power = -0.9
-        }
-
+    fun trackPos(){
+        //no
     }
 
     /**
