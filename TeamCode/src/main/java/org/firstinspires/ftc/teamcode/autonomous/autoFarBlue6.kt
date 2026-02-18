@@ -89,5 +89,6 @@ class autoFarBlue6: LinearOpMode() {
         Singleton.finalXInches = RobotTracker.getPos(true)[2]
         Singleton.team = "Blue"
         Singleton.starting = "Far"
+        Singleton.tagTracking = 0
     }
 }

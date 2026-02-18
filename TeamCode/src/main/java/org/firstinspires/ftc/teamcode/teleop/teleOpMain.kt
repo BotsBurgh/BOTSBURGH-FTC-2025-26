@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode.teleop
-import androidx.core.graphics.component2
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeDegrees
@@ -11,18 +10,17 @@ import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.api.Turret
 import org.firstinspires.ftc.teamcode.api.Voltage
 import org.firstinspires.ftc.teamcode.Singleton
-import org.firstinspires.ftc.teamcode.RobotConfig.Turret.pos
 import org.firstinspires.ftc.teamcode.utils.squared
 import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.sqrt
 
 
-@TeleOp(name = "teleOpTest")
+@TeleOp(name = "teleOpMain")
 
-class teleOpTest : OpMode() {
+class teleOpMain : OpMode() {
 
-    var initPos = DoubleArray(3)
     var turretOn = false
     var lastCircle = false
 
@@ -45,11 +43,40 @@ class teleOpTest : OpMode() {
             telemetry.addLine("LEFT > FAR BLUE")
             telemetry.addLine("RIGHT > CLOSE RED")
             telemetry.addLine("DOWN > CLOSE BLUE")
+
+            //Far Red
+            if(gamepad2.dpad_up){
+                RobotTracker.setPos(0.0, 0.0, 0.0, false)
+                Limelight.init(this, 1)
+            }
+
+            //Far Blue
+            if(gamepad2.dpad_left){
+                RobotTracker.setPos(0.0, 0.0, 0.0, false)
+                Limelight.init(this, 0)
+            }
+
+            //Close Red
+            if(gamepad2.dpad_right){
+                RobotTracker.setPos(0.0, 0.0, 0.0, false)
+                Limelight.init(this, 1)
+            }
+
+            //Close Blue
+            if(gamepad2.dpad_left){
+                RobotTracker.setPos(0.0, 0.0, 0.0, false)
+                Limelight.init(this, 0)
+            }
         }
-        Limelight.init(this, 1)
 
-        RobotTracker.setPos(Singleton.finalXInches, Singleton.finalYInches, Singleton.finalHeadingDeg, false)
-
+        //Transfer data for auto if found
+        else {
+            telemetry.addLine("AUTO DATA FOUND")
+            telemetry.addLine("TEAM: "+ Singleton.team)
+            telemetry.addLine("AUTO STARTING POS: "+ Singleton.starting)
+            RobotTracker.setPos(Singleton.finalXInches, Singleton.finalYInches, Singleton.finalHeadingDeg, false)
+            Limelight.init(this, Singleton.tagTracking)
+        }
     }
 
     override fun loop() {
@@ -59,12 +86,10 @@ class teleOpTest : OpMode() {
         telemetry.clear()
 
         // joystick(Movement) input
-
         val joyX = -this.gamepad1.left_stick_x.toDouble()
         val joyY = this.gamepad1.left_stick_y.toDouble()
 
         // PI / 3 because 0 radians is right, not forward
-
         val joyRadians = atan2(joyY, joyX) - (PI / 3.0) - (2.0 * PI / 3.0)
 
         val joyMagnitude = sqrt(joyY * joyY + joyX * joyX)
@@ -93,7 +118,7 @@ class teleOpTest : OpMode() {
         if(!Limelight.seesTag){
             Turret.light(0.28)
         }
-        else if(Limelight.seesTag){
+        else {
             Turret.light(0.5)
         }
 
@@ -111,7 +136,12 @@ class teleOpTest : OpMode() {
 
         lastCircle = gamepad1.circle
 
-        //Toggle launch power between diff powers
+        //Update turret speed
+        if (turretOn) {
+            Turret.launch()
+        }
+
+        //Toggle launch power between diff powers (debug)
         if (gamepad2.a) {
             if (!crossPressed) {
                 launchPwr = when (launchPwr) {
@@ -141,6 +171,14 @@ class teleOpTest : OpMode() {
             }
         } else {
             crossPressed = false
+        }
+
+        //rumble to show velocity
+        val veloEr = abs(Turret.launcherL.velocity + Turret.TARGET_VELOCITY)
+        val shootReady = veloEr < 50
+
+        if(turretOn && shootReady){
+            gamepad1.rumble(300)
         }
 
         //buttons
