@@ -26,6 +26,7 @@ class autoFarRed6: LinearOpMode() {
 
         //Launch 3 balls
         Turret.changeTargetVelocity(sqrt((RobotConfig.UniversalCoordinates.RED_POS[0]- RobotTracker.getPos(true)[0]).squared()+(RobotConfig.UniversalCoordinates.RED_POS[1]- RobotTracker.getPos(true)[1]).squared()))
+
         Turret.moveToTick(-390)
         Turret.launch()
         sleep(2000)

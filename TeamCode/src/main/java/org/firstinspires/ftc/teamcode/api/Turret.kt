@@ -54,7 +54,7 @@ object Turret : API() {
 
     val VISION_KP = 0.015
     val VISION_KI = 0.0
-    val VISION_KD = 0.0
+    val VISION_KD = 0.000007
     private val deadband = 1.0
     private var lastError = 0.0
     private var integralSum = 0.0

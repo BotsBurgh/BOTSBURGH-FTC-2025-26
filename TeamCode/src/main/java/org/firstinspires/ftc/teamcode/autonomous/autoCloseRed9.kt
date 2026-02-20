@@ -26,31 +26,36 @@ class autoCloseRed9: LinearOpMode() {
         waitForStart()
 
         //Move back and charge turret
-        Turret.changeTargetVelocity(sqrt(((RobotConfig.UniversalCoordinates.RED_POS[0] - (6.69*12).squared()) + (RobotConfig.UniversalCoordinates.RED_POS[1] - (7.11*12).squared()))))
+        Turret.changeTargetVelocity(
+            sqrt(
+                (RobotConfig.UniversalCoordinates.RED_POS[0] - (6.69 * 12)).squared() +
+                        (RobotConfig.UniversalCoordinates.RED_POS[1] - (7.11 * 12)).squared()
+            )  +5.5
+        )
         Turret.launch()
-        SpecterDrive.path(0.0, -60.0, 0.0)
+        SpecterDrive.path(0.0, -50.0, 0.0, 3.0)
 
         //Fire and shut down
         TransferSystem.setTransferPwr(-1.0)
         TransferSystem.setIntakePwr(1.0)
-        sleep(2500)
+        sleep(1000)
         TransferSystem.setTransferPwr(0.0)
         TransferSystem.setIntakePwr(0.0)
         Turret.launch(0.5)
 
         //Rotate to 90
-        SpecterDrive.rotateToHeading(90.0, 0.7)
+        SpecterDrive.rotateToHeading(-30.0, 0.7)
 
         //Forward and intake first 3 balls
-        Turret.moveToTick(-1) //FIND TICK
+        Turret.moveToTick(-230) //FIND TICK
         Turret.stop()
         TransferSystem.setIntakePwr(-1.0)
         TransferSystem.setTransferPwr(-1.0)
-        SpecterDrive.path(0.0, (4*12.0), 0.0, 1.5)
-        TransferSystem.setTransferPwr(0.0)
+        SpecterDrive.path(0.0, (4.5*12.0), 0.0, 3.0)
         TransferSystem.setIntakePwr(0.0)
+        TransferSystem.setTransferPwr(0.0)
         Turret.launch()
-        SpecterDrive.path(0.0, -(4*12.0), 0.0, 1.5)
+        SpecterDrive.path(0.0, -(4.5*12.0), 0.0, 1.75)
 
         //Fire and shut down
         TransferSystem.setTransferPwr(-1.0)
@@ -61,54 +66,33 @@ class autoCloseRed9: LinearOpMode() {
         Turret.launch(0.5)
 
         //Down
-        SpecterDrive.path(40.0, 0.0, 0.0, 0.5)
+        SpecterDrive.path(23.5, 0.0, 0.0, 1.5)
 
         //Forward and intake next 3 balls, hit classifier
         Turret.stop()
         TransferSystem.setIntakePwr(-1.0)
         TransferSystem.setTransferPwr(-1.0)
-        SpecterDrive.path(0.0, (4.5*12.0), 0.0, 1.5)
+        SpecterDrive.path(0.0, (5.5*12.0), 0.0, 3.0)
+        SpecterDrive.path(0.0, -12.0, 0.0, 2.0)
         TransferSystem.setIntakePwr(0.0)
         TransferSystem.setTransferPwr(0.0)
-        Turret.launch()
-        SpecterDrive.path(0.0, -(4.5*12.0), 0.0, 1.5)
+        SpecterDrive.path(-12.0, 0.0, 0.0, 2.0)
+        SpecterDrive.path(0.0, 18.0, 0.0, 1.0)
+        Turret.launch(-0.5)
+        SpecterDrive.path(0.0, -(5.5*12.0)-6.7, 0.0, 1.5)
 
         //Up
-        SpecterDrive.path(-40.0, 0.0, 0.0, 0.5)
+        SpecterDrive.path(-30.0, 0.0, 0.0, 1.5)
 
         //Fire and shut down
-        Turret.moveToTick(-1)//change if needed
         TransferSystem.setTransferPwr(-1.0)
         TransferSystem.setIntakePwr(1.0)
         sleep(2500)
         TransferSystem.setTransferPwr(0.0)
         TransferSystem.setIntakePwr(0.0)
-        Turret.launch(0.5)
+        //Up
+        SpecterDrive.path(-15.0, 0.0, 0.0, 1.5)
 
-        //Down
-        SpecterDrive.path((3.5*12), 0.0, 0.0, 0.5)
-
-        //Forward and intake first 3 balls
-        Turret.stop()
-        TransferSystem.setIntakePwr(-1.0)
-        TransferSystem.setTransferPwr(-1.0)
-        SpecterDrive.path(0.0, (4*12.0), 0.0, 1.5)
-        TransferSystem.setTransferPwr(0.0)
-        TransferSystem.setIntakePwr(0.0)
-        Turret.launch()
-        SpecterDrive.path(0.0, -(4*12.0), 0.0, 1.5)
-
-        //up
-        SpecterDrive.path(-(3.5*12), 0.0, 0.0, 0.5)
-
-        //Fire and shut down
-        Turret.moveToTick(-1)//change if needed
-        TransferSystem.setTransferPwr(-1.0)
-        TransferSystem.setIntakePwr(1.0)
-        sleep(2500)
-        TransferSystem.setTransferPwr(0.0)
-        TransferSystem.setIntakePwr(0.0)
-        Turret.stop()
 
         //Singleton logging
         Singleton.autoRan = true

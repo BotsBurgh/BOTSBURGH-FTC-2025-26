@@ -48,24 +48,32 @@ class teleOpMain : OpMode() {
             if(gamepad2.dpad_up){
                 RobotTracker.setPos(0.0, 0.0, 0.0, false)
                 Limelight.init(this, 1)
+                telemetry.clear()
+                telemetry.addLine("SELECTED: FAR RED")
             }
 
             //Far Blue
-            if(gamepad2.dpad_left){
+            else if(gamepad2.dpad_left){
                 RobotTracker.setPos(0.0, 0.0, 0.0, false)
                 Limelight.init(this, 0)
+                telemetry.clear()
+                telemetry.addLine("SELECTED: FAR BLUE")
             }
 
             //Close Red
-            if(gamepad2.dpad_right){
+            else if(gamepad2.dpad_right){
                 RobotTracker.setPos(0.0, 0.0, 0.0, false)
                 Limelight.init(this, 1)
+                telemetry.clear()
+                telemetry.addLine("SELECTED: CLOSE RED")
             }
 
             //Close Blue
-            if(gamepad2.dpad_left){
+            else if(gamepad2.dpad_left){
                 RobotTracker.setPos(0.0, 0.0, 0.0, false)
                 Limelight.init(this, 0)
+                telemetry.clear()
+                telemetry.addLine("SELECTED: CLOSE BLUE")
             }
         }
 
@@ -139,38 +147,6 @@ class teleOpMain : OpMode() {
         //Update turret speed
         if (turretOn) {
             Turret.launch()
-        }
-
-        //Toggle launch power between diff powers (debug)
-        if (gamepad2.a) {
-            if (!crossPressed) {
-                launchPwr = when (launchPwr) {
-                    1.0 -> 0.95
-                    0.95 -> 0.9
-                    0.9 -> 0.85
-                    0.85 -> 0.8
-                    0.8 -> 0.75
-                    0.75 -> 0.7
-                    0.7 -> 0.65
-                    0.65 -> 0.6
-                    0.6 -> 0.55
-                    0.55 -> 0.5
-                    0.5 -> 0.45
-                    0.45 -> 0.4
-                    0.4 -> 0.35
-                    0.35 -> 0.3
-                    0.3 -> 0.25
-                    0.25 -> 0.2
-                    0.2 -> 0.15
-                    0.15 -> 0.1
-                    0.1 -> 0.5
-                    0.5 -> 1.0
-                    else -> 1.0
-                }
-                crossPressed = true
-            }
-        } else {
-            crossPressed = false
         }
 
         //rumble to show velocity
