@@ -24,10 +24,6 @@ class teleOpMain : OpMode() {
     var turretOn = false
     var lastCircle = false
 
-    var crossPressed = false
-
-    var launchPwr = 1.0
-
     override fun init() {
         //Scan for Singleton
         TriWheels.init(this)
@@ -44,37 +40,7 @@ class teleOpMain : OpMode() {
             telemetry.addLine("RIGHT > CLOSE RED")
             telemetry.addLine("DOWN > CLOSE BLUE")
 
-            //Far Red
-            if(gamepad2.dpad_up){
-                RobotTracker.setPos(0.0, 0.0, 0.0, false)
-                Limelight.init(this, 1)
-                telemetry.clear()
-                telemetry.addLine("SELECTED: FAR RED")
-            }
-
-            //Far Blue
-            else if(gamepad2.dpad_left){
-                RobotTracker.setPos(0.0, 0.0, 0.0, false)
-                Limelight.init(this, 0)
-                telemetry.clear()
-                telemetry.addLine("SELECTED: FAR BLUE")
-            }
-
-            //Close Red
-            else if(gamepad2.dpad_right){
-                RobotTracker.setPos(0.0, 0.0, 0.0, false)
-                Limelight.init(this, 1)
-                telemetry.clear()
-                telemetry.addLine("SELECTED: CLOSE RED")
-            }
-
-            //Close Blue
-            else if(gamepad2.dpad_left){
-                RobotTracker.setPos(0.0, 0.0, 0.0, false)
-                Limelight.init(this, 0)
-                telemetry.clear()
-                telemetry.addLine("SELECTED: CLOSE BLUE")
-            }
+            init_loop()
         }
 
         //Transfer data for auto if found
@@ -85,6 +51,45 @@ class teleOpMain : OpMode() {
             RobotTracker.setPos(Singleton.finalXInches, Singleton.finalYInches, Singleton.finalHeadingDeg, false)
             Limelight.init(this, Singleton.tagTracking)
         }
+    }
+
+    override fun init_loop() {
+        //Far Red
+        if(gamepad2.dpad_up){
+            RobotTracker.setPos(0.0, 0.0, 0.0, false)
+            Limelight.init(this, 1)
+            telemetry.clear()
+            telemetry.addLine("SELECTED: FAR RED")
+            return
+        }
+
+        //Far Blue
+        else if(gamepad2.dpad_left){
+            RobotTracker.setPos(0.0, 0.0, 0.0, false)
+            Limelight.init(this, 0)
+            telemetry.clear()
+            telemetry.addLine("SELECTED: FAR BLUE")
+            return
+        }
+
+        //Close Red
+        else if(gamepad2.dpad_right){
+            RobotTracker.setPos(0.0, 0.0, 85.0, false)
+            Limelight.init(this, 1)
+            telemetry.clear()
+            telemetry.addLine("SELECTED: CLOSE RED")
+            return
+        }
+
+        //Close Blue
+        else if(gamepad2.dpad_down){
+            RobotTracker.setPos(0.0, 0.0, 275.0, false)
+            Limelight.init(this, 0)
+            telemetry.clear()
+            telemetry.addLine("SELECTED: CLOSE BLUE")
+            return
+        }
+
     }
 
     override fun loop() {
@@ -112,17 +117,18 @@ class teleOpMain : OpMode() {
         )
 
         //limelight tracking
-        if (Limelight.seesTag) {
-            val power = Turret.getTurretPower()
-            Turret.setAimerPower(power)
-        } else {
+        if (abs(gamepad2.left_stick_x/5) > 0.05) {
+            // Manual override
+            Turret.setAimerPower(gamepad2.left_stick_x.toDouble())
+        }
+        else if (Limelight.seesTag) {
+            Turret.setAimerPower(Turret.getTurretPower())
+        }
+        else {
             Turret.setAimerPower(0.0)
         }
 
-        //LL overrides
-        Turret.setAimerPower(gamepad2.left_stick_x.toDouble())
 
-        //LimeLight LED tracker
         if(!Limelight.seesTag){
             Turret.light(0.28)
         }
@@ -131,23 +137,32 @@ class teleOpMain : OpMode() {
         }
 
         //Toggle turret on and off
-        if (gamepad1.circle && !lastCircle) {
+        if (gamepad2.a){
+            Turret.launch(0.1)
+        }
+        else if (gamepad2.circle && !lastCircle) {
             turretOn = !turretOn
 
             if (turretOn) {
                 Turret.launch()
-            }   // turn on
+            }
+            // turn on
             else {
                 Turret.stop()
             }
         }
+        else {
+            Turret.stop()
 
-        lastCircle = gamepad1.circle
+        }
+
+        lastCircle = gamepad2.circle
 
         //Update turret speed
         if (turretOn) {
             Turret.launch()
         }
+
 
         //rumble to show velocity
         val veloEr = abs(Turret.launcherL.velocity + Turret.TARGET_VELOCITY)

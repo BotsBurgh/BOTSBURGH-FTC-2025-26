@@ -6,13 +6,10 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import com.qualcomm.robotcore.hardware.Servo
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeDegrees
-import org.firstinspires.ftc.teamcode.RobotConfig
-import org.firstinspires.ftc.teamcode.RobotConfig.Turret
+import org.firstinspires.ftc.teamcode.Singleton
 import org.firstinspires.ftc.teamcode.core.API
 import org.firstinspires.ftc.teamcode.utils.squared
 import kotlin.math.abs
-import kotlin.math.atan2
 
 
 /**
@@ -252,19 +249,38 @@ object Turret : API() {
             TARGET_VELOCITY = 0.104167 * dist.squared() - 5.41667 * dist + 1040
             moveHood(0.86)
             light2(0.28)
+            if (Singleton.team == "blue"){
+                Limelight.cam.pipelineSwitch(0)
+            }
+            else if (Singleton.team == "red"){
+                Limelight.cam.pipelineSwitch(1)
+            }
         }
 
-        else if(67.0 < dist && dist < 110){
+        else if(67.0 < dist && dist < 105){
             TARGET_VELOCITY = 0.00000223265 * dist * dist * dist * dist + 0.00160751 * dist * dist * dist - 0.465213 * dist.squared() + 41.41204 * dist
             moveHood(0.6)
             light2(0.388)
+            if (Singleton.team == "blue"){
+                Limelight.cam.pipelineSwitch(0)
+            }
+            else if (Singleton.team == "red"){
+                Limelight.cam.pipelineSwitch(1)
+            }
         }
 
         else{
-            TARGET_VELOCITY = 1650.0 //0.000159794*distance*distance*distance*distance-0.06844*distance*distance*distance+9.67655*distance.squared()-440.57503*distance
+            TARGET_VELOCITY = -0.00726448*distance*distance*distance+ 3.04573*distance.squared() - 419.56442*distance+20596.7275
             moveHood(0.3)
+            if (Singleton.team == "blue"){
+                Limelight.cam.pipelineSwitch(3)
+            }
+            else if (Singleton.team == "red"){
+                Limelight.cam.pipelineSwitch(2)
+            }
+
             light2(0.5)
         }
     }
-
 }
+
