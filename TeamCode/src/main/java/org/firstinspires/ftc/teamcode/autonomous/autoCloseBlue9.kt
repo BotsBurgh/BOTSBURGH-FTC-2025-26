@@ -103,9 +103,9 @@ class autoCloseBlue9: LinearOpMode() {
         Singleton.finalXInches = RobotTracker.getPos(true)[0]
         Singleton.finalXInches = RobotTracker.getPos(true)[1]
         Singleton.finalXInches = RobotTracker.getPos(true)[2]
-        Singleton.team = "Red"
+        Singleton.team = "Blue"
         Singleton.starting = "Close"
-        Singleton.tagTracking = 1
+        Singleton.tagTracking = 0
 
 
     }
