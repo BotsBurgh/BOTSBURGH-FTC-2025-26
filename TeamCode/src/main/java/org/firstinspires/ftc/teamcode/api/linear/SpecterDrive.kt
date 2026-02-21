@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.api.linear
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.util.ElapsedTime
 import com.qualcomm.robotcore.util.Range
@@ -224,6 +225,11 @@ object SpecterDrive : API() {
 
         // Stop the motors
         TriWheels.power(0.0, 0.0, 0.0)
+    }
+
+    fun log(msg: String){
+        linearOpMode.telemetry.addLine(msg)
+        linearOpMode.telemetry.update()
     }
 
 }

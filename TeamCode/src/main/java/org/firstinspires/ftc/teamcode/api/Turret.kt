@@ -270,7 +270,7 @@ object Turret : API() {
         }
 
         else{
-            TARGET_VELOCITY = -0.00726448*distance*distance*distance+ 3.04573*distance.squared() - 419.56442*distance+20596.7275
+            TARGET_VELOCITY = 1625.0 //-0.00726448*distance*distance*distance+ 3.04573*distance.squared() - 419.56442*distance+20596.7275
             moveHood(0.3)
             if (Singleton.team == "blue"){
                 Limelight.cam.pipelineSwitch(3)

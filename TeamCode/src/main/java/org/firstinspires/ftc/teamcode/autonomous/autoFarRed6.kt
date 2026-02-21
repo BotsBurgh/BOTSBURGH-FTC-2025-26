@@ -22,10 +22,11 @@ class autoFarRed6: LinearOpMode() {
         Singleton.reset()
 
         RobotTracker.setPos(84.0, 8.75, 90.0, true)
+        SpecterDrive.log((sqrt((RobotConfig.UniversalCoordinates.RED_POS[0]- RobotTracker.getPos(true)[0]).squared()+(RobotConfig.UniversalCoordinates.RED_POS[1]- RobotTracker.getPos(true)[1]).squared())).toString())
         waitForStart()
 
         //Launch 3 balls
-        Turret.changeTargetVelocity(sqrt((RobotConfig.UniversalCoordinates.RED_POS[0]- RobotTracker.getPos(true)[0]).squared()+(RobotConfig.UniversalCoordinates.RED_POS[1]- RobotTracker.getPos(true)[1]).squared()))
+        Turret.changeTargetVelocity(164.5460567)
 
         Turret.moveToTick(-390)
         Turret.launch()
@@ -59,16 +60,19 @@ class autoFarRed6: LinearOpMode() {
         TransferSystem.setIntakePwr(0.0)
 
         //Move to human Player
+        Turret.launch(0.5)
         TransferSystem.setIntakePwr(-1.0)
         TransferSystem.setTransferPwr(-1.0)
-        SpecterDrive.path(0.0, 72.0, 0.0, 4.0)
+        SpecterDrive.path(0.0, 72.0, 0.0, 3.0)
+        SpecterDrive.path(0.0, -12.0, 0.0, 1.0)
+        SpecterDrive.path(0.0, 12.0, 0.0, 3.0)
         SpecterDrive.path(0.0, -72.0, 0.0, 2.0)
         TransferSystem.setIntakePwr(0.0)
         TransferSystem.setTransferPwr(0.0)
 
 
         //FIRE
-        Turret.moveToTick(-383) //change
+        Turret.moveToTick(-400) //change
         Turret.launch()
         sleep(2000)
         TransferSystem.setTransferPwr(-1.0)
