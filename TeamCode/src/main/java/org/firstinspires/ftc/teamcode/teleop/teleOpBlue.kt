@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleop
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeDegrees
 import org.firstinspires.ftc.teamcode.RobotConfig
 import org.firstinspires.ftc.teamcode.api.Limelight
 import org.firstinspires.ftc.teamcode.api.RobotTracker
@@ -9,7 +8,6 @@ import org.firstinspires.ftc.teamcode.api.TransferSystem
 import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.api.Turret
 import org.firstinspires.ftc.teamcode.api.Voltage
-import org.firstinspires.ftc.teamcode.Singleton
 import org.firstinspires.ftc.teamcode.utils.squared
 import kotlin.math.PI
 import kotlin.math.abs
@@ -17,9 +15,9 @@ import kotlin.math.atan2
 import kotlin.math.sqrt
 
 
-@TeleOp(name = "teleOpMain")
+@TeleOp(name = "teleOpBlue")
 
-class teleOpMain : OpMode() {
+class teleOpBlue : OpMode() {
 
     var turretOn = false
     var lastCircle = false
@@ -31,75 +29,16 @@ class teleOpMain : OpMode() {
         Turret.init(this)
         TransferSystem.init(this)
         Voltage.init(this)
-        //Warning in case singleton did not write correctly
-            telemetry.addLine("PRESS DPAD BUTTONS ON GAMEPAD 2 TO CORRESPOND WITH STARTING AUTO POSITION")
-            telemetry.addLine("UP > FAR RED")
-            telemetry.addLine("LEFT > FAR BLUE")
-            telemetry.addLine("RIGHT > CLOSE RED")
-            telemetry.addLine("DOWN > CLOSE BLUE")
+        Limelight.init(this, 3)
 
-            init_loop()
-
-        //Transfer data for auto if found
-//        else {
-//            telemetry.addLine("AUTO DATA FOUND")
-//            telemetry.addLine("TEAM: "+ Singleton.team)
-//            telemetry.addLine("AUTO STARTING POS: "+ Singleton.starting)
-//            telemetry.addData("X",Singleton.finalXInches)
-//            telemetry.addData("y",Singleton.finalYInches)
-//            telemetry.addData("h",Singleton.finalHeadingDeg)
-//
-//            RobotTracker.setPos(Singleton.finalXInches, Singleton.finalYInches, Singleton.finalHeadingDeg, false)
-//            Limelight.init(this, Singleton.tagTracking)
-//        }
-    }
-
-    override fun init_loop() {
-        //Far Red
-        if(gamepad2.dpad_up){
-            RobotTracker.setPos(0.0, 0.0, 0.0, false)
-            Limelight.init(this, 1)
-            telemetry.clear()
-            telemetry.addLine("SELECTED: FAR RED")
-            return
-        }
-
-        //Far Blue
-        else if(gamepad2.dpad_left){
-            RobotTracker.setPos(108.0, 8.75,0.0, false)
-            Limelight.init(this, 0)
-            telemetry.clear()
-            telemetry.addLine("SELECTED: FAR BLUE")
-            return
-        }
-
-        //Close Red
-        else if(gamepad2.dpad_right){
-            RobotTracker.setPos(36.0, 8.75, 85.0, false)
-            Limelight.init(this, 1)
-            telemetry.clear()
-            telemetry.addLine("SELECTED: CLOSE RED")
-            return
-        }
-
-        //Close Blue
-        else if(gamepad2.dpad_down){
-            RobotTracker.setPos(66.0, 110.0, 275.0, false)
-            Limelight.init(this, 0)
-            telemetry.clear()
-            telemetry.addLine("SELECTED: CLOSE BLUE")
-            return
-        }
+        RobotTracker.setPos(134.5, 9.5, 0.0, false)
 
     }
 
     override fun loop() {
         //updates first
         Limelight.update(Turret.aimer.currentPosition)
-        if(Singleton.team == "Red")
-            Turret.changeTargetVelocity(sqrt((RobotConfig.UniversalCoordinates.RED_POS[0]- RobotTracker.getPos(false)[0]).squared()+(RobotConfig.UniversalCoordinates.RED_POS[1]- RobotTracker.getPos(false)[1]).squared()))
-        if(Singleton.team == "Blue")
-            Turret.changeTargetVelocity(sqrt((RobotConfig.UniversalCoordinates.BLUE_POS[0]- RobotTracker.getPos(false)[0]).squared()+(RobotConfig.UniversalCoordinates.BLUE_POS[1]- RobotTracker.getPos(false)[1]).squared()))
+        Turret.changeTargetVelocity(sqrt((RobotConfig.UniversalCoordinates.BLUE_POS[0]- RobotTracker.getPos(false)[0]).squared()+(RobotConfig.UniversalCoordinates.BLUE_POS[1]- RobotTracker.getPos(false)[1]).squared()))
 
         telemetry.clear()
 
@@ -210,7 +149,11 @@ class teleOpMain : OpMode() {
             TransferSystem.setTransferPwr(0.0)
         }
 
-        telemetry.addData("Distance", sqrt((RobotConfig.UniversalCoordinates.RED_POS[0]- RobotTracker.getPos(false)[0]).squared()+(RobotConfig.UniversalCoordinates.RED_POS[1]- RobotTracker.getPos(false)[1]).squared()))
+        if(gamepad2.left_trigger > 0.0 && gamepad2.right_trigger > 0.0){
+            RobotTracker.setPos(134.5, 9.5, 0.0, false)
+        }
+
+        telemetry.addData("Distance", sqrt((RobotConfig.UniversalCoordinates.BLUE_POS[0]- RobotTracker.getPos(false)[0]).squared()+(RobotConfig.UniversalCoordinates.BLUE_POS[1]- RobotTracker.getPos(false)[1]).squared()))
         telemetry.addData("Velocity", Turret.launcherL.velocity)
         telemetry.addData("Power", Turret.launcherL.power)
 

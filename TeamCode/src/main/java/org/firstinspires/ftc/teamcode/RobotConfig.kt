@@ -222,7 +222,7 @@ object RobotConfig {
          * Positions of the goals
          */
         @JvmField
-        var BLUE_POS = doubleArrayOf(5.0, 144.0, 55.0)
+        var BLUE_POS = doubleArrayOf(9.0, 144.0, 55.0)
 
         @JvmField
         var RED_POS = doubleArrayOf(135.0, 144.0, 55.0)
