@@ -8,7 +8,9 @@ import org.firstinspires.ftc.teamcode.api.TransferSystem
 import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.api.Turret
 import org.firstinspires.ftc.teamcode.api.Voltage
+import org.firstinspires.ftc.teamcode.utils.squared
 import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.sqrt
 
@@ -17,35 +19,34 @@ import kotlin.math.sqrt
 
 class teleOpBlue : OpMode() {
 
-    var initPos = DoubleArray(3)
     var turretOn = false
     var lastCircle = false
 
-    var crossPressed = false
-
-    var launchPwr = 1.0
-
     override fun init() {
+        //Scan for Singleton
         TriWheels.init(this)
         RobotTracker.teleInit(this)
         Turret.init(this)
         TransferSystem.init(this)
         Voltage.init(this)
-        Limelight.init(this, 0)
+        Limelight.init(this, 3)
 
-        initPos = doubleArrayOf(RobotTracker.readPositionFile()[0], RobotTracker.readPositionFile()[1], RobotTracker.readPositionFile()[2])
+        RobotTracker.setPos(134.5, 9.5, 0.0, false)
+
     }
 
     override fun loop() {
+        //updates first
         Limelight.update(Turret.aimer.currentPosition)
-        telemetry.clear()
-        // joystick(Movement) input
+        Turret.changeTargetVelocity(sqrt((RobotConfig.UniversalCoordinates.BLUE_POS[0]- RobotTracker.getPos(false)[0]).squared()+(RobotConfig.UniversalCoordinates.BLUE_POS[1]- RobotTracker.getPos(false)[1]).squared()))
 
+        telemetry.clear()
+
+        // joystick(Movement) input
         val joyX = -this.gamepad1.left_stick_x.toDouble()
         val joyY = this.gamepad1.left_stick_y.toDouble()
 
         // PI / 3 because 0 radians is right, not forward
-
         val joyRadians = atan2(joyY, joyX) - (PI / 3.0) - (2.0 * PI / 3.0)
 
         val joyMagnitude = sqrt(joyY * joyY + joyX * joyX)
@@ -59,83 +60,70 @@ class teleOpBlue : OpMode() {
             rotation = rotationPower * RobotConfig.TeleOpMain.ROTATE_SPEED,
         )
 
-        Turret.setTargetPos(0.0, 1.0)
-
-        //Turret.trackPos(initPos, RobotTracker.getPos(false))
-
-        //limelight
-        if (Limelight.seesTag && gamepad2.left_stick_x.toDouble() == 0.0) {
-            val power = Limelight.getTurretPower()
-            Turret.setAimerPower(power)
-        } else {
+        //limelight tracking
+        if (abs(gamepad2.left_stick_x/15) > 0.05) {
+            // Manual override
             Turret.setAimerPower(gamepad2.left_stick_x.toDouble())
         }
-
-        //Lock turret
-        Turret.lockServo()
-
-
-        //buttons
-
-        //Toggle launch power between 1, 0.9, and 0.75
-        if (gamepad2.a) {
-            if (!crossPressed) {
-                launchPwr = when (launchPwr) {
-                    1.0 -> 0.9
-                    0.9 -> 0.8
-                    0.8 -> 0.7
-                    0.7 -> 0.6
-                    0.6 -> 0.5
-                    0.5 -> 0.4
-                    else -> 1.0
-                }
-                crossPressed = true
-            }
-        } else {
-            crossPressed = false
+        else if (Limelight.seesTag) {
+            Turret.setAimerPower(Turret.getTurretPower())
+        }
+        else {
+            Turret.setAimerPower(0.0)
         }
 
-        //Light
-        when (launchPwr) {
-            1.0 -> {
-                Turret.light(0.722) //green
-            }
-            0.9 -> {
-                Turret.light(0.666)
-            }
-            0.8 -> {
-                Turret.light(0.611) //yellow
-            }
-            0.7 -> {
-                Turret.light(0.500)
-            }
-            0.6 -> {
-                Turret.light(0.388) //red
-            }
-            0.5 -> {
-                Turret.light(0.333)
-            }
-            else -> {
-                Turret.light(0.277)
 
-            }
+        if(!Limelight.seesTag){
+            Turret.light(0.28)
+        }
+        else {
+            Turret.light(0.5)
         }
 
         //Toggle turret on and off
-        if (gamepad2.b && !lastCircle) {
+        if (gamepad2.a){
+            Turret.launch(0.1)
+        }
+        else if (gamepad2.circle && !lastCircle) {
             turretOn = !turretOn
 
             if (turretOn) {
-                Turret.launch(-launchPwr)
-            }   // turn on
+                Turret.launch()
+                gamepad2.rumble(250)
+            }
+            // turn on
             else {
                 Turret.stop()
             }
         }
+        else {
+            Turret.stop()
 
-        lastCircle = gamepad2.b
+        }
+
+        lastCircle = gamepad2.circle
+
+        //Update turret speed
+        if (turretOn) {
+            Turret.launch()
+            gamepad2.rumble(250)
+        }
 
 
+//        //rumble to show velocity
+        val veloEr = abs(Turret.launcherL.velocity + Turret.TARGET_VELOCITY)
+        val shootReady = veloEr < 50
+//
+        if(turretOn && shootReady){
+            Turret.light2(0.5)
+
+
+        }
+        else{
+            Turret.light2(0.28)
+        }
+
+        //buttons
         if (gamepad1.left_bumper) {
             TransferSystem.setIntakePwr(-1.0)
         }
@@ -152,6 +140,7 @@ class teleOpBlue : OpMode() {
             TransferSystem.setTransferPwr(1.0)
         }
 
+
         if (!gamepad1.left_bumper && gamepad1.left_trigger.toDouble() == 0.0) {
             TransferSystem.setIntakePwr(-0.4)
         }
@@ -160,12 +149,17 @@ class teleOpBlue : OpMode() {
             TransferSystem.setTransferPwr(0.0)
         }
 
+        if(gamepad2.left_trigger > 0.0 && gamepad2.right_trigger > 0.0){
+            RobotTracker.setPos(134.5, 9.5, 0.0, false)
+        }
 
+        telemetry.addData("Distance", sqrt((RobotConfig.UniversalCoordinates.BLUE_POS[0]- RobotTracker.getPos(false)[0]).squared()+(RobotConfig.UniversalCoordinates.BLUE_POS[1]- RobotTracker.getPos(false)[1]).squared()))
+        telemetry.addData("Velocity", Turret.launcherL.velocity)
+        telemetry.addData("Power", Turret.launcherL.power)
 
-
+        telemetry.addData("X", RobotTracker.getPos(false)[0])
+        telemetry.addData("Y", RobotTracker.getPos(false)[1])
+        telemetry.addData("H", RobotTracker.getPos(false)[2])
         telemetry.addData("Tick", Turret.aimer.currentPosition)
-        telemetry.addData("Power", launchPwr)
-
     }
-
 }

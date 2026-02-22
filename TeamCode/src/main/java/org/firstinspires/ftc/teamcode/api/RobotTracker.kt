@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil
 import org.firstinspires.ftc.teamcode.RobotConfig
 import org.firstinspires.ftc.teamcode.core.API
+import org.firstinspires.ftc.teamcode.api.linear.SpecterDrive
 
 /**
  * An API to track the current coordinates of the robot.
@@ -15,11 +16,6 @@ object RobotTracker :API() {
 
     lateinit var tracker: SparkFunOTOS
         private set
-
-    //The autonomous position of the robot. We can't use tracker directly because it is being used by SpecterDrive.
-    var autoX : Double = 0.0
-    var autoY : Double = 0.0
-    var autoH : Double = 0.0
 
 
     /**
@@ -30,18 +26,14 @@ object RobotTracker :API() {
 
         tracker = this.opMode.hardwareMap.get(SparkFunOTOS::class.java, "OTOS")
 
-        readPositionFile()
         configureOtos()
     }
 
     /**
-     * Used for Initialization of RobotTracker during Autonomous. Does not initialize tracker. INITIALIZES CSV LOGGING.
+     * Used for Initialization of RobotTracker during Autonomous. Does not initialize tracker.
      */
     fun autoInit(opMode: OpMode) {
         super.init(opMode)
-
-        CsvLogging.init(opMode)
-        CsvLogging.createFile("Position")
     }
 
     /**
@@ -53,10 +45,10 @@ object RobotTracker :API() {
         tracker.setLinearUnit(DistanceUnit.INCH)
         tracker.setAngularUnit(AngleUnit.DEGREES)
 
-        tracker.offset = RobotConfig.OTOS.OFFSET
+        tracker.offset = SparkFunOTOS.Pose2D(-4.0, 0.0 ,90.0)
 
-        tracker.linearScalar = RobotConfig.OTOS.LINEAR_SCALAR
-        tracker.angularScalar = RobotConfig.OTOS.ANGULAR_SCALAR
+        tracker.linearScalar = 1.0
+        tracker.angularScalar = 1.0
 
         tracker.calibrateImu()
 
@@ -72,7 +64,7 @@ object RobotTracker :API() {
      */
     fun getPos(isAuto: Boolean):DoubleArray{
         if (isAuto) {
-            return doubleArrayOf(autoX, autoY, autoH)
+            return doubleArrayOf(SpecterDrive.otos.position.x, SpecterDrive.otos.position.y, SpecterDrive.otos.position.h)
         }
             return doubleArrayOf(tracker.position.x, tracker.position.y, tracker.position.h)
     }
@@ -88,14 +80,10 @@ object RobotTracker :API() {
      */
     fun setPos(newX : Double, newY: Double, newH : Double, isAuto: Boolean){
         if (isAuto) {
-            autoX = newX
-            autoY = newY
-            autoH = newH
+            SpecterDrive.otos.position = SparkFunOTOS.Pose2D(newX, newY, newH)
         }
         else {
-            tracker.position.x = newX
-            tracker.position.y = newY
-            tracker.position.h = newH
+            tracker.position = SparkFunOTOS.Pose2D(newX, newY, newH)
         }
     }
 
@@ -109,9 +97,9 @@ object RobotTracker :API() {
      */
     fun addPos(deltaX: Double, deltaY: Double, deltaH: Double, isAuto: Boolean){
         if (isAuto) {
-            autoX += deltaX
-            autoY += deltaY
-            autoH += deltaH
+            SpecterDrive.otos.position.x += deltaX
+            SpecterDrive.otos.position.y += deltaY
+            SpecterDrive.otos.position.h += deltaH
         }
         else {
             tracker.position.x += deltaX
@@ -120,24 +108,6 @@ object RobotTracker :API() {
         }
     }
 
-
-    /**
-     * Logs the current X, Y, and H to the Position CSV file. Call at the very end of Auto.
-     * We need this because at the end of autonomous, the program has to terminate and in teleOP, starts again.
-     * This resets all variables in the program, meaning that we have to log the variables at the end of Autonomous
-     * so we can read them in the beginning of teleOp.
-     *
-     * @param startSide the side in which the robot starts. 0.0 = red, 1.0 = blue
-     * @param startPos the further away the robot is at start, the more the value is. 0.0 = close to obelisk, 1.0 far from obelisk
-     */
-    fun logPos(startSide: Double, startPos: Double) {
-        CsvLogging.writeFile(
-            "Position",
-            arrayOf(autoX, autoY, autoH, startSide, startPos)
-        )
-        CsvLogging.flush("Position")
-        CsvLogging.close()
-    }
 
 
     /**

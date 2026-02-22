@@ -38,11 +38,11 @@ object RobotConfig {
     object TeleOpMain {
         /** A multiplier that scales that robot's driving / strafing speed. */
         @JvmField
-        var DRIVE_SPEED: Double = 1.0
+        var DRIVE_SPEED: Double = 0.85
 
         /** A multiplier that scales the robot's rotation speed. */
         @JvmField
-        var ROTATE_SPEED: Double = 0.5
+        var ROTATE_SPEED: Double = 0.7
 
     }
 
@@ -101,14 +101,14 @@ object RobotConfig {
          * Controls the acceleration of y-axis movement.
          */
         @JvmField
-        var SPEED_GAIN: Double = 0.04
+        var SPEED_GAIN: Double = 0.03
 
 
         /**
          * Controls the acceleration of x-axis movement.
          */
         @JvmField
-        var STRAFE_GAIN: Double = 0.04
+        var STRAFE_GAIN: Double = 0.03
 
 
         /**
@@ -152,7 +152,7 @@ object RobotConfig {
          * The low power threshold
          */
         @JvmField
-        var PWRTHRESHOLD: Double = 0.01
+        var PWRTHRESHOLD: Double = 0.0
     }
 
 
@@ -160,25 +160,10 @@ object RobotConfig {
     object Turret {
 
         /**
-         * Distance from initial positions to basket
-         */
-        @JvmField
-        var CLOSE_RED_TO_BASKET: DoubleArray = doubleArrayOf(0.68, 0.97)
-
-        @JvmField
-        var CLOSE_BLUE_TO_BASKET: DoubleArray = doubleArrayOf(-0.99, 0.79)
-
-        @JvmField
-        var FAR_RED_TO_BASKET: DoubleArray = doubleArrayOf(45.0, 129.0)
-
-        @JvmField
-        var FAR_BLUE_TO_BASKET: DoubleArray = doubleArrayOf(129.0, -45.0)
-
-        /**
          * Ticks in one degree of the aimer motor
          */
         @JvmField
-        var TICKS_PER_DEGREE = 5.643
+        var TICKS_PER_DEGREE = 5.75
 
         /**
          * Gear ratio of the launcher motor
@@ -197,6 +182,124 @@ object RobotConfig {
          */
         @JvmField
         var GEAR_RATIO_LAUNCHER = 2.8
+
+        /**
+         * Servo Position
+         */
+        @JvmField
+        var pos = 0.0
+
+        @JvmField
+        var pwr = 0.0
+
+    }
+
+    @Config
+    object UniversalCoordinates{
+        /**
+         * Robot Constants
+         */
+        @JvmField
+        var RADIUS = 8.25
+
+
+        /**
+         * Field-Centric positions of the robot on auto start
+         */
+        @JvmField
+        var FAR_RED_POS = SparkFunOTOS.Pose2D(60.0, 12.0, 270.0)
+
+        @JvmField
+        var FAR_BLUE_POS = SparkFunOTOS.Pose2D(72.0, 12.0, 9.0)
+
+        @JvmField
+        var CLOSE_RED_POS = SparkFunOTOS.Pose2D(10.0, 134.0, 270.0)
+
+        @JvmField
+        var CLOSE_BLUE_POS = SparkFunOTOS.Pose2D(60.0, 12.0, 270.0)
+
+        /**
+         * Positions of the goals
+         */
+        @JvmField
+        var BLUE_POS = doubleArrayOf(9.0, 144.0, 55.0)
+
+        @JvmField
+        var RED_POS = doubleArrayOf(135.0, 144.0, 55.0)
+
+        /**
+         * Triangle far positions
+         */
+        @JvmField
+        var ftriangle_pos_1 = doubleArrayOf(48.0, 0.0)
+
+        @JvmField
+        var ftriangle_pos_2 = doubleArrayOf(60.0, 24.0)
+
+        @JvmField
+        var ftriangle_pos_3 = doubleArrayOf(72.0, 0.0)
+
+        /**
+         * Triangle close positions
+         */
+        @JvmField
+        var ctriangle_pos_1 = doubleArrayOf(0.0, 144.0)
+
+        @JvmField
+        var ctriangle_pos_2 = doubleArrayOf(72.0, 144.0)
+
+        @JvmField
+        var ctriangle_pos_3 = doubleArrayOf(144.0, 144.0)
+
+        /**
+         * Parking Positions
+         */
+        @JvmField
+        var red_park = doubleArrayOf(28.5, 24.0, 46.5, 42.0)
+
+        @JvmField
+        var blue_park = doubleArrayOf(115.5, 24.0, 97.5, 42.0)
+
+        /**
+         * Line positions for Blue
+         */
+        @JvmField
+        var blue_line_far = doubleArrayOf(28.5, 35.5)
+
+        @JvmField
+        var blue_line_mid = doubleArrayOf(28.5, 59.25)
+
+        @JvmField
+        var blue_line_close = doubleArrayOf(28.5, 82.75)
+
+        @JvmField
+        var blue_gate = doubleArrayOf(10.0, 68.5)
+
+        /**
+         * Line positions for Red
+         */
+        @JvmField
+        var red_line_far = doubleArrayOf(116.0, 35.5)
+
+        @JvmField
+        var red_line_mid = doubleArrayOf(116.0, 59.25)
+
+        @JvmField
+        var red_line_close = doubleArrayOf(116.0, 82.75)
+
+        @JvmField
+        var red_gate = doubleArrayOf(134.0, 68.5)
+
+        /**
+         * Human Player Zones
+         */
+        @JvmField
+        var blue_zone = doubleArrayOf(0.0, 0.0, 24.0, 24.0)
+
+        @JvmField
+        var red_zone = doubleArrayOf(144.0, 0.0, 120.0, 24.0)
+
+
 
     }
 }

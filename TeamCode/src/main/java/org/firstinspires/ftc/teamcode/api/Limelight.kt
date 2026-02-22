@@ -7,7 +7,7 @@ import kotlin.math.abs
 
 object Limelight : API() {
 
-    private lateinit var cam: Limelight3A
+    lateinit var cam: Limelight3A
     private var targetId: Int = -1
     //for limits
     private var turretPosition = 0
