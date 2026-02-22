@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.api.TransferSystem
 import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.api.Turret
 import org.firstinspires.ftc.teamcode.api.Voltage
-import org.firstinspires.ftc.teamcode.Singleton
+//import org.firstinspires.ftc.teamcode.Singleton
 import org.firstinspires.ftc.teamcode.utils.squared
 import kotlin.math.PI
 import kotlin.math.abs
@@ -32,25 +32,26 @@ class teleOpMain : OpMode() {
         TransferSystem.init(this)
         Voltage.init(this)
         //Warning in case singleton did not write correctly
-        if(!Singleton.autoRan){
-            telemetry.addLine("WARNING: AUTO DATA NOT FOUND")
-            telemetry.addLine("PRESS DPAD BUTTONS ON GAMEPAD 2 TO CORRESPOND WITH STARTING AUTO POSITION")
-            telemetry.addLine("UP > FAR RED")
-            telemetry.addLine("LEFT > FAR BLUE")
-            telemetry.addLine("RIGHT > CLOSE RED")
-            telemetry.addLine("DOWN > CLOSE BLUE")
-
-            init_loop()
-        }
+//        if(!Singleton.autoRan){
+//            telemetry.addLine("WARNING: AUTO DATA NOT FOUND")
+//            telemetry.addLine("PRESS DPAD BUTTONS ON GAMEPAD 2 TO CORRESPOND WITH STARTING AUTO POSITION")
+//            telemetry.addLine("UP > FAR RED")
+//            telemetry.addLine("LEFT > FAR BLUE")
+//            telemetry.addLine("RIGHT > CLOSE RED")
+//            telemetry.addLine("DOWN > CLOSE BLUE")
+//
+//            init_loop()
+//        }
 
         //Transfer data for auto if found
-        else {
-            telemetry.addLine("AUTO DATA FOUND")
-            telemetry.addLine("TEAM: "+ Singleton.team)
-            telemetry.addLine("AUTO STARTING POS: "+ Singleton.starting)
-            RobotTracker.setPos(Singleton.finalXInches, Singleton.finalYInches, Singleton.finalHeadingDeg, false)
-            Limelight.init(this, Singleton.tagTracking)
-        }
+//        else {
+//            telemetry.addLine("AUTO DATA FOUND")
+//            telemetry.addLine("TEAM: "+ Singleton.team)
+//            telemetry.addLine("AUTO STARTING POS: "+ Singleton.starting)
+//            RobotTracker.setPos(Singleton.finalXInches, Singleton.finalYInches, Singleton.finalHeadingDeg, false)
+            RobotTracker.setPos(12.0,12.0,0.0, false)
+            Limelight.init(this, 2)
+//        }
     }
 
     override fun init_loop() {
@@ -117,7 +118,7 @@ class teleOpMain : OpMode() {
         )
 
         //limelight tracking
-        if (abs(gamepad2.left_stick_x/5) > 0.05) {
+        if (abs(gamepad2.left_stick_x/15) > 0.05) {
             // Manual override
             Turret.setAimerPower(gamepad2.left_stick_x.toDouble())
         }
@@ -145,6 +146,7 @@ class teleOpMain : OpMode() {
 
             if (turretOn) {
                 Turret.launch()
+                gamepad2.rumble(250)
             }
             // turn on
             else {
@@ -161,15 +163,21 @@ class teleOpMain : OpMode() {
         //Update turret speed
         if (turretOn) {
             Turret.launch()
+            gamepad2.rumble(250)
         }
 
 
-        //rumble to show velocity
+//        //rumble to show velocity
         val veloEr = abs(Turret.launcherL.velocity + Turret.TARGET_VELOCITY)
         val shootReady = veloEr < 50
-
+//
         if(turretOn && shootReady){
-            gamepad1.rumble(300)
+            Turret.light2(0.5)
+
+
+        }
+        else{
+            Turret.light2(0.28)
         }
 
         //buttons

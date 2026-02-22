@@ -107,7 +107,7 @@ object SpecterDrive : API() {
      * @param t Max runtime in seconds before timing out
      * @param rC The centricity of the robot (assumes robot-centric unless specified)
      */
-    fun path(x: Double, y: Double, h: Double, t: Double = 999.99999,  rC: Boolean = true) {
+    fun path(x: Double, y: Double, h: Double, t: Double = 999.99999,  rC: Boolean = true, spMag: Double = 0.0) {
 
         var otosScreenshot = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
 
@@ -136,7 +136,12 @@ object SpecterDrive : API() {
                 addData("current Heading angle", otos.position.h)
                 update()
             }
-            computePower(otos.position.h)
+            if(spMag == 0.0) {
+                computePower()
+            }
+            else{
+                computePower(spMag)
+            }
 
             // Update errors based on global position
             xError = x - otos.position.x
@@ -160,7 +165,7 @@ object SpecterDrive : API() {
      * Creates a vector for the robot to move to
      * @param currentHeading the current heading of the robot
      */
-    private fun computePower(currentHeading: Double) {
+    private fun computePower() {
         // Calculate the error vector in field coordinates
         val fieldX = -(xError * STRAFE_GAIN)
         val fieldY = -(yError * SPEED_GAIN)
@@ -169,6 +174,30 @@ object SpecterDrive : API() {
         // Direction and magnitude
         val rad = atan2(fieldY, fieldX) - (PI / 3.0) - (2.0 * PI / 3.0)
         val magnitude = sqrt(fieldX * fieldX + fieldY * fieldY)
+
+        var (r, g, b) = TriWheels.compute(rad, magnitude)
+
+        turn = Range.clip(hError * TURN_GAIN * ROTATE_SPEED, -MAX_AUTO_TURN, MAX_AUTO_TURN)
+
+        r += turn
+        g += turn
+        b += turn
+
+        val max = maxOf(abs(r), abs(g), abs(b), 1.0)
+        r /= max; g /= max; b /= max
+
+        TriWheels.power(r, roundPower(g), roundPower(b))
+    }
+
+    private fun computePower(mag: Double) {
+        // Calculate the error vector in field coordinates
+        val fieldX = -(xError * STRAFE_GAIN)
+        val fieldY = -(yError * SPEED_GAIN)
+
+
+        // Direction and magnitude
+        val rad = atan2(fieldY, fieldX) - (PI / 3.0) - (2.0 * PI / 3.0)
+        val magnitude = mag
 
         var (r, g, b) = TriWheels.compute(rad, magnitude)
 

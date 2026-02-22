@@ -40,7 +40,7 @@ object Turret : API() {
     var LAUNCHER_KF = 0.475
 
     @JvmField
-    var LAUNCHER_KP = 215.1
+    var LAUNCHER_KP = 250.67
 
     @JvmField
     var TARGET_VELOCITY = 1660.0
@@ -85,10 +85,8 @@ object Turret : API() {
      * The lights
      */
     lateinit var light: Servo
-        private set
 
     lateinit var light2: Servo
-        private set
 
     override fun init(opMode: OpMode) {
         super.init(opMode)
@@ -245,10 +243,10 @@ object Turret : API() {
 
     fun changeTargetVelocity(distance: Double){
         var dist = distance - 18
-        if(dist < 67.0){
+        if(dist < 55.0){
             TARGET_VELOCITY = 0.104167 * dist.squared() - 5.41667 * dist + 1040
             moveHood(0.86)
-            light2(0.28)
+//            light2(0.28)
             if (Singleton.team == "blue"){
                 Limelight.cam.pipelineSwitch(0)
             }
@@ -257,10 +255,10 @@ object Turret : API() {
             }
         }
 
-        else if(67.0 < dist && dist < 105){
+        else if(67.0 < dist && dist < 115){
             TARGET_VELOCITY = 0.00000223265 * dist * dist * dist * dist + 0.00160751 * dist * dist * dist - 0.465213 * dist.squared() + 41.41204 * dist
             moveHood(0.6)
-            light2(0.388)
+//            light2(0.388)
             if (Singleton.team == "blue"){
                 Limelight.cam.pipelineSwitch(0)
             }
@@ -270,8 +268,8 @@ object Turret : API() {
         }
 
         else{
-            TARGET_VELOCITY = 1625.0 //-0.00726448*distance*distance*distance+ 3.04573*distance.squared() - 419.56442*distance+20596.7275
-            moveHood(0.3)
+            TARGET_VELOCITY = -0.00726448*distance*distance*distance+ 3.04573*distance.squared() - 419.56442*distance+20596.7275
+           moveHood(0.3)
             if (Singleton.team == "blue"){
                 Limelight.cam.pipelineSwitch(3)
             }
@@ -279,7 +277,7 @@ object Turret : API() {
                 Limelight.cam.pipelineSwitch(2)
             }
 
-            light2(0.5)
+//            light2(0.5)
         }
     }
 }

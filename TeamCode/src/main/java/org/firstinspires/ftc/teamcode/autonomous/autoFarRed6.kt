@@ -33,7 +33,7 @@ class autoFarRed6: LinearOpMode() {
         sleep(2000)
         TransferSystem.setTransferPwr(-1.0)
         TransferSystem.setIntakePwr(1.0)
-        sleep(2500)
+        sleep(2000)
         Turret.launch(0.5)
         TransferSystem.setTransferPwr(0.0)
         TransferSystem.setIntakePwr(0.0)
@@ -43,47 +43,48 @@ class autoFarRed6: LinearOpMode() {
         Turret.stop()
         TransferSystem.setIntakePwr(-1.0)
         TransferSystem.setTransferPwr(-1.0)
-        SpecterDrive.path(0.0, 48.0, 0.0, 2.5)
+        SpecterDrive.path(0.0, 50.0, 0.0, 2.5)
         TransferSystem.setTransferPwr(0.0)
         TransferSystem.setIntakePwr(0.0)
-        SpecterDrive.path(0.0, -48.0, 0.0, 2.5)
+        SpecterDrive.path(0.0, -43.0, 0.0, 2.5)
         SpecterDrive.path(30.0, -0.0, 0.0, 2.0)
 
         //FIRE
+        Turret.moveToTick(-395)
         Turret.launch()
         sleep(2000)
         TransferSystem.setTransferPwr(-1.0)
         TransferSystem.setIntakePwr(1.0)
-        sleep(2500)
+        sleep(2000)
         Turret.stop()
         TransferSystem.setTransferPwr(0.0)
         TransferSystem.setIntakePwr(0.0)
 
         //Move to human Player
-        Turret.launch(0.5)
+        Turret.launch(0.1)
         TransferSystem.setIntakePwr(-1.0)
-        TransferSystem.setTransferPwr(-1.0)
-        SpecterDrive.path(0.0, 72.0, 0.0, 3.0)
-        SpecterDrive.path(0.0, -12.0, 0.0, 1.0)
-        SpecterDrive.path(0.0, 12.0, 0.0, 3.0)
-        SpecterDrive.path(0.0, -72.0, 0.0, 2.0)
+        TransferSystem.setTransferPwr(-0.75)
+        SpecterDrive.path(0.0, 78.0, 0.0, 5.0)
+        //SpecterDrive.path(0.0, -12.0, 0.0, 1.0)
+        //SpecterDrive.path(0.0, 12.0, 0.0, 3.0)
+        SpecterDrive.path(0.0, -48.0, 0.0, 2.5)
         TransferSystem.setIntakePwr(0.0)
         TransferSystem.setTransferPwr(0.0)
 
 
         //FIRE
-        Turret.moveToTick(-400) //change
+        //Turret.moveToTick(300) //change
         Turret.launch()
-        sleep(2000)
+        sleep(2500)
         TransferSystem.setTransferPwr(-1.0)
         TransferSystem.setIntakePwr(1.0)
-        sleep(2500)
+        sleep(2000)
         Turret.stop()
         TransferSystem.setTransferPwr(0.0)
         TransferSystem.setIntakePwr(0.0)
 
         //Escape
-        SpecterDrive.path(0.0, 24.0, 0.0)
+        SpecterDrive.path(0.0, 40.0, 0.0)
 
         //Singleton logging
         Singleton.autoRan = true

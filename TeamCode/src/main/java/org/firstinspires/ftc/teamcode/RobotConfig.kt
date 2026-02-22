@@ -38,11 +38,11 @@ object RobotConfig {
     object TeleOpMain {
         /** A multiplier that scales that robot's driving / strafing speed. */
         @JvmField
-        var DRIVE_SPEED: Double = 1.0
+        var DRIVE_SPEED: Double = 0.85
 
         /** A multiplier that scales the robot's rotation speed. */
         @JvmField
-        var ROTATE_SPEED: Double = 0.6
+        var ROTATE_SPEED: Double = 0.7
 
     }
 

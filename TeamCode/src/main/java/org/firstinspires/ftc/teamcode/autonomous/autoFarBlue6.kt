@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.api.Turret
 import org.firstinspires.ftc.teamcode.api.linear.SpecterDrive
 import org.firstinspires.ftc.teamcode.utils.squared
+import kotlin.concurrent.timer
 import kotlin.math.sqrt
 
 @Autonomous(name = "autoFarBlue(9 ball)")
@@ -25,13 +26,13 @@ class autoFarBlue6: LinearOpMode() {
         waitForStart()
 
         //Launch 3 balls
-        Turret.changeTargetVelocity(sqrt((RobotConfig.UniversalCoordinates.BLUE_POS[0]- RobotTracker.getPos(true)[0]).squared()+(RobotConfig.UniversalCoordinates.BLUE_POS[1]- RobotTracker.getPos(true)[1]).squared()))
-        Turret.moveToTick(380)
+        Turret.changeTargetVelocity(142.5)
+        Turret.moveToTick(396)
         Turret.launch()
         sleep(2000)
         TransferSystem.setTransferPwr(-1.0)
         TransferSystem.setIntakePwr(1.0)
-        sleep(2500)
+        sleep(2350)
         Turret.launch(0.5)
         TransferSystem.setTransferPwr(0.0)
         TransferSystem.setIntakePwr(0.0)
@@ -41,18 +42,19 @@ class autoFarBlue6: LinearOpMode() {
         Turret.stop()
         TransferSystem.setIntakePwr(-1.0)
         TransferSystem.setTransferPwr(-1.0)
-        SpecterDrive.path(0.0, 48.0, 0.0, 2.5)
+        SpecterDrive.path(0.0, 42.0, 0.0, 2.5)
         TransferSystem.setTransferPwr(0.0)
         TransferSystem.setIntakePwr(0.0)
-        SpecterDrive.path(0.0, -48.0, 0.0, 2.5)
-        SpecterDrive.path(-30.0, -0.0, 0.0, 2.0)
+        SpecterDrive.path(0.0, -42.0, 0.0, 2.5)
+        SpecterDrive.path(-25.0, -0.0, 0.0, 2.0)
 
         //FIRE
+        Turret.moveToTick(387)
         Turret.launch()
-        sleep(2000)
+        sleep(1900)
         TransferSystem.setTransferPwr(-1.0)
         TransferSystem.setIntakePwr(1.0)
-        sleep(2500)
+        sleep(2350)
         Turret.stop()
         TransferSystem.setTransferPwr(0.0)
         TransferSystem.setIntakePwr(0.0)
@@ -60,27 +62,28 @@ class autoFarBlue6: LinearOpMode() {
         //Move to human Player
         TransferSystem.setIntakePwr(-1.0)
         TransferSystem.setTransferPwr(-1.0)
-        SpecterDrive.path(0.0, 48.0, 0.0, 2.0)
-        SpecterDrive.path(-12.0, 0.0, 0.0, 1.0)
-        SpecterDrive.path(0.0, 12.0, 0.0, 3.0)
-        SpecterDrive.path(0.0, -55.0, 0.0, 3.0)
-        TransferSystem.setIntakePwr(0.0)
+        Turret.launch(0.1)
+
+        SpecterDrive.path(0.0, 72.0, 0.0, 2.5, true, 15.0)
+        sleep(3500)
+        SpecterDrive.path(0.0, -55.0, 0.0, 2.0, true, 10.0)
+        TransferSystem.setIntakePwr(-1.0)
         TransferSystem.setTransferPwr(0.0)
 
 
         //FIRE
-        Turret.moveToTick(350)
+        Turret.moveToTick(387)
         Turret.launch()
         sleep(2000)
         TransferSystem.setTransferPwr(-1.0)
         TransferSystem.setIntakePwr(1.0)
-        sleep(2500)
+        sleep(2350)
         Turret.stop()
         TransferSystem.setTransferPwr(0.0)
         TransferSystem.setIntakePwr(0.0)
 
         //Escape
-        SpecterDrive.path(0.0, 24.0, 0.0)
+        SpecterDrive.path(0.0, 40.0, 0.0)
 
         //Singleton logging
         Singleton.autoRan = true
