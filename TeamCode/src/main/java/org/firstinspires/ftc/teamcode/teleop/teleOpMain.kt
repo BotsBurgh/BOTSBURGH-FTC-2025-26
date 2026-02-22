@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.api.TransferSystem
 import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.api.Turret
 import org.firstinspires.ftc.teamcode.api.Voltage
-//import org.firstinspires.ftc.teamcode.Singleton
+import org.firstinspires.ftc.teamcode.Singleton
 import org.firstinspires.ftc.teamcode.utils.squared
 import kotlin.math.PI
 import kotlin.math.abs
@@ -32,25 +32,25 @@ class teleOpMain : OpMode() {
         TransferSystem.init(this)
         Voltage.init(this)
         //Warning in case singleton did not write correctly
-//        if(!Singleton.autoRan){
-//            telemetry.addLine("WARNING: AUTO DATA NOT FOUND")
-//            telemetry.addLine("PRESS DPAD BUTTONS ON GAMEPAD 2 TO CORRESPOND WITH STARTING AUTO POSITION")
-//            telemetry.addLine("UP > FAR RED")
-//            telemetry.addLine("LEFT > FAR BLUE")
-//            telemetry.addLine("RIGHT > CLOSE RED")
-//            telemetry.addLine("DOWN > CLOSE BLUE")
-//
-//            init_loop()
-//        }
+            telemetry.addLine("PRESS DPAD BUTTONS ON GAMEPAD 2 TO CORRESPOND WITH STARTING AUTO POSITION")
+            telemetry.addLine("UP > FAR RED")
+            telemetry.addLine("LEFT > FAR BLUE")
+            telemetry.addLine("RIGHT > CLOSE RED")
+            telemetry.addLine("DOWN > CLOSE BLUE")
+
+            init_loop()
 
         //Transfer data for auto if found
 //        else {
 //            telemetry.addLine("AUTO DATA FOUND")
 //            telemetry.addLine("TEAM: "+ Singleton.team)
 //            telemetry.addLine("AUTO STARTING POS: "+ Singleton.starting)
+//            telemetry.addData("X",Singleton.finalXInches)
+//            telemetry.addData("y",Singleton.finalYInches)
+//            telemetry.addData("h",Singleton.finalHeadingDeg)
+//
 //            RobotTracker.setPos(Singleton.finalXInches, Singleton.finalYInches, Singleton.finalHeadingDeg, false)
-            RobotTracker.setPos(12.0,12.0,0.0, false)
-            Limelight.init(this, 2)
+//            Limelight.init(this, Singleton.tagTracking)
 //        }
     }
 
@@ -66,7 +66,7 @@ class teleOpMain : OpMode() {
 
         //Far Blue
         else if(gamepad2.dpad_left){
-            RobotTracker.setPos(0.0, 0.0, 0.0, false)
+            RobotTracker.setPos(108.0, 8.75,0.0, false)
             Limelight.init(this, 0)
             telemetry.clear()
             telemetry.addLine("SELECTED: FAR BLUE")
@@ -75,7 +75,7 @@ class teleOpMain : OpMode() {
 
         //Close Red
         else if(gamepad2.dpad_right){
-            RobotTracker.setPos(0.0, 0.0, 85.0, false)
+            RobotTracker.setPos(36.0, 8.75, 85.0, false)
             Limelight.init(this, 1)
             telemetry.clear()
             telemetry.addLine("SELECTED: CLOSE RED")
@@ -84,7 +84,7 @@ class teleOpMain : OpMode() {
 
         //Close Blue
         else if(gamepad2.dpad_down){
-            RobotTracker.setPos(0.0, 0.0, 275.0, false)
+            RobotTracker.setPos(66.0, 110.0, 275.0, false)
             Limelight.init(this, 0)
             telemetry.clear()
             telemetry.addLine("SELECTED: CLOSE BLUE")
@@ -96,7 +96,11 @@ class teleOpMain : OpMode() {
     override fun loop() {
         //updates first
         Limelight.update(Turret.aimer.currentPosition)
-        Turret.changeTargetVelocity(sqrt((RobotConfig.UniversalCoordinates.RED_POS[0]- RobotTracker.getPos(false)[0]).squared()+(RobotConfig.UniversalCoordinates.RED_POS[1]- RobotTracker.getPos(false)[1]).squared()))
+        if(Singleton.team == "Red")
+            Turret.changeTargetVelocity(sqrt((RobotConfig.UniversalCoordinates.RED_POS[0]- RobotTracker.getPos(false)[0]).squared()+(RobotConfig.UniversalCoordinates.RED_POS[1]- RobotTracker.getPos(false)[1]).squared()))
+        if(Singleton.team == "Blue")
+            Turret.changeTargetVelocity(sqrt((RobotConfig.UniversalCoordinates.BLUE_POS[0]- RobotTracker.getPos(false)[0]).squared()+(RobotConfig.UniversalCoordinates.BLUE_POS[1]- RobotTracker.getPos(false)[1]).squared()))
+
         telemetry.clear()
 
         // joystick(Movement) input

@@ -247,10 +247,10 @@ object Turret : API() {
             TARGET_VELOCITY = 0.104167 * dist.squared() - 5.41667 * dist + 1040
             moveHood(0.86)
 //            light2(0.28)
-            if (Singleton.team == "blue"){
+            if (Singleton.team == "Blue"){
                 Limelight.cam.pipelineSwitch(0)
             }
-            else if (Singleton.team == "red"){
+            else if (Singleton.team == "Red"){
                 Limelight.cam.pipelineSwitch(1)
             }
         }
@@ -259,10 +259,10 @@ object Turret : API() {
             TARGET_VELOCITY = 0.00000223265 * dist * dist * dist * dist + 0.00160751 * dist * dist * dist - 0.465213 * dist.squared() + 41.41204 * dist
             moveHood(0.6)
 //            light2(0.388)
-            if (Singleton.team == "blue"){
+            if (Singleton.team == "Blue"){
                 Limelight.cam.pipelineSwitch(0)
             }
-            else if (Singleton.team == "red"){
+            else if (Singleton.team == "Red"){
                 Limelight.cam.pipelineSwitch(1)
             }
         }
@@ -270,10 +270,10 @@ object Turret : API() {
         else{
             TARGET_VELOCITY = -0.00726448*distance*distance*distance+ 3.04573*distance.squared() - 419.56442*distance+20596.7275
            moveHood(0.3)
-            if (Singleton.team == "blue"){
+            if (Singleton.team == "Blue"){
                 Limelight.cam.pipelineSwitch(3)
             }
-            else if (Singleton.team == "red"){
+            else if (Singleton.team == "Red"){
                 Limelight.cam.pipelineSwitch(2)
             }
 

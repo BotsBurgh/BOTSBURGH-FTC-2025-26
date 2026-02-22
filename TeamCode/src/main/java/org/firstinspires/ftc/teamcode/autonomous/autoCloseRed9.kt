@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.api.linear.SpecterDrive
 import org.firstinspires.ftc.teamcode.utils.squared
 import kotlin.math.sqrt
 
-@Autonomous(name = "autoCloseRed (12 ball)")
+@Autonomous(name = "CLOSE RED")
 class autoCloseRed9: LinearOpMode() {
     override fun runOpMode() {
         SpecterDrive.init(this)
@@ -97,8 +97,8 @@ class autoCloseRed9: LinearOpMode() {
         //Singleton logging
         Singleton.autoRan = true
         Singleton.finalXInches = RobotTracker.getPos(true)[0]
-        Singleton.finalXInches = RobotTracker.getPos(true)[1]
-        Singleton.finalXInches = RobotTracker.getPos(true)[2]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
         Singleton.team = "Red"
         Singleton.starting = "Close"
         Singleton.tagTracking = 1

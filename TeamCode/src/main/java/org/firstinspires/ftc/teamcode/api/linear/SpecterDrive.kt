@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.STRAFE_GAIN
 import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.TURN_GAIN
 import org.firstinspires.ftc.teamcode.RobotConfig.TeleOpMain.DRIVE_SPEED
 import org.firstinspires.ftc.teamcode.RobotConfig.TeleOpMain.ROTATE_SPEED
+import org.firstinspires.ftc.teamcode.Singleton
 import org.firstinspires.ftc.teamcode.api.CsvLogging
 import org.firstinspires.ftc.teamcode.api.RobotTracker
 import org.firstinspires.ftc.teamcode.api.TriWheels
@@ -22,8 +23,7 @@ import org.firstinspires.ftc.teamcode.core.API
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.sin
+
 import kotlin.math.sqrt
 
 /**
@@ -107,13 +107,15 @@ object SpecterDrive : API() {
      * @param t Max runtime in seconds before timing out
      * @param rC The centricity of the robot (assumes robot-centric unless specified)
      */
-    fun path(x: Double, y: Double, h: Double, t: Double = 999.99999,  rC: Boolean = true, spMag: Double = 0.0) {
+    fun path(x: Double, y: Double, h: Double, t: Double = 999.99999,  rC: Boolean = true, spMag: Double = 0.0):DoubleArray {
 
         var otosScreenshot = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
 
         if(rC) {
             //takes a "screenshot" of the current position to add back
-            otosScreenshot = otos.position
+            otosScreenshot.x = otos.position.x
+            otosScreenshot.y = otos.position.y
+            otosScreenshot.h = otos.position.h
             //reset position to zero for robot-centric
             otos.position = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
         }
@@ -134,8 +136,12 @@ object SpecterDrive : API() {
                 addData("current X coordinate", otos.position.x)
                 addData("current Y coordinate", otos.position.y)
                 addData("current Heading angle", otos.position.h)
+                addData("scX", Singleton.finalXInches)
+                addData("scY", Singleton.finalYInches)
+                addData("scH", Singleton.finalHeadingDeg)
                 update()
             }
+
             if(spMag == 0.0) {
                 computePower()
             }
@@ -153,12 +159,14 @@ object SpecterDrive : API() {
         TriWheels.power(0.0, 0.0, 0.0)
 
         //readd position
-        if(rC){
-            otos.position.x += otosScreenshot.x
-            otos.position.y += otosScreenshot.y
-            otos.position.h += otosScreenshot.h
-            AngleUnit.normalizeDegrees(otos.position.h)
-        }
+//        if(rC){
+//            otos.position.x += otosScreenshot.x
+//            otos.position.y += otosScreenshot.y
+//            otos.position.h += otosScreenshot.h
+//            AngleUnit.normalizeDegrees(otos.position.h)
+//        }
+
+        return doubleArrayOf(otos.position.x, otos.position.y, otos.position.h)
     }
 
     /**

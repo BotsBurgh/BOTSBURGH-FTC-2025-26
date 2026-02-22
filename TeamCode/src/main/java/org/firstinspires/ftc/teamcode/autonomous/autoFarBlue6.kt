@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.utils.squared
 import kotlin.concurrent.timer
 import kotlin.math.sqrt
 
-@Autonomous(name = "autoFarBlue(9 ball)")
+@Autonomous(name = "FAR BLUE")
 class autoFarBlue6: LinearOpMode() {
     override fun runOpMode() {
         SpecterDrive.init(this)
@@ -88,8 +88,8 @@ class autoFarBlue6: LinearOpMode() {
         //Singleton logging
         Singleton.autoRan = true
         Singleton.finalXInches = RobotTracker.getPos(true)[0]
-        Singleton.finalXInches = RobotTracker.getPos(true)[1]
-        Singleton.finalXInches = RobotTracker.getPos(true)[2]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
         Singleton.team = "Blue"
         Singleton.starting = "Far"
         Singleton.tagTracking = 0
