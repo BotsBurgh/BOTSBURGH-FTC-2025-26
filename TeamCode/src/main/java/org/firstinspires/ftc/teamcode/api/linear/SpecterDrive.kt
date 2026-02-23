@@ -55,6 +55,7 @@ object SpecterDrive : API() {
         configureOtos()
     }
 
+
     /**
      * Run during init for proper initialization of the otos sensor
      */
@@ -82,22 +83,6 @@ object SpecterDrive : API() {
             CsvLogging.init(opMode)
             CsvLogging.createFile("OTOS")
         }
-    }
-
-    /**
-     * Computes a direct path towards a robot-centric position
-     *
-     * @param pose an array containing x and y coordinates
-     */
-    fun path(pose: DoubleArray, h: Double, t: Double = 999.99999, rC: Boolean = true) {
-        path(pose[0], pose[1], h, t, rC)
-    }
-
-    /**
-     * Updates the OTOS internal position to match field coordinates.
-     */
-    fun setPose(x: Double, y: Double, h: Double) {
-        otos.position = SparkFunOTOS.Pose2D(x, y, h)
     }
 
     /**
@@ -152,108 +137,13 @@ object SpecterDrive : API() {
     }
 
     /**
-     * Creates a vector for the robot to move to
-     * @param currentHeading the current heading of the robot
-     */
-    private fun computePower() {
-        // Calculate the error vector in field coordinates
-        val fieldX = -(xError * STRAFE_GAIN)
-        val fieldY = -(yError * SPEED_GAIN)
-
-
-        // Direction and magnitude
-        val rad = atan2(fieldY, fieldX) - (PI / 3.0) - (2.0 * PI / 3.0)
-        val magnitude = sqrt(fieldX * fieldX + fieldY * fieldY)
-
-        var (r, g, b) = TriWheels.compute(rad, magnitude)
-
-        turn = Range.clip(hError * TURN_GAIN * ROTATE_SPEED, -MAX_AUTO_TURN, MAX_AUTO_TURN)
-
-        r += turn
-        g += turn
-        b += turn
-
-        val max = maxOf(abs(r), abs(g), abs(b), 1.0)
-        r /= max; g /= max; b /= max
-
-        TriWheels.power(r, roundPower(g), roundPower(b))
-    }
-
-    private fun computePower(mag: Double) {
-        // Calculate the error vector in field coordinates
-        val fieldX = -(xError * STRAFE_GAIN)
-        val fieldY = -(yError * SPEED_GAIN)
-
-
-        // Direction and magnitude
-        val rad = atan2(fieldY, fieldX) - (PI / 3.0) - (2.0 * PI / 3.0)
-        val magnitude = mag
-
-        var (r, g, b) = TriWheels.compute(rad, magnitude)
-
-        turn = Range.clip(hError * TURN_GAIN * ROTATE_SPEED, -MAX_AUTO_TURN, MAX_AUTO_TURN)
-
-        r += turn
-        g += turn
-        b += turn
-
-        val max = maxOf(abs(r), abs(g), abs(b), 1.0)
-        r /= max; g /= max; b /= max
-
-        TriWheels.power(r, roundPower(g), roundPower(b))
-    }
-
-    /*  try later
-    /**
-     * Creates a vector for the robot to move to
-     * @param mag the optional magnetude of the robot
-     */
-    private fun computePower(mag: Double = 0.0) {
-        // 1. Calculate the error in Field Coordinates
-        val fx = xError * STRAFE_GAIN
-        val fy = yError * SPEED_GAIN
-
-        // 2. Rotate the vector into Robot Coordinates
-        // This is the crucial missing step!
-        val robotHeadingRad = Math.toRadians(otos.position.h)
-        val rotX = fx * Math.cos(-robotHeadingRad) - fy * Math.sin(-robotHeadingRad)
-        val rotY = fx * Math.sin(-robotHeadingRad) + fy * Math.cos(-robotHeadingRad)
-
-        // 3. Calculate direction based on Robot-Relative coordinates
-        // We remove the "- PI" offset unless your TriWheels.compute specifically requires it
-        val rad = atan2(rotY, rotX)
-        val magnitude = if (mag == 0.0) sqrt(rotX * rotX + rotY * rotY) else mag
-
-        var (r, g, b) = TriWheels.compute(rad, magnitude)
-
-        // Apply turn logic...
-        turn = Range.clip(hError * TURN_GAIN * ROTATE_SPEED, -MAX_AUTO_TURN, MAX_AUTO_TURN)
-        r += turn
-        g += turn
-        b += turn
-
-        // Normalize and Power
-        val max = maxOf(abs(r), abs(g), abs(b), 1.0)
-        // Note: You called roundPower on G and B, but not R. Adding it for consistency.
-        TriWheels.power(roundPower(r/max), roundPower(g/max), roundPower(b/max))
-    }
-     */
-
-
-    /**
-     * Rounds power to 0 in case of math returning miniscule powers
+     * Computes a direct path towards a robot-centric position
      *
-     * @param pwr the raw power given to the wheel
+     * @param pose an array containing x and y coordinates
      */
-    private fun roundPower(pwr: Double): Double {
-        return if (abs(pwr) < RobotConfig.OTOS.PWRTHRESHOLD) {
-            0.0
-        } else {
-            pwr
-        }
+    fun path(pose: DoubleArray, h: Double, t: Double = 999.99999, rC: Boolean = true) {
+        path(pose[0], pose[1], h, t, rC)
     }
-
-
 
     /**
      * Rotates to a specific global heading on the field.
@@ -282,9 +172,57 @@ object SpecterDrive : API() {
         TriWheels.power(0.0, 0.0, 0.0)
     }
 
-    fun log(msg: String){
-        linearOpMode.telemetry.addLine(msg)
-        linearOpMode.telemetry.update()
+    /**
+     * Updates the OTOS internal position to match field coordinates.
+     */
+    fun setPose(x: Double, y: Double, h: Double) {
+        otos.position = SparkFunOTOS.Pose2D(x, y, h)
+    }
+
+
+    /**
+     * Creates a vector for the robot to move to
+     * @param mag the optional magnetude of the robot
+     */
+    private fun computePower(mag: Double = 0.0) {
+        // 1. Calculate the error in Field Coordinates
+        val fx = xError * STRAFE_GAIN
+        val fy = yError * SPEED_GAIN
+
+        // 2. Rotate the vector into Robot Coordinates
+        val robotHeadingRad = Math.toRadians(otos.position.h)
+        val rotX = fx * Math.cos(-robotHeadingRad) - fy * Math.sin(-robotHeadingRad)
+        val rotY = fx * Math.sin(-robotHeadingRad) + fy * Math.cos(-robotHeadingRad)
+
+        // 3. Calculate direction based on Robot-Relative coordinates
+        val rad = atan2(rotY, rotX) - PI
+        val magnitude = if (mag == 0.0) sqrt(rotX * rotX + rotY * rotY) else mag
+
+        var (r, g, b) = TriWheels.compute(rad, magnitude)
+
+        // Apply turn logic
+        turn = Range.clip(hError * TURN_GAIN * ROTATE_SPEED, -MAX_AUTO_TURN, MAX_AUTO_TURN)
+        r += turn
+        g += turn
+        b += turn
+
+        // Normalize and Power
+        val max = maxOf(abs(r), abs(g), abs(b), 1.0)
+        TriWheels.power(roundPower(r/max), roundPower(g/max), roundPower(b/max))
+    }
+
+
+    /**
+     * Rounds power to 0 in case of math returning miniscule powers
+     *
+     * @param pwr the raw power given to the wheel
+     */
+    private fun roundPower(pwr: Double): Double {
+        return if (abs(pwr) < RobotConfig.OTOS.PWRTHRESHOLD) {
+            0.0
+        } else {
+            pwr
+        }
     }
 
 }

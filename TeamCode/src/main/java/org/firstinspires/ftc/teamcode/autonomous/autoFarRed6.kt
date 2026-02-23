@@ -26,7 +26,6 @@ class autoFarRed6: LinearOpMode() {
         var stPos = doubleArrayOf(84.0, 8.75, 90.0)
 
         RobotTracker.setPos(84.0, 8.75, 90.0, true)
-        SpecterDrive.log((sqrt((RobotConfig.UniversalCoordinates.RED_POS[0]- RobotTracker.getPos(true)[0]).squared()+(RobotConfig.UniversalCoordinates.RED_POS[1]- RobotTracker.getPos(true)[1]).squared())).toString())
         waitForStart()
 
         //Launch 3 balls
