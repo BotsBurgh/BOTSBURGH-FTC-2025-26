@@ -8,7 +8,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.teamcode.RobotConfig
 import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.MAX_AUTO_TURN
-import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.SPEED
 import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.SPEED_GAIN
 import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.STRAFE_GAIN
 import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.TURN_GAIN
@@ -17,6 +16,7 @@ import org.firstinspires.ftc.teamcode.api.CsvLogging
 import org.firstinspires.ftc.teamcode.api.RobotTracker
 import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.core.API
+import org.firstinspires.ftc.teamcode.api.linear.Pursuit
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -177,6 +177,28 @@ object SpecterDrive : API() {
      */
     fun setPose(x: Double, y: Double, h: Double) {
         otos.position = SparkFunOTOS.Pose2D(x, y, h)
+    }
+
+    /**
+     * Follows a PurePursuit path
+     *
+     * @param pursuit the path to follow
+     */
+    fun followPurePursuit(pursuit: PurePursuit) {
+
+        val robotX = otos.position.x
+        val robotY = otos.position.y
+
+        val lookahead = pursuit.getLookaheadPoint(robotX, robotY) ?: return
+
+        val targetH = lookahead.heading ?: otos.position.h
+
+        // reuse your existing path math
+        xError = lookahead.x - robotX
+        yError = lookahead.y - robotY
+        hError = AngleUnit.normalizeDegrees(targetH - otos.position.h)
+
+        computePower()
     }
 
 
