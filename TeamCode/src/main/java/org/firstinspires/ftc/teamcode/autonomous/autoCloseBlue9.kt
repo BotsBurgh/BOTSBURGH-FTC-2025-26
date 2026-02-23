@@ -21,6 +21,9 @@ class autoCloseBlue9: LinearOpMode() {
         TransferSystem.init(this)
         Singleton.reset()
 
+        Singleton.team = "Blue"
+        Singleton.starting = "Close"
+        Singleton.tagTracking = 3
         RobotTracker.setPos(16.0, 120.0, 325.0, true)
         //Start Position: Angled against the wall, midpoint
         waitForStart()
@@ -35,9 +38,15 @@ class autoCloseBlue9: LinearOpMode() {
         )
         Turret.launch()
         SpecterDrive.path(0.0, -56.0, 0.0, 3.0)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
 
         //Fire and shut down
         SpecterDrive.path(-4.5, 0.0, 0.0, 1.5)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
 
         TransferSystem.setTransferPwr(-1.0)
         TransferSystem.setIntakePwr(1.0)
@@ -54,10 +63,16 @@ class autoCloseBlue9: LinearOpMode() {
         TransferSystem.setIntakePwr(-1.0)
         TransferSystem.setTransferPwr(-1.0)
         SpecterDrive.path(0.0, (4.5*12.0)+3, 0.0, 3.0)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
         TransferSystem.setIntakePwr(0.0)
         TransferSystem.setTransferPwr(0.0)
         Turret.launch()
         SpecterDrive.path(0.0, -(4.5*12.0), 0.0, 1.75)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
 
         //Fire and shut down
         TransferSystem.setTransferPwr(-1.0)
@@ -69,6 +84,9 @@ class autoCloseBlue9: LinearOpMode() {
 
         //Down
         SpecterDrive.path(-27.5, 0.0, 0.0, 2.0)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
 
         //Forward and intake next 3 balls, hit classifier
         Turret.stop()
@@ -76,16 +94,34 @@ class autoCloseBlue9: LinearOpMode() {
         TransferSystem.setIntakePwr(-1.0)
         TransferSystem.setTransferPwr(-1.0)
         SpecterDrive.path(0.0, (5.5*12.0), 0.0, 3.0)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
         SpecterDrive.path(0.0, -12.0, 0.0, 2.0)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
         TransferSystem.setIntakePwr(0.0)
         TransferSystem.setTransferPwr(0.0)
         SpecterDrive.path(12.0, 0.0, 0.0, 2.0)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
         SpecterDrive.path(0.0, 18.0, 0.0, 1.0)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
         Turret.launch(-0.5)
         SpecterDrive.path(0.0, -(5.5*12.0)-6.7-1.2, 0.0, 1.8)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
 
         //Up
         SpecterDrive.path(25.0, 0.0, 0.0, 1.5)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
 
         //Fire and shut down
         TransferSystem.setTransferPwr(-1.0)
@@ -96,17 +132,12 @@ class autoCloseBlue9: LinearOpMode() {
 
         //Up
         SpecterDrive.path(15.0, 0.0, 0.0, 1.5)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
 
 
         //Singleton logging
         Singleton.autoRan = true
-        Singleton.finalXInches = RobotTracker.getPos(true)[0]
-        Singleton.finalYInches = RobotTracker.getPos(true)[1]
-        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
-        Singleton.team = "Blue"
-        Singleton.starting = "Close"
-        Singleton.tagTracking = 0
-
-
     }
 }

@@ -22,6 +22,9 @@ class autoFarBlue6: LinearOpMode() {
         TransferSystem.init(this)
         Singleton.reset()
 
+        Singleton.team = "Blue"
+        Singleton.starting = "Far"
+        Singleton.tagTracking = 3
         RobotTracker.setPos(60.0, 8.0, -90.0, true)
         waitForStart()
 
@@ -39,14 +42,26 @@ class autoFarBlue6: LinearOpMode() {
 
         //Move to Lower 3 balls
         SpecterDrive.path(20.0, 0.0, 0.0, 2.0)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
         Turret.stop()
         TransferSystem.setIntakePwr(-1.0)
         TransferSystem.setTransferPwr(-1.0)
         SpecterDrive.path(0.0, 42.0, 0.0, 2.5)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
         TransferSystem.setTransferPwr(0.0)
         TransferSystem.setIntakePwr(0.0)
         SpecterDrive.path(0.0, -42.0, 0.0, 2.5)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
         SpecterDrive.path(-25.0, -0.0, 0.0, 2.0)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
 
         //FIRE
         Turret.moveToTick(387)
@@ -65,8 +80,14 @@ class autoFarBlue6: LinearOpMode() {
         Turret.launch(0.1)
 
         SpecterDrive.path(0.0, 72.0, 0.0, 2.5, true, 15.0)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
         sleep(3500)
         SpecterDrive.path(0.0, -55.0, 0.0, 2.0, true, 10.0)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
         TransferSystem.setIntakePwr(-1.0)
         TransferSystem.setTransferPwr(0.0)
 
@@ -84,14 +105,11 @@ class autoFarBlue6: LinearOpMode() {
 
         //Escape
         SpecterDrive.path(0.0, 40.0, 0.0)
-
-        //Singleton logging
-        Singleton.autoRan = true
         Singleton.finalXInches = RobotTracker.getPos(true)[0]
         Singleton.finalYInches = RobotTracker.getPos(true)[1]
         Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
-        Singleton.team = "Blue"
-        Singleton.starting = "Far"
-        Singleton.tagTracking = 0
+
+        //Singleton logging
+        Singleton.autoRan = true
     }
 }

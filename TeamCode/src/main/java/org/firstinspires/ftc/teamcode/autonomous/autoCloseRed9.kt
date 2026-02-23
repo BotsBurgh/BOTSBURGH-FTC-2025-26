@@ -21,8 +21,11 @@ class autoCloseRed9: LinearOpMode() {
         TransferSystem.init(this)
         Singleton.reset()
 
-        RobotTracker.setPos(60.0, 8.0, 90.0, true) //find real pos
-        //Start Position: Angled against the wall, midpoint
+        RobotTracker.setPos(60.0, 8.0, 90.0, true)
+
+        Singleton.team = "Red"
+        Singleton.starting = "Close"
+        Singleton.tagTracking = 1
         waitForStart()
 
         //Move back and charge turret
@@ -34,6 +37,9 @@ class autoCloseRed9: LinearOpMode() {
         )
         Turret.launch()
         SpecterDrive.path(0.0, -50.0, 0.0, 3.0)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
 
         //Fire and shut down
         TransferSystem.setTransferPwr(-1.0)
@@ -52,10 +58,16 @@ class autoCloseRed9: LinearOpMode() {
         TransferSystem.setIntakePwr(-1.0)
         TransferSystem.setTransferPwr(-1.0)
         SpecterDrive.path(0.0, (4.5*12.0), 0.0, 3.0)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
         TransferSystem.setIntakePwr(0.0)
         TransferSystem.setTransferPwr(0.0)
         Turret.launch()
         SpecterDrive.path(0.0, -(4.5*12.0), 0.0, 1.75)
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalYInches = RobotTracker.getPos(true)[1]
+        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
 
         //Fire and shut down
         TransferSystem.setTransferPwr(-1.0)
@@ -96,13 +108,5 @@ class autoCloseRed9: LinearOpMode() {
 
         //Singleton logging
         Singleton.autoRan = true
-        Singleton.finalXInches = RobotTracker.getPos(true)[0]
-        Singleton.finalYInches = RobotTracker.getPos(true)[1]
-        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
-        Singleton.team = "Red"
-        Singleton.starting = "Close"
-        Singleton.tagTracking = 1
-
-
     }
 }

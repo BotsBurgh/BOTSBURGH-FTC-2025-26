@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.api.linear
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.util.ElapsedTime
 import com.qualcomm.robotcore.util.Range
@@ -13,9 +12,7 @@ import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.SPEED
 import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.SPEED_GAIN
 import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.STRAFE_GAIN
 import org.firstinspires.ftc.teamcode.RobotConfig.OTOS.TURN_GAIN
-import org.firstinspires.ftc.teamcode.RobotConfig.TeleOpMain.DRIVE_SPEED
 import org.firstinspires.ftc.teamcode.RobotConfig.TeleOpMain.ROTATE_SPEED
-import org.firstinspires.ftc.teamcode.Singleton
 import org.firstinspires.ftc.teamcode.api.CsvLogging
 import org.firstinspires.ftc.teamcode.api.RobotTracker
 import org.firstinspires.ftc.teamcode.api.TriWheels
@@ -96,7 +93,12 @@ object SpecterDrive : API() {
         path(pose[0], pose[1], h, t, rC)
     }
 
-
+    /**
+     * Updates the OTOS internal position to match field coordinates.
+     */
+    fun setPose(x: Double, y: Double, h: Double) {
+        otos.position = SparkFunOTOS.Pose2D(x, y, h)
+    }
 
     /**
      * Computes a direct path towards a robot-centric position
@@ -106,66 +108,46 @@ object SpecterDrive : API() {
      * @param h The target global heading
      * @param t Max runtime in seconds before timing out
      * @param rC The centricity of the robot (assumes robot-centric unless specified)
+     * @param spMag A special magnetude to travel with
      */
-    fun path(x: Double, y: Double, h: Double, t: Double = 999.99999,  rC: Boolean = true, spMag: Double = 0.0):DoubleArray {
+    fun path(x: Double, y: Double, h: Double, t: Double = 999.99999, rC: Boolean = true, spMag: Double = 0.0): DoubleArray {
 
-        var otosScreenshot = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
+        val targetX: Double
+        val targetY: Double
+        val targetH: Double = h
 
-        if(rC) {
-            //takes a "screenshot" of the current position to add back
-            otosScreenshot.x = otos.position.x
-            otosScreenshot.y = otos.position.y
-            otosScreenshot.h = otos.position.h
-            //reset position to zero for robot-centric
-            otos.position = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
+        if (rC) {
+            // If robot-centric, the x/y passed are offsets.
+            // We add them to the current global position to find the field target.
+            targetX = otos.position.x + x
+            targetY = otos.position.y + y
+        } else {
+            // If field-centric, the x/y passed are the actual field coordinates.
+            targetX = x
+            targetY = y
         }
 
-        //set initial x, y, and h error
-        xError = x - otos.position.x
-        yError = y - otos.position.y
-        hError = AngleUnit.normalizeDegrees(h - otos.position.h)
+        // Set initial errors based on the calculated target
+        xError = targetX - otos.position.x
+        yError = targetY - otos.position.y
+        hError = AngleUnit.normalizeDegrees(targetH - otos.position.h)
 
-        //Reset time
         runtime.reset()
 
-        //While time < timeout val and xError < x_threshold and yError < y_threshold and hError < h_threshold
-        while (linearOpMode.opModeIsActive() && (runtime.milliseconds() < t * 1000) && ((abs(xError) > RobotConfig.OTOS.X_THRESHOLD) ||
-                    (abs(yError) > RobotConfig.OTOS.Y_THRESHOLD) || (abs(hError) > RobotConfig.OTOS.H_THRESHOLD))
-        ) {
-            with(linearOpMode.telemetry) {
-                addData("current X coordinate", otos.position.x)
-                addData("current Y coordinate", otos.position.y)
-                addData("current Heading angle", otos.position.h)
-                addData("scX", Singleton.finalXInches)
-                addData("scY", Singleton.finalYInches)
-                addData("scH", Singleton.finalHeadingDeg)
-                update()
-            }
+        while (linearOpMode.opModeIsActive() && (runtime.milliseconds() < t * 1000) &&
+            ((abs(xError) > RobotConfig.OTOS.X_THRESHOLD) ||
+                    (abs(yError) > RobotConfig.OTOS.Y_THRESHOLD) ||
+                    (abs(hError) > RobotConfig.OTOS.H_THRESHOLD))) {
 
-            if(spMag == 0.0) {
-                computePower()
-            }
-            else{
-                computePower(spMag)
-            }
+            if (spMag == 0.0) computePower() else computePower(spMag)
 
-            // Update errors based on global position
-            xError = x - otos.position.x
-            yError = y - otos.position.y
-            hError = AngleUnit.normalizeDegrees(h - otos.position.h)
-
+            // Update errors using the consistent global targets
+            xError = targetX - otos.position.x
+            yError = targetY - otos.position.y
+            hError = AngleUnit.normalizeDegrees(targetH - otos.position.h)
         }
-        //FullStop
+
         TriWheels.power(0.0, 0.0, 0.0)
-
-        //readd position
-//        if(rC){
-//            otos.position.x += otosScreenshot.x
-//            otos.position.y += otosScreenshot.y
-//            otos.position.h += otosScreenshot.h
-//            AngleUnit.normalizeDegrees(otos.position.h)
-//        }
-
         return doubleArrayOf(otos.position.x, otos.position.y, otos.position.h)
     }
 
@@ -220,6 +202,42 @@ object SpecterDrive : API() {
 
         TriWheels.power(r, roundPower(g), roundPower(b))
     }
+
+    /*  try later
+    /**
+     * Creates a vector for the robot to move to
+     * @param mag the optional magnetude of the robot
+     */
+    private fun computePower(mag: Double = 0.0) {
+        // 1. Calculate the error in Field Coordinates
+        val fx = xError * STRAFE_GAIN
+        val fy = yError * SPEED_GAIN
+
+        // 2. Rotate the vector into Robot Coordinates
+        // This is the crucial missing step!
+        val robotHeadingRad = Math.toRadians(otos.position.h)
+        val rotX = fx * Math.cos(-robotHeadingRad) - fy * Math.sin(-robotHeadingRad)
+        val rotY = fx * Math.sin(-robotHeadingRad) + fy * Math.cos(-robotHeadingRad)
+
+        // 3. Calculate direction based on Robot-Relative coordinates
+        // We remove the "- PI" offset unless your TriWheels.compute specifically requires it
+        val rad = atan2(rotY, rotX)
+        val magnitude = if (mag == 0.0) sqrt(rotX * rotX + rotY * rotY) else mag
+
+        var (r, g, b) = TriWheels.compute(rad, magnitude)
+
+        // Apply turn logic...
+        turn = Range.clip(hError * TURN_GAIN * ROTATE_SPEED, -MAX_AUTO_TURN, MAX_AUTO_TURN)
+        r += turn
+        g += turn
+        b += turn
+
+        // Normalize and Power
+        val max = maxOf(abs(r), abs(g), abs(b), 1.0)
+        // Note: You called roundPower on G and B, but not R. Adding it for consistency.
+        TriWheels.power(roundPower(r/max), roundPower(g/max), roundPower(b/max))
+    }
+     */
 
 
     /**

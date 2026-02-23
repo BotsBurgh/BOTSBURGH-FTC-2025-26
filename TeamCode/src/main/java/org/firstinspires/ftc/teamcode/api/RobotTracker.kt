@@ -52,8 +52,6 @@ object RobotTracker :API() {
 
         tracker.calibrateImu()
 
-        tracker.resetTracking()
-
         tracker.position = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
     }
 

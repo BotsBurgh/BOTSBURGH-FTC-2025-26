@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.teleop
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.RobotConfig
+import org.firstinspires.ftc.teamcode.Singleton
 import org.firstinspires.ftc.teamcode.api.Limelight
 import org.firstinspires.ftc.teamcode.api.RobotTracker
 import org.firstinspires.ftc.teamcode.api.TransferSystem
@@ -31,7 +32,12 @@ class teleOpBlue : OpMode() {
         Voltage.init(this)
         Limelight.init(this, 3)
 
-        RobotTracker.setPos(134.5, 9.5, 0.0, false)
+        telemetry.addData("cX", RobotTracker.getPos(true)[0])
+        telemetry.addData("cY", RobotTracker.getPos(true)[1])
+        telemetry.addData("cH", RobotTracker.getPos(true)[2])
+        telemetry.addData("sX", Singleton.finalXInches)
+        telemetry.addData("sY", Singleton.finalXInches)
+        telemetry.addData("sH", Singleton.finalXInches)
 
     }
 
