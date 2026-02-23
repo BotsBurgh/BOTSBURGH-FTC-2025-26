@@ -16,7 +16,6 @@ import org.firstinspires.ftc.teamcode.api.CsvLogging
 import org.firstinspires.ftc.teamcode.api.RobotTracker
 import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.core.API
-import org.firstinspires.ftc.teamcode.api.linear.Pursuit
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
