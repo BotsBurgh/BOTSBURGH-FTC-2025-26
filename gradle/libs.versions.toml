@@ -21,6 +21,13 @@ ftcDashboard = "0.5.0"
 roadRunner = "1.0.0"
 roadRunnerFtc = "0.1.14"
 
+# Pedro Pathing.
+pedroPathingFtc = "2.0.6"
+pedroPathingTelemetry = "1.0.0"
+
+# Panels
+fullPanels = "1.0.6"
+
 [libraries]
 # FTC libraries.
 ftc-inspection = { group = "org.firstinspires.ftc", name = "Inspection", version.ref = "ftc" }
@@ -39,12 +46,19 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 kotlinTest = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 
 # FTC Dashboard.
-ftcDashboard = { group = "com.acmerobotics.dashboard", name = "dashboard", version.ref = "ftcDashboard" }
+#ftcDashboard = { group = "com.acmerobotics.dashboard", name = "dashboard", version.ref = "ftcDashboard" }
 
 # Road Runner.
 roadRunner-core = { group = "com.acmerobotics.roadrunner", name = "core", version.ref = "roadRunner" }
 roadRunner-actions = { group = "com.acmerobotics.roadrunner", name = "actions", version.ref = "roadRunner" }
 roadRunner-ftc = { group = "com.acmerobotics.roadrunner", name = "ftc", version.ref = "roadRunnerFtc" }
+
+# Pedro Pathing.
+pedroPathing-ftc = { group = "com.pedropathing", name = "ftc", version.ref = "pedroPathingFtc"}
+pedroPathing-telemetry = { group = "com.pedropathing", name = "telemetry", version.ref = "pedroPathingTelemetry"}
+
+# Panels
+fullPanels = {group = "com.bylazar", name = "fullpanels", version.ref = "fullPanels"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

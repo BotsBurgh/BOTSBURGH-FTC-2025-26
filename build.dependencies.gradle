@@ -2,6 +2,7 @@ repositories {
     mavenCentral()
     google() // Needed for androidx
     maven { url = 'https://maven.brott.dev/' }
+    maven { url = "https://mymaven.bylazar.com/releases" }
 }
 
 dependencies {
@@ -22,12 +23,19 @@ dependencies {
     testImplementation libs.kotlinTest
 
     // FTC Dashboard
-    implementation libs.ftcDashboard
+//    implementation libs.ftcDashboard
 
     // Road Runner
     implementation libs.roadRunner.core
     implementation libs.roadRunner.actions
     implementation libs.roadRunner.ftc
+
+    //Pedro Pathing
+    implementation libs.pedroPathing.ftc
+    implementation libs.pedroPathing.telemetry
+
+    //Panels
+    implementation libs.fullPanels
 
 }
 
