@@ -80,5 +80,3 @@ class PurePursuit(
         val heading: Double? = null
     )
 }
-
-

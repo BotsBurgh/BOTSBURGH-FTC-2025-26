@@ -27,8 +27,8 @@ import kotlin.math.sqrt
  */
 
 // Build Details: The OTOS sensor should be 8-10 mm from the ground. THIS IS A REQUIREMENT NOT A SUGGESTION.
-// The sensor should be in the center of the robot, facing forward. You dont technically have to do this, but unless you want
-// a fun time with offsets, its not a good idea to have an offset.
+// The sensor should be in the center of the robot, facing forward. There is an X and Y arrow on the PCB to help with alignment
+// You dont technically have to do this, but unless you want a hard time with offsets, its not a good idea to have an offset.
 object SpecterDrive : API() {
 
     override val isLinear = true
@@ -42,7 +42,8 @@ object SpecterDrive : API() {
     private var yError: Double = 0.0
     private var hError: Double = 0.0
     private var turn: Double = 0.0
-
+    private var previousHError: Double = 0.0
+    private var previousTime = 0.0
     var isLog: Boolean = false
 
     override fun init(opMode: OpMode) {
@@ -115,6 +116,7 @@ object SpecterDrive : API() {
         xError = targetX - otos.position.x
         yError = targetY - otos.position.y
         hError = AngleUnit.normalizeDegrees(targetH - otos.position.h)
+        previousHError = 0.0
 
         runtime.reset()
 
@@ -129,6 +131,8 @@ object SpecterDrive : API() {
             xError = targetX - otos.position.x
             yError = targetY - otos.position.y
             hError = AngleUnit.normalizeDegrees(targetH - otos.position.h)
+
+            linearOpMode.idle()
         }
 
         TriWheels.power(0.0, 0.0, 0.0)
@@ -149,11 +153,13 @@ object SpecterDrive : API() {
      *
      * @param targetAngle The global degree you want the robot to face (e.g., 0 to 360 or -180 to 180)
      * @param power The maximum power to apply during rotation
+     * @param timeout timeout
      */
-    fun rotateToHeading(targetAngle: Double, power: Double = 0.3) {
+    fun rotateToHeading(targetAngle: Double, power: Double = 0.3, timeout: Double = 3.0) {
+        runtime.reset()
         val target = AngleUnit.normalizeDegrees(targetAngle)
 
-        while (linearOpMode.opModeIsActive()) {
+        while (linearOpMode.opModeIsActive() && runtime.seconds() < timeout) {
             // Calculate the shortest distance to the target angle
             val error = AngleUnit.normalizeDegrees(target - otos.position.h)
 
@@ -182,22 +188,28 @@ object SpecterDrive : API() {
      * Follows a PurePursuit path
      *
      * @param pursuit the path to follow
+     * @param timeout the timeout
      */
-    fun followPurePursuit(pursuit: PurePursuit) {
+    fun followPurePursuit(pursuit: PurePursuit, timeout: Double = 10.0) {
+        runtime.reset()
 
-        val robotX = otos.position.x
-        val robotY = otos.position.y
+        while (linearOpMode.opModeIsActive() && runtime.seconds() < timeout) {
 
-        val lookahead = pursuit.getLookaheadPoint(robotX, robotY) ?: return
+            val robotX = otos.position.x
+            val robotY = otos.position.y
 
-        val targetH = lookahead.heading ?: otos.position.h
+            val lookahead = pursuit.getLookaheadPoint(robotX, robotY) ?: break
+            val targetH = lookahead.heading ?: otos.position.h
 
-        // reuse your existing path math
-        xError = lookahead.x - robotX
-        yError = lookahead.y - robotY
-        hError = AngleUnit.normalizeDegrees(targetH - otos.position.h)
+            xError = lookahead.x - robotX
+            yError = lookahead.y - robotY
+            hError = AngleUnit.normalizeDegrees(targetH - otos.position.h)
 
-        computePower()
+            computePower()
+            linearOpMode.idle()
+        }
+
+        TriWheels.power(0.0, 0.0, 0.0)
     }
 
 
@@ -222,7 +234,19 @@ object SpecterDrive : API() {
         var (r, g, b) = TriWheels.compute(rad, magnitude)
 
         // Apply turn logic
-        turn = Range.clip(hError * TURN_GAIN * ROTATE_SPEED, -MAX_AUTO_TURN, MAX_AUTO_TURN)
+        val currentTime = runtime.seconds()
+        val dt = currentTime - previousTime
+
+        val derivative = if (dt > 0) (hError - previousHError) / dt else 0.0
+
+        val turn = Range.clip(
+            (hError * TURN_GAIN) + (derivative * 0.01/*Derivitave gain*/),
+            -MAX_AUTO_TURN,
+            MAX_AUTO_TURN
+        )
+
+        previousHError = hError
+        previousTime = currentTime
         r += turn
         g += turn
         b += turn
@@ -247,9 +271,3 @@ object SpecterDrive : API() {
     }
 
 }
-
-
-
-
-
-
