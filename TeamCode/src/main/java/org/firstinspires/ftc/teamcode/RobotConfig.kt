@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil
 import org.firstinspires.ftc.teamcode.core.logging.Level
 import java.io.File
+import kotlin.math.PI
 
 /**
  * This is an immutable object representing robot configuration.
@@ -38,7 +39,7 @@ object RobotConfig {
     object TeleOpMain {
         /** A multiplier that scales that robot's driving / strafing speed. */
         @JvmField
-        var DRIVE_SPEED: Double = 0.85
+        var DRIVE_SPEED: Double = 1.0
 
         /** A multiplier that scales the robot's rotation speed. */
         @JvmField
@@ -77,9 +78,12 @@ object RobotConfig {
         /**
          * If sensor is not mounted in the center and or facing the front of the robot,
          * adjust the offset. If possible mount in the center and avoid needing to change this.
+         * Left = -x
+         * Forward = +y
+         * clockwise = -h
          */
         @JvmField
-        var OFFSET = SparkFunOTOS.Pose2D(-4.0, 0.0 ,90.0)
+        var OFFSET = SparkFunOTOS.Pose2D(0.0, -3.5430 ,90.0)
 
         /**
          * Should be set to one by default. If the sensor is reading distances incorrectly
@@ -101,21 +105,21 @@ object RobotConfig {
          * Controls the acceleration of y-axis movement.
          */
         @JvmField
-        var SPEED_GAIN: Double = 0.03
+        var SPEED_GAIN: Double = 0.01
 
 
         /**
          * Controls the acceleration of x-axis movement.
          */
         @JvmField
-        var STRAFE_GAIN: Double = 0.03
+        var STRAFE_GAIN: Double = 0.01
 
 
         /**
          * Controls the turning acceleration.
          */
         @JvmField
-        var TURN_GAIN: Double = 0.04
+        var TURN_GAIN: Double = 0.01
 
         /**
          * Max speed that can be achieved by rotation.
@@ -141,12 +145,6 @@ object RobotConfig {
          */
         @JvmField
         var H_THRESHOLD: Double = 4.0
-
-        /**
-         * Autonomous Speed
-         */
-        @JvmField
-        var SPEED: Double = 0.5
 
         /**
          * The low power threshold
@@ -298,8 +296,26 @@ object RobotConfig {
 
         @JvmField
         var red_zone = doubleArrayOf(144.0, 0.0, 120.0, 24.0)
-
-
-
     }
+    @Config
+    object Deadwheels{
+        /**
+         * Diameter of the Encoder wheel in inches
+         */
+        @JvmField
+        var ENCODER_WHEEL_DIAMETER = 2.52
+
+        /**
+         *Ticks measured after one full revolution of the deadwheel
+         */
+        @JvmField
+        var ENCODER_TICKS_PER_REVOLUTION = 8154;
+
+        /**
+         *Circumfrence of the wheel
+         */
+        @JvmField
+        var ENCODER_WHEEL_CIRCUMFERENCE = PI * 2.0 * (ENCODER_WHEEL_DIAMETER * 0.5)
+    }
+
 }

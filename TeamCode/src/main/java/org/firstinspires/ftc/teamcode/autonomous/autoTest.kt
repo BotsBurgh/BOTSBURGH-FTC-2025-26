@@ -47,6 +47,14 @@ class autoTest: LinearOpMode() {
             PurePursuit.PathPoint(120.0, 24.0)
         )
 
-        SpecterDrive.followPurePursuit(PurePursuit(spline), 24.0)
+        val pursuit = PurePursuit(spline, lookahead = 6.0)
+
+        while (opModeIsActive() && !pursuit.isFinished(
+                SpecterDrive.otos.position.x,
+                SpecterDrive.otos.position.y
+            )) {
+
+            SpecterDrive.followPurePursuit(pursuit)
+        }
     }
 }
