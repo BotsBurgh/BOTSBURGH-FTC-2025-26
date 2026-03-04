@@ -53,6 +53,8 @@ class teleOpTest : OpMode() {
         else{
             goal = RobotConfig.UniversalCoordinates.RED_POS
         }
+
+        RobotTracker.setPos(12.0, 12.0, 0.0, false)
     }
 
     override fun loop() {
@@ -173,7 +175,7 @@ class teleOpTest : OpMode() {
             RobotTracker.setPos(9.5, 9.5, 0.0, false)
         }
 
-        telemetry.addData("Distance", sqrt((goal[0]- RobotTracker.getPos(false)[0]).squared()+(goal[1]- RobotTracker.getPos(false)[1]).squared()))
+        telemetry.addData("Distance", sqrt((goal[0] - RobotTracker.getPos(false)[0]).squared()+(goal[1]- RobotTracker.getPos(false)[1]).squared()))
         telemetry.addData("Velocity", Turret.launcherL.velocity)
         telemetry.addData("Power", Turret.launcherL.power)
         telemetry.addData("Theta", normalizeDegrees(Math.toDegrees(atan2

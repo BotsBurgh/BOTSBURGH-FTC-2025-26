@@ -62,7 +62,7 @@ object RobotTracker :API() {
         */
         pinpoint.setOffsets(
             -4.658,  // forward pod sideways offset
-            -7.866,
+            7.866,
             DistanceUnit.INCH
         ) //these are tuned for 3110-0002-0001 Product Insight #1
 
@@ -80,9 +80,12 @@ object RobotTracker :API() {
          * increase when you move the robot forward. And the Y (strafe) pod should increase when
          * you move the robot to the left.
          */
+
+
+        //REVERSED REVERSED
         pinpoint.setEncoderDirections(
             GoBildaPinpointDriver.EncoderDirection.REVERSED,
-            GoBildaPinpointDriver.EncoderDirection.REVERSED
+            GoBildaPinpointDriver.EncoderDirection.FORWARD
         )
 
         /*
@@ -94,7 +97,6 @@ object RobotTracker :API() {
          * an incorrect starting value for x, y, and heading.
          */
         pinpoint.resetPosAndIMU()
-        pinpoint.recalibrateIMU()
     }
 
 
