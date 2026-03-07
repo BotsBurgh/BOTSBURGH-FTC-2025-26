@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
 import org.firstinspires.ftc.teamcode.api.linear.SpecterDrive
 import org.firstinspires.ftc.teamcode.core.API
+import kotlin.math.abs
 
 /**
  * An API to track the current coordinates of the robot.
@@ -38,7 +39,6 @@ object RobotTracker :API() {
         configurePinpoint()
 
         // Set the location of the robot - this should be the place you are starting the robot from
-        pinpoint.setPosition(Pose2D(DistanceUnit.INCH, tracker.position.x, tracker.position.y, AngleUnit.DEGREES, tracker.position.h))
         pose2D = pinpoint.position
     }
 
@@ -62,7 +62,7 @@ object RobotTracker :API() {
         */
         pinpoint.setOffsets(
             -4.658,  // forward pod sideways offset
-            7.866,
+            -7.866,
             DistanceUnit.INCH
         ) //these are tuned for 3110-0002-0001 Product Insight #1
 
@@ -85,7 +85,7 @@ object RobotTracker :API() {
         //REVERSED REVERSED
         pinpoint.setEncoderDirections(
             GoBildaPinpointDriver.EncoderDirection.REVERSED,
-            GoBildaPinpointDriver.EncoderDirection.FORWARD
+            GoBildaPinpointDriver.EncoderDirection.REVERSED
         )
 
         /*
@@ -96,7 +96,7 @@ object RobotTracker :API() {
          * This is recommended before you run your autonomous, as a bad initial calibration can cause
          * an incorrect starting value for x, y, and heading.
          */
-        pinpoint.resetPosAndIMU()
+        pinpoint.recalibrateIMU()
     }
 
 
@@ -118,8 +118,8 @@ object RobotTracker :API() {
         if (isAuto) {
             return doubleArrayOf(SpecterDrive.otos.position.x, SpecterDrive.otos.position.y, SpecterDrive.otos.position.h)
         }
-            //X and Y are flipped in the pinpoint becasuse of how its configured. To fit with our coordinate system, flip X and Y.
-            return doubleArrayOf(pose2D.getY(DistanceUnit.INCH), pose2D.getX(DistanceUnit.INCH), pose2D.getHeading(AngleUnit.DEGREES))
+            //X and Y are flipped in the pinpoint becasuse of how its configured. To fit with our coordinate system, flip X and Y. abs X bc stuff
+            return doubleArrayOf(abs(pose2D.getY(DistanceUnit.INCH)), abs(pose2D.getX(DistanceUnit.INCH)), pose2D.getHeading(AngleUnit.DEGREES))
     }
 
     /**
@@ -160,8 +160,8 @@ object RobotTracker :API() {
             SpecterDrive.otos.position = SparkFunOTOS.Pose2D(newX, newY, newH)
         }
         else {
-            pinpoint.setPosX(newX, DistanceUnit.INCH)
-            pinpoint.setPosY(newY, DistanceUnit.INCH)
+            pinpoint.setPosY(newX, DistanceUnit.INCH)
+            pinpoint.setPosX(newY, DistanceUnit.INCH)
             pinpoint.setHeading(newH, AngleUnit.DEGREES)
         }
     }

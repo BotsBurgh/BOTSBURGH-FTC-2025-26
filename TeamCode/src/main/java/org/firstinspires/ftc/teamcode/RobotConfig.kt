@@ -105,21 +105,21 @@ object RobotConfig {
          * Controls the acceleration of y-axis movement.
          */
         @JvmField
-        var SPEED_GAIN: Double = 0.01
+        var SPEED_GAIN: Double = 0.03
 
 
         /**
          * Controls the acceleration of x-axis movement.
          */
         @JvmField
-        var STRAFE_GAIN: Double = 0.01
+        var STRAFE_GAIN: Double = 0.03
 
 
         /**
          * Controls the turning acceleration.
          */
         @JvmField
-        var TURN_GAIN: Double = 0.01
+        var TURN_GAIN: Double = 0.03
 
         /**
          * Max speed that can be achieved by rotation.

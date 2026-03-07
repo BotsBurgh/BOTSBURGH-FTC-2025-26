@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.api.linear
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.util.ElapsedTime
 import com.qualcomm.robotcore.util.Range
@@ -95,48 +96,54 @@ object SpecterDrive : API() {
      * @param rC The centricity of the robot (assumes robot-centric unless specified)
      * @param spMag A special magnetude to travel with
      */
-    fun path(x: Double, y: Double, h: Double, t: Double = 999.99999, rC: Boolean = true, spMag: Double = 0.0): DoubleArray {
+    fun path(x: Double, y: Double, h: Double, t: Double = 999.99999, rC: Boolean = true, spMag: Double = 0.0){
 
-        val targetX: Double
-        val targetY: Double
-        val targetH: Double = h
+        var otosScreenshot = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
 
-        if (rC) {
-            // If robot-centric, the x/y passed are offsets.
-            // We add them to the current global position to find the field target.
-            targetX = otos.position.x + x
-            targetY = otos.position.y + y
-        } else {
-            // If field-centric, the x/y passed are the actual field coordinates.
-            targetX = x
-            targetY = y
+        if(rC) {
+            //takes a "screenshot" of the current position to add back
+            otosScreenshot.x = otos.position.x
+            otosScreenshot.y = otos.position.y
+            otosScreenshot.h = otos.position.h
+            //reset position to zero for robot-centric
+            otos.position = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
         }
 
-        // Set initial errors based on the calculated target
-        xError = targetX - otos.position.x
-        yError = targetY - otos.position.y
-        hError = AngleUnit.normalizeDegrees(targetH - otos.position.h)
-        previousHError = 0.0
+        //set initial x, y, and h error
+        xError = x - otos.position.x
+        yError = y - otos.position.y
+        hError = AngleUnit.normalizeDegrees(h - otos.position.h)
 
+        //Reset time
         runtime.reset()
 
-        while (linearOpMode.opModeIsActive() && (runtime.milliseconds() < t * 1000) &&
-            ((abs(xError) > RobotConfig.OTOS.X_THRESHOLD) ||
-                    (abs(yError) > RobotConfig.OTOS.Y_THRESHOLD) ||
-                    (abs(hError) > RobotConfig.OTOS.H_THRESHOLD))) {
+        //While time < timeout val and xError < x_threshold and yError < y_threshold and hError < h_threshold
+        while (linearOpMode.opModeIsActive() && (runtime.milliseconds() < t * 1000) && ((abs(xError) > RobotConfig.OTOS.X_THRESHOLD) ||
+                    (abs(yError) > RobotConfig.OTOS.Y_THRESHOLD) || (abs(hError) > RobotConfig.OTOS.H_THRESHOLD))
+        ) {
+            with(linearOpMode.telemetry) {
+                addData("current X coordinate", otos.position.x)
+                addData("current Y coordinate", otos.position.y)
+                addData("current Heading angle", otos.position.h)
+                update()
+            }
 
-            if (spMag == 0.0) computePower() else computePower(spMag)
+            if(spMag == 0.0) {
+                computePower()
+            }
 
-            // Update errors using the consistent global targets
-            xError = targetX - otos.position.x
-            yError = targetY - otos.position.y
-            hError = AngleUnit.normalizeDegrees(targetH - otos.position.h)
 
-            linearOpMode.idle()
+            // Update errors based on global position
+            xError = x - otos.position.x
+            yError = y - otos.position.y
+            hError = AngleUnit.normalizeDegrees(h - otos.position.h)
+
         }
-
+        //FullStop
         TriWheels.power(0.0, 0.0, 0.0)
-        return doubleArrayOf(otos.position.x, otos.position.y, otos.position.h)
+
+        setPose(otosScreenshot.x+ otos.position.x, otosScreenshot.y+otos.position.y, otosScreenshot.h+otos.position.h)
+
     }
 
     /**
@@ -217,43 +224,28 @@ object SpecterDrive : API() {
      * Creates a vector for the robot to move to
      * @param mag the optional magnetude of the robot
      */
-    private fun computePower(mag: Double = 0.0) {
-        // 1. Calculate the error in Field Coordinates
-        val fx = xError * STRAFE_GAIN
-        val fy = yError * SPEED_GAIN
+    private fun computePower() {
+        // Calculate the error vector in field coordinates
+        val fieldX = -(xError * STRAFE_GAIN)
+        val fieldY = -(yError * SPEED_GAIN)
 
-        // 2. Rotate the vector into Robot Coordinates
-        val robotHeadingRad = Math.toRadians(otos.position.h)
-        val rotX = fx * Math.cos(-robotHeadingRad) - fy * Math.sin(-robotHeadingRad)
-        val rotY = fx * Math.sin(-robotHeadingRad) + fy * Math.cos(-robotHeadingRad)
 
-        // 3. Calculate direction based on Robot-Relative coordinates
-        val rad = atan2(rotY, rotX) - PI
-        val magnitude = if (mag == 0.0) sqrt(rotX * rotX + rotY * rotY) else mag
+        // Direction and magnitude
+        val rad = atan2(fieldY, fieldX) - (PI / 3.0) - (2.0 * PI / 3.0)
+        val magnitude = sqrt(fieldX * fieldX + fieldY * fieldY)
 
         var (r, g, b) = TriWheels.compute(rad, magnitude)
 
-        // Apply turn logic
-        val currentTime = runtime.seconds()
-        val dt = currentTime - previousTime
+        turn = Range.clip(hError * TURN_GAIN * ROTATE_SPEED, -MAX_AUTO_TURN, MAX_AUTO_TURN)
 
-        val derivative = if (dt > 0) (hError - previousHError) / dt else 0.0
-
-        val turn = Range.clip(
-            (hError * TURN_GAIN) + (derivative * 0.01/*Derivitave gain*/),
-            -MAX_AUTO_TURN,
-            MAX_AUTO_TURN
-        )
-
-        previousHError = hError
-        previousTime = currentTime
         r += turn
         g += turn
         b += turn
 
-        // Normalize and Power
         val max = maxOf(abs(r), abs(g), abs(b), 1.0)
-        TriWheels.power(roundPower(r/max), roundPower(g/max), roundPower(b/max))
+        r /= max; g /= max; b /= max
+
+        TriWheels.power(r, roundPower(g), roundPower(b))
     }
 
 

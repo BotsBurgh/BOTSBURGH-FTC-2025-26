@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeDegrees
 import org.firstinspires.ftc.teamcode.RobotConfig
-import org.firstinspires.ftc.teamcode.Singleton
 import org.firstinspires.ftc.teamcode.core.API
 import org.firstinspires.ftc.teamcode.utils.squared
 import kotlin.math.abs
@@ -123,11 +122,11 @@ object Turret : API() {
     fun trackPos(pos: DoubleArray, goal: DoubleArray) {
         //calc theta
         val theta =
-            normalizeDegrees(Math.toDegrees(atan2
-                (goal[1] - pos[1],
-                goal[0] - pos[0])
+            normalizeDegrees(pos[2] + Math.toDegrees(atan2
+                (goal[0] - pos[0],
+                goal[1] - pos[1])
             )
-            -pos[2])
+            )
 
         //convert output angle to motor ticks
 
@@ -138,11 +137,12 @@ object Turret : API() {
         aimer.mode = DcMotor.RunMode.RUN_TO_POSITION
 
         if (motorTicks>0){
-            aimer.power = 0.9
+            setAimerPower(-0.9)
         }
         else if (motorTicks<0){
-            aimer.power = -0.9
+            setAimerPower(0.9)
         }
+
     }
 
     /**
@@ -264,8 +264,8 @@ object Turret : API() {
 
     fun launch() {
 
-        launcherR.velocity = TARGET_VELOCITY
-        launcherL.velocity = TARGET_VELOCITY
+        launcherR.velocity = -TARGET_VELOCITY
+        launcherL.velocity = -TARGET_VELOCITY
     }
 
     fun changeTargetVelocity(distance: Double){
@@ -307,5 +307,7 @@ object Turret : API() {
 //            light2(0.5)
         }
     }
+
+
 }
 

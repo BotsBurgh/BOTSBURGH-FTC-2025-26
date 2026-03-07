@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.teleop
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeDegrees
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.teamcode.RobotConfig
 import org.firstinspires.ftc.teamcode.Singleton
 import org.firstinspires.ftc.teamcode.api.Limelight
@@ -33,35 +35,35 @@ class teleOpTest : OpMode() {
         Turret.init(this)
         TransferSystem.init(this)
         Voltage.init(this)
+        telemetry.addData("x", Singleton.finalXInches)
+        telemetry.addData("x", Singleton.finalYInches)
+        telemetry.addData("x", Singleton.finalHeadingDeg)
         if(Singleton.autoRan) {
+            telemetry.addLine("FOUND DATA")
             Limelight.init(this, Singleton.tagTracking)
+            RobotTracker.pinpoint.setPosX(Singleton.finalXInches, DistanceUnit.INCH)
+            RobotTracker.pinpoint.setPosY(Singleton.finalYInches, DistanceUnit.INCH)
+            RobotTracker.pinpoint.setHeading(Singleton.finalHeadingDeg, AngleUnit.DEGREES)
+            if(Singleton.team == "Red"){
+                goal = RobotConfig.UniversalCoordinates.RED_POS
+            }
+            else if(Singleton.team == "Blue"){
+                goal = RobotConfig.UniversalCoordinates.BLUE_POS
+            }
         }
         else{
+            telemetry.addLine("NOT FOUND DATA")
             Limelight.init(this, 1)
-        }
-
-        telemetry.addData("cX", RobotTracker.getPos(false)[0])
-        telemetry.addData("cY", RobotTracker.getPos(false)[1])
-        telemetry.addData("cH", RobotTracker.getPos(false)[2])
-
-        if(Singleton.team == "Red"){
+            RobotTracker.setPos(12.0, 12.0, 0.0, false)
             goal = RobotConfig.UniversalCoordinates.RED_POS
         }
-        else if(Singleton.team == "Blue"){
-            goal = RobotConfig.UniversalCoordinates.BLUE_POS
-        }
-        else{
-            goal = RobotConfig.UniversalCoordinates.RED_POS
-        }
-
-        RobotTracker.setPos(12.0, 12.0, 0.0, false)
     }
 
     override fun loop() {
         //updates first
         RobotTracker.updatePos()
         Turret.changeTargetVelocity(sqrt((goal[0]- RobotTracker.getPos(false)[0]).squared()+(goal[1]- RobotTracker.getPos(false)[1]).squared()))
-        //Turret.trackPos(RobotTracker.getPos(false), goal)
+        Turret.trackPos(RobotTracker.getPos(false), goal)
         Limelight.update(Turret.aimer.currentPosition)
         telemetry.clear()
 
@@ -82,26 +84,6 @@ class teleOpTest : OpMode() {
             joyMagnitude * RobotConfig.TeleOpMain.DRIVE_SPEED,
             rotation = rotationPower * RobotConfig.TeleOpMain.ROTATE_SPEED,
         )
-
-        //limelight tracking
-        if (abs(gamepad2.left_stick_x/15) > 0.05) {
-            // Manual override
-            Turret.setAimerPower(gamepad2.left_stick_x.toDouble())
-        }
-        else if (Limelight.seesTag) {
-            Turret.setAimerPower(Turret.getTurretPower())
-        }
-        else {
-            Turret.setAimerPower(0.0)
-        }
-
-
-        if(!Limelight.seesTag){
-            Turret.light(0.28)
-        }
-        else {
-            Turret.light(0.5)
-        }
 
 
         //Toggle turret on and off
@@ -162,6 +144,15 @@ class teleOpTest : OpMode() {
             TransferSystem.setTransferPwr(1.0)
         }
 
+        if(gamepad2.dpad_up){
+            if (Limelight.seesTag) {
+                Turret.setAimerPower(Turret.getTurretPower())
+            }
+            else {
+                Turret.setAimerPower(0.0)
+            }
+        }
+
 
         if (!gamepad1.left_bumper && gamepad1.left_trigger.toDouble() == 0.0) {
             TransferSystem.setIntakePwr(-0.0)
@@ -177,18 +168,6 @@ class teleOpTest : OpMode() {
 
         telemetry.addData("Distance", sqrt((goal[0] - RobotTracker.getPos(false)[0]).squared()+(goal[1]- RobotTracker.getPos(false)[1]).squared()))
         telemetry.addData("Velocity", Turret.launcherL.velocity)
-        telemetry.addData("Power", Turret.launcherL.power)
-        telemetry.addData("Theta", normalizeDegrees(Math.toDegrees(atan2
-            (goal[1] - RobotTracker.getPos(false)[1],
-            goal[0] -  RobotTracker.getPos(false)[0])
-        )
-                -RobotTracker.getPos(false)[2]))
-        telemetry.addData("velX", RobotTracker.getVelocity(false)[0])
-        telemetry.addData("velY", RobotTracker.getVelocity(false)[1])
-        telemetry.addData("velH", RobotTracker.getVelocity(false)[2])
-
-        telemetry.addData("X", RobotTracker.getPos(false)[0])
-        telemetry.addData("Y", RobotTracker.getPos(false)[1])
-        telemetry.addData("H", RobotTracker.getPos(false)[2])
+        telemetry.addData("tick", Turret.aimer.currentPosition)
     }
 }
