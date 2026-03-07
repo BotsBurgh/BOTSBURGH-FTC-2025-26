@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.api.TransferSystem
 import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.api.Turret
 import org.firstinspires.ftc.teamcode.api.linear.SpecterDrive
+import org.firstinspires.ftc.teamcode.api.linear.SpecterDrive.otos
 import org.firstinspires.ftc.teamcode.utils.squared
 import kotlin.concurrent.timer
 import kotlin.math.sqrt
@@ -22,7 +23,13 @@ class autoFarBlue6: LinearOpMode() {
         TransferSystem.init(this)
         Singleton.reset()
 
-        RobotTracker.setPos(60.0, 8.0, -90.0, true)
+        RobotTracker.setPos(60.0, 8.0, 270.0, true)
+
+        Singleton.team = "Blue"
+        Singleton.starting = "Far"
+        Singleton.tagTracking = 0
+        Singleton.autoRan = true
+
         waitForStart()
 
         //Launch 3 balls
@@ -59,39 +66,18 @@ class autoFarBlue6: LinearOpMode() {
         TransferSystem.setTransferPwr(0.0)
         TransferSystem.setIntakePwr(0.0)
 
-        //Move to human Player
-        TransferSystem.setIntakePwr(-1.0)
-        TransferSystem.setTransferPwr(-1.0)
-        Turret.launch(0.1)
 
-        SpecterDrive.path(0.0, 72.0, 0.0, 2.5, true, 15.0)
-        sleep(3500)
-        SpecterDrive.path(0.0, -55.0, 0.0, 2.0, true, 10.0)
-        TransferSystem.setIntakePwr(-1.0)
-        TransferSystem.setTransferPwr(0.0)
-
-
-        //FIRE
-        Turret.moveToTick(387)
-        Turret.launch()
-        sleep(2000)
-        TransferSystem.setTransferPwr(-1.0)
-        TransferSystem.setIntakePwr(1.0)
-        sleep(2350)
-        Turret.stop()
-        TransferSystem.setTransferPwr(0.0)
-        TransferSystem.setIntakePwr(0.0)
-
-        //Escape
-        SpecterDrive.path(0.0, 40.0, 0.0)
 
         //Singleton logging
-        Singleton.autoRan = true
-        Singleton.finalXInches = RobotTracker.getPos(true)[0]
-        Singleton.finalYInches = RobotTracker.getPos(true)[1]
-        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
-        Singleton.team = "Blue"
-        Singleton.starting = "Far"
-        Singleton.tagTracking = 0
+        var finX = otos.position.x
+        var finY = otos.position.y
+        var finH = otos.position.h
+
+        Singleton.finalXInches = finX
+        Singleton.finalYInches = finY
+        Singleton.finalHeadingDeg = finH
+        Turret.moveToTick(0)
+
+
     }
 }

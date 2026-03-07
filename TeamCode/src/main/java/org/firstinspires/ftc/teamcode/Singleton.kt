@@ -1,41 +1,78 @@
 package org.firstinspires.ftc.teamcode
 
-/**
- * A Singleton is  pattern that restricts a class to having only one instance (object)
- * throughout the entire application's lifecycle, while providing a global point of access to that instance.
- *
- * If theres data in autonomous that needs to be transferred to teleop, make it a variable here
- */
 object Singleton {
+
     /**
      * Autonomous Check
      */
     var autoRan: Boolean = false
+        get() = field
+        set(value) {
+            field = value
+        }
 
     /**
      * FTC Positions
      */
     var team: String = ""
+        get() = field
+        set(value) {
+            field = value
+        }
 
     var starting: String = ""
+        get() = field
+        set(value) {
+            field = value
+        }
 
     /**
      * Position Localization
      */
     var finalHeadingDeg: Double = 0.0
+        get() = field
+        set(value) {
+            field = value
+        }
+
     var finalXInches: Double = 12.0
+        get() = field
+        set(value) {
+            field = value
+        }
+
     var finalYInches: Double = 12.0
+        get() = field
+        set(value) {
+            field = value
+        }
 
     var initXInches: Double = 0.0
+        get() = field
+        set(value) {
+            field = value
+        }
 
     var initYInches: Double = 0.0
+        get() = field
+        set(value) {
+            field = value
+        }
 
     var initHeadingDeg: Double = 0.0
+        get() = field
+        set(value) {
+            field = value
+        }
 
     /**
      * Limelight
      */
     var tagTracking: Int = -1
+        get() = field
+        set(value) {
+            field = value
+        }
 
     /**
      * Reset all to base

@@ -9,7 +9,11 @@ import org.firstinspires.ftc.teamcode.core.API
 import org.firstinspires.ftc.teamcode.utils.PI_2
 import org.firstinspires.ftc.teamcode.utils.Polar2d
 import kotlin.math.PI
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.pow
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 /**
  * An API for controlling the wheels of the triangle robot.
@@ -147,5 +151,26 @@ object TriWheels : API() {
 
     /** Returns an array containing [red], [green], and [blue]. */
     fun wheels() = arrayOf(this.red, this.green, this.blue)
+
+    /**
+     * Get the error vector
+     */
+    fun subtractVectors(v1: Polar2d, v2: Polar2d): Polar2d {
+
+        val v1x = v1.radius * cos(v1.theta)
+        val v1y = v1.radius * sin(v1.theta)
+
+        val v2x = v2.radius * cos(v2.theta)
+        val v2y = v2.radius * sin(v2.theta)
+
+
+        val rx = v1x - v2x
+        val ry = v1y - v2y
+
+        val resultR = sqrt(rx.pow(2) + ry.pow(2))
+        val resultTheta = atan2(ry, rx)
+
+        return Polar2d(resultTheta, resultR)
+    }
 
 }

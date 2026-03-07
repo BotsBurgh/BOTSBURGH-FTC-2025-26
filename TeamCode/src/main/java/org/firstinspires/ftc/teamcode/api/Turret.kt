@@ -6,10 +6,12 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import com.qualcomm.robotcore.hardware.Servo
-import org.firstinspires.ftc.teamcode.Singleton
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeDegrees
+import org.firstinspires.ftc.teamcode.RobotConfig
 import org.firstinspires.ftc.teamcode.core.API
 import org.firstinspires.ftc.teamcode.utils.squared
 import kotlin.math.abs
+import kotlin.math.atan2
 
 
 /**
@@ -114,9 +116,33 @@ object Turret : API() {
 
     /**
      * Constantly makes sure that the turret is facing the basket.
+     *
+     * @param pos our current position
      */
-    fun trackPos(){
-        //no
+    fun trackPos(pos: DoubleArray, goal: DoubleArray) {
+        //calc theta
+        val theta =
+            normalizeDegrees(pos[2] + Math.toDegrees(atan2
+                (goal[0] - pos[0],
+                goal[1] - pos[1])
+            )
+            )
+
+        //convert output angle to motor ticks
+
+        val motorTicks = (theta * RobotConfig.Turret.TICKS_PER_DEGREE).toInt()
+
+        //move turret
+        aimer.targetPosition = motorTicks
+        aimer.mode = DcMotor.RunMode.RUN_TO_POSITION
+
+        if (motorTicks>0){
+            setAimerPower(-0.9)
+        }
+        else if (motorTicks<0){
+            setAimerPower(0.9)
+        }
+
     }
 
     /**
@@ -281,5 +307,7 @@ object Turret : API() {
 //            light2(0.5)
         }
     }
+
+
 }
 

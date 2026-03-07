@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.api.TransferSystem
 import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.api.Turret
 import org.firstinspires.ftc.teamcode.api.linear.SpecterDrive
+import org.firstinspires.ftc.teamcode.api.linear.SpecterDrive.otos
 import org.firstinspires.ftc.teamcode.utils.squared
 import kotlin.math.sqrt
 
@@ -22,6 +23,11 @@ class autoCloseRed9: LinearOpMode() {
         Singleton.reset()
 
         RobotTracker.setPos(60.0, 8.0, 90.0, true) //find real pos
+
+        Singleton.team = "Red"
+        Singleton.starting = "Close"
+        Singleton.tagTracking = 1
+        Singleton.autoRan = true
         //Start Position: Angled against the wall, midpoint
         waitForStart()
 
@@ -95,13 +101,16 @@ class autoCloseRed9: LinearOpMode() {
 
 
         //Singleton logging
-        Singleton.autoRan = true
-        Singleton.finalXInches = RobotTracker.getPos(true)[0]
-        Singleton.finalYInches = RobotTracker.getPos(true)[1]
-        Singleton.finalHeadingDeg = RobotTracker.getPos(true)[2]
-        Singleton.team = "Red"
-        Singleton.starting = "Close"
-        Singleton.tagTracking = 1
+
+        //Singleton logging
+        var finX = otos.position.x
+        var finY = otos.position.y
+        var finH = otos.position.h
+
+        Singleton.finalXInches = finX
+        Singleton.finalYInches = finY
+        Singleton.finalHeadingDeg = finH
+        Turret.moveToTick(0)
 
 
     }
