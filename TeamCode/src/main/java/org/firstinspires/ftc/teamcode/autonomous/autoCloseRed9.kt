@@ -22,7 +22,7 @@ class autoCloseRed9: LinearOpMode() {
         TransferSystem.init(this)
         Singleton.reset()
 
-        RobotTracker.setPos(60.0, 8.0, 90.0, true) //find real pos
+        RobotTracker.setPos(120.0, 120.0, 90.0, true) //find real pos
 
         Singleton.team = "Red"
         Singleton.starting = "Close"
@@ -33,10 +33,7 @@ class autoCloseRed9: LinearOpMode() {
 
         //Move back and charge turret
         Turret.changeTargetVelocity(
-            sqrt(
-                (RobotConfig.UniversalCoordinates.RED_POS[0] - (6.69 * 12)).squared() +
-                        (RobotConfig.UniversalCoordinates.RED_POS[1] - (7.11 * 12)).squared()
-            )  +5.5
+            96.0
         )
         Turret.launch()
         SpecterDrive.path(0.0, -50.0, 0.0, 3.0)
@@ -50,7 +47,7 @@ class autoCloseRed9: LinearOpMode() {
         Turret.launch(0.5)
 
         //Rotate to 90
-        SpecterDrive.rotateToHeading(-30.0, 0.7)
+        SpecterDrive.rotateToHeading(60.0, 0.7)
 
         //Forward and intake first 3 balls
         Turret.moveToTick(-230) //FIND TICK
@@ -111,7 +108,6 @@ class autoCloseRed9: LinearOpMode() {
         Singleton.finalYInches = finY
         Singleton.finalHeadingDeg = finH
         Turret.moveToTick(0)
-
 
     }
 }

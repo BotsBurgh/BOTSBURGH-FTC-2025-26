@@ -53,7 +53,7 @@ class autoCloseBlue9: LinearOpMode() {
         TransferSystem.setIntakePwr(0.0)
         Turret.launch(0.5)
         //Rotate to 90
-        SpecterDrive.rotateToHeading(30.0, 0.7)
+        SpecterDrive.rotateToHeading(355.0, 0.7)
 
         //Forward and intake first 3 balls
         Turret.moveToTick(275) //FIND TICK

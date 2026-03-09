@@ -63,7 +63,7 @@ class teleOpTest : OpMode() {
         //updates first
         RobotTracker.updatePos()
         Turret.changeTargetVelocity(sqrt((goal[0]- RobotTracker.getPos(false)[0]).squared()+(goal[1]- RobotTracker.getPos(false)[1]).squared()))
-        Turret.trackPos(RobotTracker.getPos(false), goal)
+        //Turret.trackPos(RobotTracker.getPos(false), goal)
         Limelight.update(Turret.aimer.currentPosition)
         telemetry.clear()
 
@@ -144,14 +144,18 @@ class teleOpTest : OpMode() {
             TransferSystem.setTransferPwr(1.0)
         }
 
-        if(gamepad2.dpad_up){
-            if (Limelight.seesTag) {
-                Turret.setAimerPower(Turret.getTurretPower())
-            }
-            else {
-                Turret.setAimerPower(0.0)
-            }
+        //limelight tracking
+        if (abs(gamepad2.left_stick_x/5) > 0.05) {
+            // Manual override
+            Turret.setAimerPower(gamepad2.left_stick_x/5.toDouble())
         }
+        else if (Limelight.seesTag) {
+            Turret.setAimerPower(Turret.getTurretPower())
+        }
+        else {
+            Turret.setAimerPower(0.0)
+        }
+
 
 
         if (!gamepad1.left_bumper && gamepad1.left_trigger.toDouble() == 0.0) {
@@ -169,5 +173,9 @@ class teleOpTest : OpMode() {
         telemetry.addData("Distance", sqrt((goal[0] - RobotTracker.getPos(false)[0]).squared()+(goal[1]- RobotTracker.getPos(false)[1]).squared()))
         telemetry.addData("Velocity", Turret.launcherL.velocity)
         telemetry.addData("tick", Turret.aimer.currentPosition)
+
+        telemetry.addData("X", RobotTracker.getPos(false)[0])
+        telemetry.addData("Y", RobotTracker.getPos(false)[1])
+        telemetry.addData("H", RobotTracker.getPos(false)[2])
     }
 }

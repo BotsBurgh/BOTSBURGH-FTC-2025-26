@@ -87,6 +87,17 @@ object TriWheels : API() {
         power(r + rotation, g + rotation, b + rotation)
     }
 
+    fun driveWithOffset(
+        radians: Double,
+        magnitude: Double,
+        rotation: Double = 0.0,
+    ) : DoubleArray{
+        val (r, g, b) = computeWithOffset(radians, magnitude)
+        power(r + rotation, g + rotation, b + rotation)
+
+        return doubleArrayOf(r+rotation, g+rotation, b+rotation)
+    }
+
     /**
      * Makes all 3 wheels stop.
      *
@@ -153,24 +164,46 @@ object TriWheels : API() {
     fun wheels() = arrayOf(this.red, this.green, this.blue)
 
     /**
-     * Get the error vector
+     * Returns the ratio of how much each wheel should spin for given angle in [radians] and
+     *  strength in [magnitude] with accounting for a measured error.
      */
-    fun subtractVectors(v1: Polar2d, v2: Polar2d): Polar2d {
+    fun computeWithOffset(
+        radians: Double,
+        magnitude: Double,
+    ): Triple<Double, Double, Double>{
 
-        val v1x = v1.radius * cos(v1.theta)
-        val v1y = v1.radius * sin(v1.theta)
+        val actualX = RobotTracker.getPos(false)[0] - RobotTracker.lastX
+        val actualY = RobotTracker.getPos(false)[1] - RobotTracker.lastY
 
-        val v2x = v2.radius * cos(v2.theta)
-        val v2y = v2.radius * sin(v2.theta)
+        val inputX = magnitude * cos(radians)
+        val inputY = magnitude * sin(radians)
 
+        val errorX = actualX - inputX
+        val errorY = actualY - inputY
 
-        val rx = v1x - v2x
-        val ry = v1y - v2y
+        val k = 0.02
 
-        val resultR = sqrt(rx.pow(2) + ry.pow(2))
-        val resultTheta = atan2(ry, rx)
+        val finalX = inputX - k * errorX
+        val finalY = inputY - k * errorY
 
-        return Polar2d(resultTheta, resultR)
+        val fVect = Polar2d.fromCartesian(finalX, finalY)
+
+        val actualMag = sqrt(actualX*actualX + actualY*actualY)
+
+        if (actualMag < 0.001) {
+            // robot hasn't moved yet
+            return Triple(
+                magnitude * sin(RED_ANGLE - radians),
+                magnitude * sin(GREEN_ANGLE - radians),
+                magnitude * sin(BLUE_ANGLE - radians),
+            )
+        }
+
+        return Triple(
+            fVect.radius * sin(RED_ANGLE - fVect.theta),
+            fVect.radius * sin(GREEN_ANGLE - fVect.theta),
+            fVect.radius * sin(BLUE_ANGLE - fVect.theta),
+        )
     }
 
 }

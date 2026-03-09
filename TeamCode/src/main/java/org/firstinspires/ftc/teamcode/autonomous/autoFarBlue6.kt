@@ -10,9 +10,7 @@ import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.api.Turret
 import org.firstinspires.ftc.teamcode.api.linear.SpecterDrive
 import org.firstinspires.ftc.teamcode.api.linear.SpecterDrive.otos
-import org.firstinspires.ftc.teamcode.utils.squared
-import kotlin.concurrent.timer
-import kotlin.math.sqrt
+
 
 @Autonomous(name = "FAR BLUE")
 class autoFarBlue6: LinearOpMode() {
