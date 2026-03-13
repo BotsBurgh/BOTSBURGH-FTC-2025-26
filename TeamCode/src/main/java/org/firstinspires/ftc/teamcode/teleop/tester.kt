@@ -10,6 +10,8 @@ import kotlin.math.atan2
 import kotlin.math.sqrt
 
 @TeleOp(name = "tester")
+@Disabled
+
 
 class tester : OpMode() {
 

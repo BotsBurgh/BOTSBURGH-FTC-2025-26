@@ -32,4 +32,19 @@ object TransferSystem : API(){
         transfer.power = iP
     }
 
+    fun reverseTransfer(){
+        setTransferPwr(0.2)
+    }
+
+    fun transfer(){
+        setTransferPwr(-0.2)
+    }
+    fun reverseIntake(){
+        setTransferPwr(1.0)
+    }
+
+    fun intake(){
+        setTransferPwr(-0.75)
+    }
+
 }

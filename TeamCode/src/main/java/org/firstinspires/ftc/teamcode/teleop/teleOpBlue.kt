@@ -19,9 +19,9 @@ import kotlin.math.atan2
 import kotlin.math.sqrt
 
 
-@TeleOp(name = "teleOpRed")
+@TeleOp(name = "teleOpBlue")
 
-class teleOpTest : OpMode() {
+class teleOpBlue : OpMode() {
 
     var turretOn = false
     var lastCircle = false
@@ -35,9 +35,9 @@ class teleOpTest : OpMode() {
         Turret.init(this)
         TransferSystem.init(this)
         Voltage.init(this)
-        Limelight.init(this, 2)
+        Limelight.init(this, 0)
 
-        goal = RobotConfig.UniversalCoordinates.RED_POS
+        goal = RobotConfig.UniversalCoordinates.BLUE_POS
         RobotTracker.setPos(0.0, 0.0, 0.0, false)
     }
 

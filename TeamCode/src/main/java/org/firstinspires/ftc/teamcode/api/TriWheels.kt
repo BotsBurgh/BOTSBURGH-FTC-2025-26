@@ -172,8 +172,8 @@ object TriWheels : API() {
         magnitude: Double,
     ): Triple<Double, Double, Double>{
 
-        val actualX = RobotTracker.getPos(false)[0] - RobotTracker.lastX
-        val actualY = RobotTracker.getPos(false)[1] - RobotTracker.lastY
+        val actualX = RobotTracker.getPos(false)[0] - 0
+        val actualY = RobotTracker.getPos(false)[1] - 0
 
         val inputX = magnitude * cos(radians)
         val inputY = magnitude * sin(radians)

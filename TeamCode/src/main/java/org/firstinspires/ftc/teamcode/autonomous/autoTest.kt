@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autonomous
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.teamcode.utils.squared
 import kotlin.math.sqrt
 
 @Autonomous(name = "test")
+@Disabled
 class autoTest: LinearOpMode() {
     override fun runOpMode() {
         SpecterDrive.init(this)
@@ -26,7 +28,10 @@ class autoTest: LinearOpMode() {
 
         waitForStart()
 
-        SpecterDrive.path(0.0, 30.0, otos.position.h)
+        SpecterDrive.path(00.0, 30.0, 0.0)
+
+        telemetry.addLine("hi")
+        sleep(50000)
         //SpecterDrive.path(30.0, 0.0, 0.0)
 
     }

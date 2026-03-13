@@ -102,8 +102,6 @@ object SpecterDrive : API() {
     fun path(x: Double, y: Double, h: Double, t: Double = 999.99999, rC: Boolean = true, spMag: Double = 0.0){
 
         var otosScreenshot = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
-        var xGoal = 0.0
-        var yGoal = 0.0
 
         if(rC) {
             //takes a "screenshot" of the current position to add back
@@ -112,11 +110,6 @@ object SpecterDrive : API() {
             otosScreenshot.h = otos.position.h
             //reset position to zero for robot-centric
             otos.position = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
-
-            //set goals
-            xGoal = (-(xError))*cos(Math.toRadians(otosScreenshot.h + otos.position.h)) - (-(yError))*sin(Math.toRadians(otosScreenshot.h + otos.position.h))
-            yGoal = (-(xError))*sin(Math.toRadians(otosScreenshot.h + otos.position.h)) + (-(yError))*cos(Math.toRadians(otosScreenshot.h + otos.position.h))
-
         }
 
         //set initial x, y, and h error
@@ -127,46 +120,26 @@ object SpecterDrive : API() {
         //Reset time
         runtime.reset()
 
-        if(rC){
-            //While time < timeout val and xError < x_threshold and yError < y_threshold and hError < h_threshold
-            while (linearOpMode.opModeIsActive() && (runtime.milliseconds() < t * 1000) && ((abs(
-                    xGoal
-                ) > RobotConfig.OTOS.X_THRESHOLD) ||
-                        (abs(yGoal) > RobotConfig.OTOS.Y_THRESHOLD) || (abs(hError) > RobotConfig.OTOS.H_THRESHOLD))
-            ) {
+        //While time < timeout val and xError < x_threshold and yError < y_threshold and hError < h_threshold
+        while (linearOpMode.opModeIsActive() && (runtime.milliseconds() < t * 1000) && ((abs(xError) > RobotConfig.OTOS.X_THRESHOLD) ||
+                    (abs(yError) > RobotConfig.OTOS.Y_THRESHOLD) || (abs(hError) > RobotConfig.OTOS.H_THRESHOLD))
+        ) {
 
-                computePower(otosScreenshot.h + otos.position.h)
-
-                // Update errors based on global position
-                xError = x - otos.position.x
-                yError = y - otos.position.y
-                hError = AngleUnit.normalizeDegrees(h - otos.position.h)
-
-                xGoal = (-(xError))*cos(Math.toRadians(otosScreenshot.h + otos.position.h)) - (-(yError))*sin(Math.toRadians(otosScreenshot.h + otos.position.h))
-                yGoal = (-(xError))*sin(Math.toRadians(otosScreenshot.h + otos.position.h)) + (-(yError))*cos(Math.toRadians(otosScreenshot.h + otos.position.h))
+            if(spMag == 0.0) {
+                computePower()
             }
-        }
 
-        else {
-            //While time < timeout val and xError < x_threshold and yError < y_threshold and hError < h_threshold
-            while (linearOpMode.opModeIsActive() && (runtime.milliseconds() < t * 1000) && ((abs(
-                    xError
-                ) > RobotConfig.OTOS.X_THRESHOLD) ||
-                        (abs(yError) > RobotConfig.OTOS.Y_THRESHOLD) || (abs(hError) > RobotConfig.OTOS.H_THRESHOLD))
-            ) {
 
-                computePower(otosScreenshot.h + otos.position.h)
+            // Update errors based on global position
+            xError = x - otos.position.x
+            yError = y - otos.position.y
+            hError = AngleUnit.normalizeDegrees(h - otos.position.h)
 
-                // Update errors based on global position
-                xError = x - otos.position.x
-                yError = y - otos.position.y
-                hError = AngleUnit.normalizeDegrees(h - otos.position.h)
-            }
         }
         //FullStop
         TriWheels.power(0.0, 0.0, 0.0)
 
-        setPose(otosScreenshot.x+ otos.position.x, otosScreenshot.y+otos.position.y, otosScreenshot.h + otos.position.h)
+        setPose(otosScreenshot.x+ otos.position.x, otosScreenshot.y+otos.position.y, otosScreenshot.h+otos.position.h)
 
     }
 
@@ -236,28 +209,21 @@ object SpecterDrive : API() {
             yError = lookahead.y - robotY
             hError = AngleUnit.normalizeDegrees(targetH - otos.position.h)
 
-            computePower(otos.position.h) //0.0 bc we dont have to reset pos
+            computePower() //0.0 bc we dont have to reset pos
         }
 
         TriWheels.power(0.0, 0.0, 0.0)
     }
 
 
-    private fun computePower(heading: Double) {
-        var cHeading = Math.toRadians(heading)
-        RobotTracker.updatePos()
+    private fun computePower() {
         // Calculate the error vector in field coordinates
         val fieldX = -(xError * STRAFE_GAIN)
         val fieldY = -(yError * SPEED_GAIN)
 
-
-        //Apply heading offset
-        val headingX = fieldX*cos(cHeading) - fieldY*sin(cHeading)
-        val headingY = fieldX*sin(cHeading) + fieldY*cos(cHeading)
-
         // Direction and magnitude
-        val rad = atan2(headingY, headingX)
-        val magnitude = sqrt(headingX * headingX + headingY * headingY)
+        val rad = atan2(fieldY, fieldX) - (PI / 3.0) - (2.0 * PI / 3.0)
+        val magnitude = sqrt(fieldX * fieldX + fieldY * fieldY)
 
         var (r, g, b) = TriWheels.compute(rad, magnitude)
 
@@ -270,20 +236,8 @@ object SpecterDrive : API() {
         val max = maxOf(abs(r), abs(g), abs(b), 1.0)
         r /= max; g /= max; b /= max
 
-        with(linearOpMode.telemetry){
-            addData("X", headingX)
-            addData("Y", headingY)
-            addData("Heading Error", hError)
-            addData("Turn", turn)
-            addData("Mag", magnitude)
-            addData("Dir", rad)
-            addData("x", otos.position.x)
-            addData("x", otos.position.y)
-            addData("x", otos.position.h)
-            update()
-        }
+        TriWheels.power(roundPower(r), roundPower(g), roundPower(b))
 
-        TriWheels.power(roundPower(r)/10, roundPower(g)/10, roundPower(b)/10)
     }
 
 
@@ -293,7 +247,7 @@ object SpecterDrive : API() {
      * @param pwr the raw power given to the wheel
      */
     private fun roundPower(pwr: Double): Double {
-        return pwr.toBigDecimal().setScale(2, RoundingMode.HALF_UP).toDouble()
+        return pwr.toBigDecimal().setScale(3, RoundingMode.HALF_DOWN).toDouble()
     }
 
 }
