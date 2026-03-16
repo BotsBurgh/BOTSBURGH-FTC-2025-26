@@ -77,6 +77,7 @@ class teleOpBlue : OpMode() {
             if (turretOn) {
                 Turret.launch()
                 gamepad2.rumble(250)
+                gamepad1.rumble(250)
             }
             // turn on
             else {

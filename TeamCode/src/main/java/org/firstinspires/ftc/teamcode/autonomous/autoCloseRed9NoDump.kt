@@ -27,7 +27,6 @@ class autoCloseRed9NoDump: LinearOpMode() {
         Singleton.reset()
 
         RobotTracker.setPos(125.5, 118.5, 309.13, true)
-        RobotTracker.setPos(125.5, 118.5, -50.87, false)
 
         Singleton.team = "Red"
         Singleton.starting = "Close"

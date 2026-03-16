@@ -1,11 +1,7 @@
 package org.firstinspires.ftc.teamcode.teleop
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeDegrees
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.teamcode.RobotConfig
-import org.firstinspires.ftc.teamcode.Singleton
 import org.firstinspires.ftc.teamcode.api.Limelight
 import org.firstinspires.ftc.teamcode.api.RobotTracker
 import org.firstinspires.ftc.teamcode.api.TransferSystem
@@ -21,7 +17,7 @@ import kotlin.math.sqrt
 
 @TeleOp(name = "teleOpRed")
 
-class teleOpTest : OpMode() {
+class teleOpRed : OpMode() {
 
     var turretOn = false
     var lastCircle = false
@@ -77,6 +73,8 @@ class teleOpTest : OpMode() {
             if (turretOn) {
                 Turret.launch()
                 gamepad2.rumble(250)
+                gamepad1.rumble(250)
+
             }
             // turn on
             else {
