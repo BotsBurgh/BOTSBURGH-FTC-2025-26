@@ -4,10 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeDegrees
 import org.firstinspires.ftc.teamcode.RobotConfig
+import org.firstinspires.ftc.teamcode.Singleton
 import org.firstinspires.ftc.teamcode.core.API
 import org.firstinspires.ftc.teamcode.utils.squared
 import kotlin.math.abs
@@ -108,7 +110,8 @@ object Turret : API() {
         aimer.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         launcherL.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         launcherR.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        aimer.mode = DcMotor.RunMode.RUN_USING_ENCODER
+        aimer.mode = DcMotor.RunMode.RUN_USING_ENCODERS
+        aimer.direction = DcMotorSimple.Direction.FORWARD
 
         launcherL.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, coeffs)
         launcherR.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, coeffs)
@@ -122,10 +125,10 @@ object Turret : API() {
     fun trackPos(pos: DoubleArray, goal: DoubleArray) {
         //calc theta
         val theta =
-            normalizeDegrees(pos[2] + Math.toDegrees(atan2
+            normalizeDegrees(Math.toDegrees(atan2
                 (goal[0] - pos[0],
                 goal[1] - pos[1])
-            )
+            ) + pos[2]
             )
 
         //convert output angle to motor ticks
@@ -137,10 +140,10 @@ object Turret : API() {
         aimer.mode = DcMotor.RunMode.RUN_TO_POSITION
 
         if (motorTicks>0){
-            setAimerPower(-0.9)
+            powerAimerWithLimits(0.9)
         }
         else if (motorTicks<0){
-            setAimerPower(0.9)
+            powerAimerWithLimits(-0.9)
         }
 
     }
@@ -153,6 +156,16 @@ object Turret : API() {
 
         launcherL.power = power
         launcherR.power = power
+    }
+
+    /**
+     * Fires the ball
+     * @param power the power it fires at
+     */
+    fun launchInTele(power: Double) {
+
+        launcherL.power = power
+        launcherR.power = -power
     }
 
     /**
@@ -178,12 +191,7 @@ object Turret : API() {
         servo.position = pos
     }
 
-    /**
-     * Locks the servo
-     */
-    fun lockServo(){
-        moveHood(0.0)
-    }
+
 
     /**
      * Turns the light a certain color given a PWM value
@@ -265,49 +273,72 @@ object Turret : API() {
     fun launch() {
 
         launcherR.velocity = -TARGET_VELOCITY
-        launcherL.velocity = -TARGET_VELOCITY
+        launcherL.velocity = TARGET_VELOCITY
     }
 
-    fun changeTargetVelocity(distance: Double){
+    fun changeTargetVelocity(distance: Double) {
         var dist = distance - 18
-        if(distance < 67.0){
+        if (distance < 67.0) {
             TARGET_VELOCITY = 0.104167 * dist.squared() - 5.41667 * dist + 1040
             moveHood(0.86)
 //            light2(0.28)
-//            if (Singleton.team == "Blue"){
-//                Limelight.cam.pipelineSwitch(0)
-//            }
-//            else if (Singleton.team == "Red"){
-//                Limelight.cam.pipelineSwitch(1)
-//            }
-        }
-
-        else if(67.0 < distance && distance < 115){
-            TARGET_VELOCITY = 0.00000223265 * dist * dist * dist * dist + 0.00160751 * dist * dist * dist - 0.465213 * dist.squared() + 41.41204 * dist
+            if (Singleton.team == "Blue") {
+                Limelight.cam.pipelineSwitch(0)
+            } else if (Singleton.team == "Red") {
+                Limelight.cam.pipelineSwitch(1)
+            }
+        } else if (67.0 < distance && distance < 115) {
+            TARGET_VELOCITY =
+                0.00000223265 * dist * dist * dist * dist + 0.00160751 * dist * dist * dist - 0.465213 * dist.squared() + 41.41204 * dist
             moveHood(0.6)
 //            light2(0.388)
-//            if (Singleton.team == "Blue"){
-//                Limelight.cam.pipelineSwitch(0)
-//            }
-//            else if (Singleton.team == "Red"){
-//                Limelight.cam.pipelineSwitch(1)
-//            }
-        }
-
-        else{
-            TARGET_VELOCITY = -0.00726448*distance*distance*distance+ 3.04573*distance.squared() - 419.56442*distance+20596.7275
-            moveHood(0.3)
-//            if (Singleton.team == "Blue"){
-//                Limelight.cam.pipelineSwitch(3)
-//            }
-//            else if (Singleton.team == "Red"){
-//                Limelight.cam.pipelineSwitch(2)
-//            }
+            if (Singleton.team == "Blue") {
+                Limelight.cam.pipelineSwitch(0)
+            } else if (Singleton.team == "Red") {
+                Limelight.cam.pipelineSwitch(1)
+            }
+        } else {
+            TARGET_VELOCITY = 0.0104982*distance*distance*distance-4.6502*distance.squared()+690.49907*distance-32779.3688
+            moveHood(0.47)
+            if (Singleton.team == "Blue") {
+                Limelight.cam.pipelineSwitch(3)
+            } else if (Singleton.team == "Red") {
+                Limelight.cam.pipelineSwitch(2)
+            }
 
 //            light2(0.5)
         }
     }
 
+        fun changeTargetVelocity(distance: Double, auto: Boolean){
+            var dist = distance - 18
+            if(distance < 67.0){
+                TARGET_VELOCITY = 0.104167 * dist.squared() - 5.41667 * dist + 1040
+                moveHood(0.86)
+            }
 
+            else if(67.0 < distance && distance < 115){
+                TARGET_VELOCITY = 0.00000223265 * dist * dist * dist * dist + 0.00160751 * dist * dist * dist - 0.465213 * dist.squared() + 41.41204 * dist
+                moveHood(0.67)
+            }
+
+            else{
+                TARGET_VELOCITY = 0.0104982*distance*distance*distance-4.6502*distance.squared()+690.49907*distance-32779.3688
+                moveHood(0.47)
+            }
+        }
+
+
+    fun powerAimerWithLimits(pwr: Double){
+        if (aimer.currentPosition >= 1247 && pwr > 0) {
+            aimer.power = 0.0
+        }
+        else if (aimer.currentPosition <= -400 && pwr < 0) {
+            aimer.power = 0.0
+        }
+        else {
+            aimer.power = pwr
+        }
+    }
 }
 

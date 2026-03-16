@@ -10,9 +10,7 @@ import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.api.Turret
 import org.firstinspires.ftc.teamcode.api.linear.SpecterDrive
 import org.firstinspires.ftc.teamcode.api.linear.SpecterDrive.otos
-import org.firstinspires.ftc.teamcode.utils.squared
-import kotlin.concurrent.timer
-import kotlin.math.sqrt
+
 
 @Autonomous(name = "FAR BLUE")
 class autoFarBlue6: LinearOpMode() {
@@ -25,15 +23,11 @@ class autoFarBlue6: LinearOpMode() {
 
         RobotTracker.setPos(60.0, 8.0, 270.0, true)
 
-        Singleton.team = "Blue"
-        Singleton.starting = "Far"
-        Singleton.tagTracking = 0
-        Singleton.autoRan = true
 
         waitForStart()
 
         //Launch 3 balls
-        Turret.changeTargetVelocity(142.5)
+        Turret.changeTargetVelocity(140.0)
         Turret.moveToTick(396)
         Turret.launch()
         sleep(2000)
@@ -49,14 +43,15 @@ class autoFarBlue6: LinearOpMode() {
         Turret.stop()
         TransferSystem.setIntakePwr(-1.0)
         TransferSystem.setTransferPwr(-1.0)
-        SpecterDrive.path(0.0, 42.0, 0.0, 2.5)
-        TransferSystem.setTransferPwr(0.0)
+        SpecterDrive.path(0.0, 60.0, 0.0, 2.75)
+        TransferSystem.setTransferPwr(-0.4)
         TransferSystem.setIntakePwr(0.0)
         SpecterDrive.path(0.0, -42.0, 0.0, 2.5)
-        SpecterDrive.path(-25.0, -0.0, 0.0, 2.0)
+        TransferSystem.setTransferPwr(-0.4)
+        SpecterDrive.path(-25.0, -0.0, 0.0, 1.0)
 
         //FIRE
-        Turret.moveToTick(387)
+        Turret.moveToTick(420)
         Turret.launch()
         sleep(1900)
         TransferSystem.setTransferPwr(-1.0)
@@ -65,6 +60,9 @@ class autoFarBlue6: LinearOpMode() {
         Turret.stop()
         TransferSystem.setTransferPwr(0.0)
         TransferSystem.setIntakePwr(0.0)
+
+        //Leave
+        SpecterDrive.path(30.0, 0.0, 0.0)
 
 
 
@@ -76,6 +74,11 @@ class autoFarBlue6: LinearOpMode() {
         Singleton.finalXInches = finX
         Singleton.finalYInches = finY
         Singleton.finalHeadingDeg = finH
+
+        Singleton.team = "Blue"
+        Singleton.starting = "Far"
+        Singleton.tagTracking = 0
+        Singleton.autoRan = true
         Turret.moveToTick(0)
 
 

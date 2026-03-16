@@ -10,7 +10,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
 import org.firstinspires.ftc.teamcode.api.linear.SpecterDrive
 import org.firstinspires.ftc.teamcode.core.API
-import kotlin.math.abs
 
 /**
  * An API to track the current coordinates of the robot.
@@ -24,7 +23,7 @@ object RobotTracker :API() {
         private set
 
     lateinit var pose2D: Pose2D
-
+        private set
 
 
     /**
@@ -34,12 +33,8 @@ object RobotTracker :API() {
         super.init(opMode)
 
         tracker = this.opMode.hardwareMap.get(SparkFunOTOS::class.java, "OTOS")
-        pinpoint = this.opMode.hardwareMap.get(GoBildaPinpointDriver::class.java,"deadwheel")
 
-        configurePinpoint()
-
-        // Set the location of the robot - this should be the place you are starting the robot from
-        pose2D = pinpoint.position
+        configureOtos()
     }
 
     /**
@@ -62,7 +57,7 @@ object RobotTracker :API() {
         */
         pinpoint.setOffsets(
             -4.658,  // forward pod sideways offset
-            -7.866,
+            7.866,
             DistanceUnit.INCH
         ) //these are tuned for 3110-0002-0001 Product Insight #1
 
@@ -85,7 +80,7 @@ object RobotTracker :API() {
         //REVERSED REVERSED
         pinpoint.setEncoderDirections(
             GoBildaPinpointDriver.EncoderDirection.REVERSED,
-            GoBildaPinpointDriver.EncoderDirection.REVERSED
+            GoBildaPinpointDriver.EncoderDirection.FORWARD
         )
 
         /*
@@ -98,6 +93,25 @@ object RobotTracker :API() {
          */
         pinpoint.recalibrateIMU()
     }
+
+    private fun configureOtos() {
+        //Sets the desired units for linear and angular movement. Currently
+        // set to INCH and DEGREES but can be set to CM or RADIANS as well.
+        tracker.setLinearUnit(DistanceUnit.INCH)
+        tracker.setAngularUnit(AngleUnit.DEGREES)
+
+        tracker.offset = SparkFunOTOS.Pose2D(0.0, -3.5430 ,90.0)
+
+        tracker.linearScalar = 1.0
+        tracker.angularScalar = 1.0
+
+        tracker.calibrateImu()
+
+        tracker.resetTracking()
+
+        tracker.position = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
+    }
+
 
 
     /**
@@ -118,9 +132,8 @@ object RobotTracker :API() {
         if (isAuto) {
             return doubleArrayOf(SpecterDrive.otos.position.x, SpecterDrive.otos.position.y, SpecterDrive.otos.position.h)
         }
-            //X and Y are flipped in the pinpoint becasuse of how its configured. To fit with our coordinate system, flip X and Y. abs X bc stuff
-            return doubleArrayOf(abs(pose2D.getY(DistanceUnit.INCH)), abs(pose2D.getX(DistanceUnit.INCH)), pose2D.getHeading(AngleUnit.DEGREES))
-    }
+        //X and Y are flipped in the pinpoint becasuse of how its configured. To fit with our coordinate system, flip X and Y.
+        return doubleArrayOf(tracker.position.x, tracker.position.y, tracker.position.h)    }
 
     /**
      * Gets the current velocity as an Array of Doubles, [0] = Horizontal, [1] = Vertical, [2] = Angular
@@ -160,9 +173,7 @@ object RobotTracker :API() {
             SpecterDrive.otos.position = SparkFunOTOS.Pose2D(newX, newY, newH)
         }
         else {
-            pinpoint.setPosY(newX, DistanceUnit.INCH)
-            pinpoint.setPosX(newY, DistanceUnit.INCH)
-            pinpoint.setHeading(newH, AngleUnit.DEGREES)
+            tracker.position = SparkFunOTOS.Pose2D(newX, newY, newH)
         }
     }
 

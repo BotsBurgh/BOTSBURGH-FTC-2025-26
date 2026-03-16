@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.api.linear.SpecterDrive.otos
 
 
 
-@Autonomous(name = "CLOSE RED")
-class autoCloseRed9: LinearOpMode() {
+@Autonomous(name = "CLOSE RED NO DUMP")
+class autoCloseRed9NoDump: LinearOpMode() {
 
 
     override fun runOpMode() {
@@ -28,6 +28,10 @@ class autoCloseRed9: LinearOpMode() {
 
         RobotTracker.setPos(125.5, 118.5, 309.13, true)
 
+        Singleton.team = "Red"
+        Singleton.starting = "Close"
+        Singleton.tagTracking = 1
+        Singleton.autoRan = true
         waitForStart()
 
         //Move back and charge turret
@@ -76,19 +80,15 @@ class autoCloseRed9: LinearOpMode() {
         //Forward and intake next 3 balls, hit classifier
         Turret.launch()
         Turret.stop()
+        Turret.changeTargetVelocity(75.0, true)
         TransferSystem.setIntakePwr(-1.0)
         TransferSystem.setTransferPwr(-1.0)
-        SpecterDrive.path(0.0, (5.5*12.0), 0.0, 3.0)
-        TransferSystem.intake()
-        TransferSystem.reverseTransfer()
-        SpecterDrive.path(0.0, -12.0, 0.0, 2.0)
+        SpecterDrive.path(0.0, (5.5*12.0), 0.0, 2.75)
+
         TransferSystem.setIntakePwr(0.0)
         TransferSystem.setTransferPwr(0.0)
-        SpecterDrive.path(-12.0, 0.0, 0.0, 2.0)
-        SpecterDrive.path(0.0, 18.0, 0.0, 1.0)
         Turret.launch(0.5)
-        SpecterDrive.path(0.0, -(5.5*12.0)-6.7, 0.0, 1.5)
-        Turret.changeTargetVelocity(66.9, true)
+        SpecterDrive.path(0.0, -(5.5*12.0)+16, 0.0, 3.0)
 
         Turret.launch()
 
@@ -98,7 +98,7 @@ class autoCloseRed9: LinearOpMode() {
         //Fire and shut down
         TransferSystem.setTransferPwr(-1.0)
         TransferSystem.setIntakePwr(1.0)
-        sleep(2500)
+        sleep(1000)
         TransferSystem.setTransferPwr(0.0)
         TransferSystem.setIntakePwr(0.0)
         //Up
@@ -113,6 +113,7 @@ class autoCloseRed9: LinearOpMode() {
         Singleton.finalXInches = finX
         Singleton.finalYInches = finY
         Singleton.finalHeadingDeg = finH
+
         Singleton.team = "Red"
         Singleton.starting = "Close"
         Singleton.tagTracking = 1

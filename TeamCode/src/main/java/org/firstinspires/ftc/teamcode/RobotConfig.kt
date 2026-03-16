@@ -167,7 +167,7 @@ object RobotConfig {
          * Gear ratio of the launcher motor
          */
         @JvmField
-        var GEAR_RATIO_AIMER = 5.875
+        var SPEED = 0.0
 
         /**
          * Ticks in one degree of the launcher motor
@@ -185,10 +185,10 @@ object RobotConfig {
          * Servo Position
          */
         @JvmField
-        var pos = 0.0
+        var pos1 = 0.13
 
         @JvmField
-        var pwr = 0.0
+        var pwr2 = 0.8675
 
     }
 

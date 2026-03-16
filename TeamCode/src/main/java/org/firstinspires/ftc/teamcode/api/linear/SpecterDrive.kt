@@ -17,9 +17,12 @@ import org.firstinspires.ftc.teamcode.api.CsvLogging
 import org.firstinspires.ftc.teamcode.api.RobotTracker
 import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.core.API
+import java.math.RoundingMode
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
 
 import kotlin.math.sqrt
 
@@ -121,12 +124,6 @@ object SpecterDrive : API() {
         while (linearOpMode.opModeIsActive() && (runtime.milliseconds() < t * 1000) && ((abs(xError) > RobotConfig.OTOS.X_THRESHOLD) ||
                     (abs(yError) > RobotConfig.OTOS.Y_THRESHOLD) || (abs(hError) > RobotConfig.OTOS.H_THRESHOLD))
         ) {
-            with(linearOpMode.telemetry) {
-                addData("current X coordinate", otos.position.x)
-                addData("current Y coordinate", otos.position.y)
-                addData("current Heading angle", otos.position.h)
-                update()
-            }
 
             if(spMag == 0.0) {
                 computePower()
@@ -212,23 +209,17 @@ object SpecterDrive : API() {
             yError = lookahead.y - robotY
             hError = AngleUnit.normalizeDegrees(targetH - otos.position.h)
 
-            computePower()
-            linearOpMode.idle()
+            computePower() //0.0 bc we dont have to reset pos
         }
 
         TriWheels.power(0.0, 0.0, 0.0)
     }
 
 
-    /**
-     * Creates a vector for the robot to move to
-     * @param mag the optional magnetude of the robot
-     */
     private fun computePower() {
         // Calculate the error vector in field coordinates
         val fieldX = -(xError * STRAFE_GAIN)
         val fieldY = -(yError * SPEED_GAIN)
-
 
         // Direction and magnitude
         val rad = atan2(fieldY, fieldX) - (PI / 3.0) - (2.0 * PI / 3.0)
@@ -245,21 +236,18 @@ object SpecterDrive : API() {
         val max = maxOf(abs(r), abs(g), abs(b), 1.0)
         r /= max; g /= max; b /= max
 
-        TriWheels.power(r, roundPower(g), roundPower(b))
+        TriWheels.power(roundPower(r), roundPower(g), roundPower(b))
+
     }
 
 
     /**
-     * Rounds power to 0 in case of math returning miniscule powers
+     * Clips power to 2 decimal places
      *
      * @param pwr the raw power given to the wheel
      */
     private fun roundPower(pwr: Double): Double {
-        return if (abs(pwr) < RobotConfig.OTOS.PWRTHRESHOLD) {
-            0.0
-        } else {
-            pwr
-        }
+        return pwr.toBigDecimal().setScale(3, RoundingMode.HALF_DOWN).toDouble()
     }
 
 }

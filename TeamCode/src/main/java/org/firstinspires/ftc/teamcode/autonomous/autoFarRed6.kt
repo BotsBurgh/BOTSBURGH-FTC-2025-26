@@ -9,11 +9,10 @@ import org.firstinspires.ftc.teamcode.api.TransferSystem
 import org.firstinspires.ftc.teamcode.api.TriWheels
 import org.firstinspires.ftc.teamcode.api.Turret
 import org.firstinspires.ftc.teamcode.api.linear.SpecterDrive
-import org.firstinspires.ftc.teamcode.api.linear.SpecterDrive.otos
 import org.firstinspires.ftc.teamcode.utils.squared
 import kotlin.math.sqrt
 
-@Autonomous(name = "autoFarRed(9 ball)")
+@Autonomous(name = "FAR RED")
 class autoFarRed6: LinearOpMode() {
     override fun runOpMode() {
         SpecterDrive.init(this)
@@ -24,54 +23,59 @@ class autoFarRed6: LinearOpMode() {
 
         RobotTracker.setPos(84.0, 8.75, 90.0, true)
         waitForStart()
-        Singleton.team = "Red"
-        Singleton.starting = "Far"
-        Singleton.tagTracking = 1
-        Singleton.autoRan = true
 
         //Launch 3 balls
-        Turret.changeTargetVelocity(sqrt((RobotConfig.UniversalCoordinates.RED_POS[0]- RobotTracker.getPos(true)[0]).squared()+(RobotConfig.UniversalCoordinates.RED_POS[1]- RobotTracker.getPos(true)[1]).squared()))
+        Turret.changeTargetVelocity(140.0)
 
         Turret.moveToTick(-390)
         Turret.launch()
         sleep(2000)
         TransferSystem.setTransferPwr(-1.0)
         TransferSystem.setIntakePwr(1.0)
-        sleep(2500)
+        sleep(2000)
         Turret.launch(0.5)
         TransferSystem.setTransferPwr(0.0)
         TransferSystem.setIntakePwr(0.0)
 
         //Move to Lower 3 balls
+        Turret.moveToTick(-370)
+
         SpecterDrive.path(-30.0, 0.0, 0.0, 2.0)
         Turret.stop()
         TransferSystem.setIntakePwr(-1.0)
-        TransferSystem.setTransferPwr(-1.0)
-        SpecterDrive.path(0.0, 48.0, 0.0, 2.5)
+        TransferSystem.setTransferPwr(-0.75)
+        SpecterDrive.path(0.0, 60.0, 0.0, 3.0)
+        TransferSystem.setTransferPwr(-0.9)
+        TransferSystem.setIntakePwr(-1.0)
+        SpecterDrive.path(0.0, -43.0, 0.0, 2.5)
         TransferSystem.setTransferPwr(0.0)
         TransferSystem.setIntakePwr(0.0)
-        SpecterDrive.path(0.0, -48.0, 0.0, 2.5)
         SpecterDrive.path(30.0, -0.0, 0.0, 2.0)
 
         //FIRE
+        Turret.moveToTick(-420)
         Turret.launch()
         sleep(2000)
         TransferSystem.setTransferPwr(-1.0)
         TransferSystem.setIntakePwr(1.0)
-        sleep(2500)
-        Turret.stop()
+        sleep(2000)
+        Turret.launch(0.5)
         TransferSystem.setTransferPwr(0.0)
         TransferSystem.setIntakePwr(0.0)
 
+        //Stop
+        TransferSystem.setIntakePwr(0.0)
+        TransferSystem.setTransferPwr(0.0)
+        SpecterDrive.path(-18.0, 0.0, 0.0, 1.0)
 
         //Singleton logging
-        var finX = otos.position.x
-        var finY = otos.position.y
-        var finH = otos.position.h
-
-        Singleton.finalXInches = finX
-        Singleton.finalYInches = finY
-        Singleton.finalHeadingDeg = finH
+        Singleton.autoRan = true
+        Singleton.finalXInches = RobotTracker.getPos(true)[0]
+        Singleton.finalXInches = RobotTracker.getPos(true)[1]
+        Singleton.finalXInches = RobotTracker.getPos(true)[2]
+        Singleton.team = "Red"
+        Singleton.starting = "Far"
+        Singleton.tagTracking = 1
 
         Turret.moveToTick(0)
 
